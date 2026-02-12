@@ -262,6 +262,20 @@ export function isDailyForcedWaveHiddenAbility(): boolean {
   return forcedWave.hiddenAbility ?? false;
 }
 
+export function getDailyTrainerManipulation(waveIndex: number): boolean | null {
+  if (!isDailyEventSeed()) {
+    return null;
+  }
+  const trainerManipulation = globalScene.gameMode.dailyConfig?.trainerManipulations?.find(
+    w => w.waveIndex === waveIndex,
+  );
+  if (trainerManipulation == null) {
+    return null;
+  }
+
+  return trainerManipulation.isTrainer;
+}
+
 /**
  * Sets a custom starting biome for the daily run if specified in the config.
  * @see {@linkcode CustomDailyRunConfig}

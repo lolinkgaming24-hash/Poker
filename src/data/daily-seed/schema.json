@@ -82,6 +82,12 @@
         "$ref": "#/$defs/forcedWave"
       }
     },
+    "trainerManipulations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/trainerManipulation"
+      }
+    },
     "seed": {
       "type": "string"
     },
@@ -162,6 +168,21 @@
           }
         }
       ],
+      "additionalProperties": false
+    },
+    "trainerManipulation": {
+      "type": "object",
+      "properties": {
+        "waveIndex": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 49
+        },
+        "isTrainer": {
+          "type": "boolean"
+        }
+      },
+      "required": ["waveIndex", "isTrainer"],
       "additionalProperties": false
     }
   },

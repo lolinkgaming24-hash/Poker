@@ -49,6 +49,9 @@ export interface DailySeedBoss {
  *   speciesId: SpeciesId.MEW,
  * };
  * ```
+ * @privateRemarks
+ * When updating this interface, also update:
+ * - `src/data/daily-seed/schema.json`
  */
 export type DailyForcedWave =
   | {
@@ -65,6 +68,17 @@ export type DailyForcedWave =
     };
 
 /**
+ * Configuration fto manipulate on what waves a trainer spawns for a custom seed.
+ * @privateRemarks
+ * When updating this interface, also update:
+ * - `src/data/daily-seed/schema.json`
+ */
+export interface DailyTrainerManipulation {
+  waveIndex: number;
+  isTrainer: boolean;
+}
+
+/**
  * Configuration for a custom daily run seed.
  * @privateRemarks
  * When updating this interface, also update:
@@ -77,6 +91,7 @@ export interface CustomDailyRunConfig {
   luck?: number;
   startingMoney?: number;
   forcedWaves?: DailyForcedWave[];
+  trainerManipulations?: DailyTrainerManipulation[];
   /** The actual seed used for the daily run. */
   seed: string;
 }
@@ -88,5 +103,6 @@ export interface SerializedDailyRunConfig {
   boss?: DailySeedBoss | undefined;
   luck?: number | undefined;
   forcedWaves?: DailyForcedWave[] | undefined;
+  trainerManipulations?: DailyTrainerManipulation[] | undefined;
   seed: string;
 }
