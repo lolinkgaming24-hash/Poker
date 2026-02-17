@@ -1875,6 +1875,9 @@ export class BattleScene extends SceneBase {
     }
 
     if (this.gameMode.isDaily && this.gameMode.isWaveFinal(waveIndex)) {
+      if (this.gameMode.dailyConfig?.boss?.segments != null) {
+        return this.gameMode.dailyConfig.boss.segments;
+      }
       return 5;
     }
 

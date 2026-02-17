@@ -38,6 +38,7 @@ export interface DailySeedBoss {
   nature?: Nature | undefined;
   ability?: AbilityId | undefined;
   passive?: AbilityId | undefined;
+  segments?: number | undefined;
 }
 
 /**
