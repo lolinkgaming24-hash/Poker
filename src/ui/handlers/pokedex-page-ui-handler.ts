@@ -1771,7 +1771,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                             ui.setMode(UiMode.POKEDEX_PAGE, {
                               species: newSpecies,
                               savedStarterAttributes: this.savedStarterAttributes,
-                              filteredIndices: this.filteredIndices ?? [],
+                              filteredIndices: this.filteredIndices ?? undefined,
                             });
                             return true;
                           },
@@ -2173,7 +2173,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
               ui.setModeForceTransition(UiMode.POKEDEX_PAGE, {
                 species: newSpecies,
                 savedStarterAttributes: this.savedStarterAttributes,
-                filteredIndices: this.filteredIndices ?? [],
+                filteredIndices: this.filteredIndices ?? undefined,
               });
             });
             this.blockInput = false;
@@ -2211,7 +2211,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
               ui.setModeForceTransition(UiMode.POKEDEX_PAGE, {
                 species: newSpecies,
                 savedStarterAttributes: this.savedStarterAttributes,
-                filteredIndices: this.filteredIndices ?? [],
+                filteredIndices: this.filteredIndices ?? undefined,
               });
             });
             break;
