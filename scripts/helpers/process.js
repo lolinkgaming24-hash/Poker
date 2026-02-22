@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2025-2026 Pagefault Games
+ * SPDX-FileContributor: Bertie690
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { spawnSync } from "node:child_process";
 
 /**
