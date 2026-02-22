@@ -1,10 +1,9 @@
 import type { Ability } from "#abilities/ability";
-import type { Biome } from "#data/biome";
 import type { PokemonSpecies } from "#data/pokemon-species";
 import type { BiomeId } from "#enums/biome-id";
 import type { ModifierTypes } from "#modifiers/modifier-type";
 import type { Move } from "#moves/move";
-import type { BiomeDepths, CatchableSpecies } from "#types/biomes";
+import type { Biome, BiomeDepths, CatchableSpecies } from "#types/biomes";
 import type { DataMap } from "#types/common";
 
 export const allAbilities: readonly Ability[] = [];

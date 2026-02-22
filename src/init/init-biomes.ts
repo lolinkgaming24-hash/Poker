@@ -33,8 +33,8 @@ import { templeBiome } from "#biomes/temple";
 import { townBiome } from "#biomes/town";
 import { volcanoBiome } from "#biomes/volcano";
 import { wastelandBiome } from "#biomes/wasteland";
-import type { Biome } from "#data/biome";
 import { allBiomes } from "#data/data-lists";
+import type { Biome } from "#types/biomes";
 
 export function initBiomes(): void {
   const rawAllBiomes: readonly Biome[] = [

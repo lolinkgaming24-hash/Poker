@@ -1,4 +1,3 @@
-import { Biome } from "#data/biome";
 import { TerrainType } from "#data/terrain";
 import { BiomeId } from "#enums/biome-id";
 import { BiomePoolTier } from "#enums/biome-pool-tier";
@@ -6,7 +5,7 @@ import { SpeciesId } from "#enums/species-id";
 import { TimeOfDay } from "#enums/time-of-day";
 import { TrainerType } from "#enums/trainer-type";
 import { WeatherType } from "#enums/weather-type";
-import type { BiomeLinks, BiomePokemonPools, TerrainPool, TrainerPools, WeatherPool } from "#types/biomes";
+import type { Biome, BiomeLinks, BiomePokemonPools, TerrainPool, TrainerPools, WeatherPool } from "#types/biomes";
 
 const pokemonPool: BiomePokemonPools = {
   [BiomePoolTier.COMMON]: {
@@ -177,13 +176,13 @@ const terrainPool: TerrainPool = {
 
 const biomeLinks: BiomeLinks = [BiomeId.JUNGLE, BiomeId.MEADOW];
 
-export const forestBiome = new Biome(
-  BiomeId.FOREST,
+export const forestBiome: Biome = {
+  biomeId: BiomeId.FOREST,
   pokemonPool,
   trainerPool,
-  8,
+  trainerChance: 8,
   weatherPool,
   terrainPool,
-  0.341,
+  bgmLoopPoint: 0.341,
   biomeLinks,
-);
+};

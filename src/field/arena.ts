@@ -81,7 +81,7 @@ export class Arena {
     this.biomeId = biomeId;
     this.playerFaints = playerFaints;
 
-    this.bgm = getBiomeKey(biomeId);
+    this.bgm = allBiomes.get(biomeId).bgm ?? getBiomeKey(biomeId);
     this.trainerPool = allBiomes.get(biomeId).trainerPool;
 
     this.updatePoolsForTimeOfDay();
@@ -566,11 +566,8 @@ export class Arena {
     } else {
       species = getPokemonSpecies(randSeedItem(tierPool));
     }
-    const regen = this.determineRerollIfHighBST(
-      species.baseTotal,
-      globalScene.gameMode.getWaveForDifficulty(waveIndex, true),
-    );
 
+    const regen = this.checkLegendBST(species, globalScene.gameMode.getWaveForDifficulty(waveIndex, true));
     // Attempt to retry 10 times if generated a LegendLike with an incompatible level
     if (regen && attempt < 10) {
       console.log("Incompatible level: regenerating...");
@@ -588,15 +585,20 @@ export class Arena {
   }
 
   /**
-   * Helper method to determine whether or not to reroll a species generation attempt
+   * Helper method to determine whether or not to reroll a legend-like species generation attempt
    * based on the estimated BST and wave.
-   * @param bst - The base stat total of the generated species
+   * @param species - The species being checked
    * @param adjustedWave - The adjusted wave index, accounting for Daily Mode
    * @returns Whether rerolling is required
    */
   // TODO: Refactor so there is no rerolling required, instead modifying the pools directly
-  private determineRerollIfHighBST(bst: number, adjustedWave: number): boolean {
-    return bst >= 660
+  private checkLegendBST(species: PokemonSpecies, adjustedWave: number): boolean {
+    const isLegendLike = species.legendary || species.subLegendary || species.mythical;
+    if (!isLegendLike) {
+      return false;
+    }
+
+    return species.baseTotal >= 660
       ? adjustedWave < 80 // Wave 50+ in daily (however, max Daily wave is 50 currently so not possible)
       : adjustedWave < 55; // Wave 25+ in daily
   }
