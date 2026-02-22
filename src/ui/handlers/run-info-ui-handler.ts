@@ -80,7 +80,6 @@ export class RunInfoUiHandler extends UiHandler {
 
   /**
    * This takes a run's RunEntry and uses the information provided to display essential information about the player's run.
-   * @param args[0] : a RunEntry object
    *
    * show() creates these UI objects in order -
    * A solid-color background used to hide RunHistoryUiHandler

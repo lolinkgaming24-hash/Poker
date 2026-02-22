@@ -98,7 +98,7 @@ export class PokedexScanUiHandler extends FormModalUiHandler {
     const ui = this.getUi();
     const hasTitle = !!this.getModalTitle();
     this.updateFields(this.getInputFieldConfigs(), hasTitle);
-    this.updateContainer(args[0] as ModalConfig);
+    this.updateContainer(args);
     const input = this.inputs[0];
     input.setMaxLength(255);
 

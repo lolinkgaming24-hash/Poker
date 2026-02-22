@@ -115,8 +115,7 @@ export abstract class FormModalUiHandler extends ModalUiHandler {
         ic.setActive(true).setVisible(true);
       }
 
-      const config = args[0] as FormModalConfig;
-      const buttonActions = config.buttonActions ?? [];
+      const buttonActions = args.buttonActions ?? [];
 
       [this.submitAction, this.cancelAction] = buttonActions;
 

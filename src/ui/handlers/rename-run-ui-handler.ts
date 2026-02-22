@@ -42,11 +42,10 @@ export class RenameRunFormUiHandler extends FormModalUiHandler {
         input.text = "";
       });
     }
-    const config = args[0] as ModalConfig;
     this.submitAction = () => {
       this.sanitizeInputs();
       const sanitizedName = btoa(encodeURIComponent(this.inputs[0].text));
-      config.buttonActions[0](sanitizedName);
+      args.buttonActions[0](sanitizedName);
       return true;
     };
     return true;

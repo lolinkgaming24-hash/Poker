@@ -36,7 +36,6 @@ export class RenameFormUiHandler extends FormModalUiHandler {
 
   show(args: TestDialogueUiHandlerParams): boolean {
     if (super.show(args)) {
-      const config = args[0] as ModalConfig;
       // TODO: shouldn't this be `const playerPokemon: PlayerPokemon | undefined = args[1];` and `if (playerPokemon)`?
       if (args.pokemon) {
         this.inputs[0].text = args.pokemon.getNameToRender({ useIllusion: false });
@@ -46,7 +45,7 @@ export class RenameFormUiHandler extends FormModalUiHandler {
       this.submitAction = () => {
         this.sanitizeInputs();
         const sanitizedName = btoa(unescape(encodeURIComponent(this.inputs[0].text)));
-        config.buttonActions[0](sanitizedName);
+        args.buttonActions[0](sanitizedName);
         return true;
       };
       return true;

@@ -68,7 +68,6 @@ export class ChangePasswordFormUiHandler extends FormModalUiHandler {
 
   override show(args: FormModalUiHandlerParams): boolean {
     if (super.show(args)) {
-      const config = args[0];
       const originalSubmitAction = this.submitAction;
       this.submitAction = () => {
         if (globalScene.tweens.getTweensOf(this.modalContainer).length === 0) {
@@ -77,7 +76,8 @@ export class ChangePasswordFormUiHandler extends FormModalUiHandler {
           this.sanitizeInputs();
           globalScene.ui.setMode(UiMode.LOADING, { buttonActions: [] });
           const onFail = (error: string | null) => {
-            globalScene.ui.setMode(UiMode.CHANGE_PASSWORD_FORM, Object.assign(config, { errorMessage: error?.trim() }));
+            args.errorMessage = error?.trim() ?? "";
+            globalScene.ui.setMode(UiMode.CHANGE_PASSWORD_FORM, args);
             globalScene.ui.playError();
           };
           const [passwordInput, confirmPasswordInput] = this.inputs;

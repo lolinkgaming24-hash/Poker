@@ -49,8 +49,7 @@ export class LoginOrRegisterUiHandler extends LoginRegisterInfoContainerUiHandle
       .setVisible(true)
       .setActive(true);
 
-    const config = args[0];
-    this.showInfoContainer(config);
+    this.showInfoContainer(args);
 
     return super.show(args);
   }

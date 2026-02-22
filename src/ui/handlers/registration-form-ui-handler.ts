@@ -78,8 +78,7 @@ export class RegistrationFormUiHandler extends LoginRegisterInfoContainerUiHandl
       return false;
     }
 
-    const config = args[0];
-    this.showInfoContainer(config);
+    this.showInfoContainer(args);
 
     const originalRegistrationAction = this.submitAction;
     this.submitAction = () => {
@@ -89,7 +88,8 @@ export class RegistrationFormUiHandler extends LoginRegisterInfoContainerUiHandl
         this.sanitizeInputs();
         globalScene.ui.setMode(UiMode.LOADING, { buttonActions: [] });
         const onFail = (error: string) => {
-          globalScene.ui.setMode(UiMode.REGISTRATION_FORM, Object.assign(config, { errorMessage: error?.trim() }));
+          args.errorMessage = error?.trim() ?? "";
+          globalScene.ui.setMode(UiMode.REGISTRATION_FORM, args);
           globalScene.ui.playError();
         };
         if (!this.inputs[0].text) {
