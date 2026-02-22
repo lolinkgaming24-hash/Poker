@@ -384,8 +384,10 @@ export class ModifierSelectUiHandler extends AwaitableUiHandler {
             if (res) {
               updateCursorTarget();
             }
-            this.awaitingActionInput = true;
-            this.onActionInput = args[2];
+            if (args.onActionInput) {
+              this.awaitingActionInput = true;
+              this.onActionInput = args.onActionInput;
+            }
           });
         });
       });
