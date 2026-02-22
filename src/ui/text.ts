@@ -335,12 +335,12 @@ export function getTextStyleOptions(
           break;
         case "ko":
           styleOptions.fontSize = defaultFontSize - 52;
-          styleOptions.padding = { top: 2, bottom: 12, left: 4 };
+          styleOptions.padding = { top: 6, bottom: 12, left: 4 };
           break;
         case "zh-Hans":
         case "zh-Hant":
-          styleOptions.fontSize = defaultFontSize - 56;
-          styleOptions.padding = { top: 2, bottom: 12, left: 14 };
+          styleOptions.fontSize = defaultFontSize - 48;
+          styleOptions.padding = { top: -4, bottom: 12 };
           break;
         default:
           styleOptions.fontSize = defaultFontSize - 48;
@@ -369,7 +369,12 @@ export function getTextStyleOptions(
           break;
         case "ko":
           styleOptions.fontSize = defaultFontSize - 40;
-          styleOptions.padding = { top: -6, bottom: 5 };
+          styleOptions.padding = { top: -2 };
+          break;
+        case "zh-Hans":
+        case "zh-Hant":
+          styleOptions.fontSize = defaultFontSize - 32;
+          styleOptions.padding = { top: -18, bottom: 10 };
           break;
         default:
           styleOptions.fontSize = defaultFontSize - 48;
