@@ -1,8 +1,8 @@
 import { pokerogueApi } from "#api/pokerogue-api";
 import { globalScene } from "#app/global-scene";
 import { UiMode } from "#enums/ui-mode";
+import type { FormModalUiHandlerParams } from "#types/ui/ui-handler-params";
 import type { InputFieldConfig } from "#ui/form-modal-ui-handler";
-import type { ModalConfig } from "#ui/modal-ui-handler";
 import { OAuthProvidersUiHandler } from "#ui/oauth-providers-ui-handler";
 import i18next from "i18next";
 
@@ -66,13 +66,12 @@ export class LoginFormUiHandler extends OAuthProvidersUiHandler {
     return inputFieldConfigs;
   }
 
-  public override show(args: any[]): boolean {
+  public override show(args: FormModalUiHandlerParams): boolean {
     if (!super.show(args)) {
       return false;
     }
-    const config = args[0] as ModalConfig;
     this.processExternalProvider();
-    this.showInfoContainer(config);
+    this.showInfoContainer(args);
     const originalLoginAction = this.submitAction;
     this.submitAction = () => {
       if (globalScene.tweens.getTweensOf(this.modalContainer).length > 0) {
@@ -83,7 +82,8 @@ export class LoginFormUiHandler extends OAuthProvidersUiHandler {
       this.sanitizeInputs();
       globalScene.ui.setMode(UiMode.LOADING, { buttonActions: [] });
       const onFail = (error: string | null) => {
-        globalScene.ui.setMode(UiMode.LOGIN_FORM, Object.assign(config, { errorMessage: error?.trim() }));
+        args.errorMessage = error?.trim() ?? "";
+        globalScene.ui.setMode(UiMode.LOGIN_FORM, args);
         globalScene.ui.playError();
       };
       if (!this.inputs[0].text) {

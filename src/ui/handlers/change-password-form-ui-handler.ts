@@ -1,9 +1,10 @@
 import { globalScene } from "#app/global-scene";
 import { pokerogueApi } from "#app/plugins/api/pokerogue-api";
 import { UiMode } from "#enums/ui-mode";
+import type { FormModalUiHandlerParams } from "#types/ui/ui-handler-params";
 import type { InputFieldConfig } from "#ui/form-modal-ui-handler";
 import { FormModalUiHandler } from "#ui/form-modal-ui-handler";
-import type { ModalConfig } from "#ui/modal-ui-handler";
+import type { ModalConfig } from "#ui/ui-types";
 import i18next from "i18next";
 
 export class ChangePasswordFormUiHandler extends FormModalUiHandler {
@@ -65,9 +66,8 @@ export class ChangePasswordFormUiHandler extends FormModalUiHandler {
     return inputFieldConfigs;
   }
 
-  override show(args: [ModalConfig, ...any]): boolean {
+  override show(args: FormModalUiHandlerParams): boolean {
     if (super.show(args)) {
-      const config = args[0];
       const originalSubmitAction = this.submitAction;
       this.submitAction = () => {
         if (globalScene.tweens.getTweensOf(this.modalContainer).length === 0) {
@@ -76,7 +76,8 @@ export class ChangePasswordFormUiHandler extends FormModalUiHandler {
           this.sanitizeInputs();
           globalScene.ui.setMode(UiMode.LOADING, { buttonActions: [] });
           const onFail = (error: string | null) => {
-            globalScene.ui.setMode(UiMode.CHANGE_PASSWORD_FORM, Object.assign(config, { errorMessage: error?.trim() }));
+            args.errorMessage = error?.trim() ?? "";
+            globalScene.ui.setMode(UiMode.CHANGE_PASSWORD_FORM, args);
             globalScene.ui.playError();
           };
           const [passwordInput, confirmPasswordInput] = this.inputs;
