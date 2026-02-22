@@ -156,6 +156,9 @@ Ensure that new test cases:
 
 <!-- TODO: Decide on and suggest a specific placement hierarchy for test cases involving interactions between different moves/abilities/etc., and enforce said placement if feasible -->
 
+> [!NOTE]
+> While Vitest does support both Jest and Chai syntax for assertions, our project exclusively uses Jest-style assertions (`...toBe()`, `...toEqual()`, etc.) for internal consistency. (The Chai variants have been blacklisted via TypeScript declaration merging, ensuring they aren't accidentally used by mistake.)
+
 #### Running tests
 To make sure your changes didn't break any existing test cases, run `pnpm test:silent <files>` in your terminal to run test files associated with your changes. \
 You can provide additional arguments to the command to alter its behavior;
