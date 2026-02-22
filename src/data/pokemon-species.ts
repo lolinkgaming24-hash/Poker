@@ -513,8 +513,13 @@ export abstract class PokemonSpeciesForm {
         case SpeciesId.OINKOLOGNE:
           if (formKey === "female") {
             ret += `-${formKey}`;
-            break;
           }
+          break;
+        case SpeciesId.CALYREX:
+          if (formKey === "ice" || formKey === "shadow") {
+            ret += `-${formKey}`;
+          }
+          break;
       }
     }
     return `cry/${ret}`;
