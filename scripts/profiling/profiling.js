@@ -90,8 +90,8 @@ async function main() {
 
   if (!clean) {
     await Promise.all([
-      copyFile(cpuProfile, join(output, basename(cpuProfile))),
-      copyFile(memoryProfile, join(output, basename(cpuProfile))),
+      cpuProfile && copyFile(cpuProfile, join(output, basename(cpuProfile))),
+      memoryProfile && copyFile(memoryProfile, join(output, basename(memoryProfile))),
     ]);
   }
 
