@@ -526,11 +526,11 @@ export class BattleScene extends SceneBase {
       .setName("text-money")
       .setOrigin(1, 0.5);
 
-    this.scoreText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "54px" })
+    this.scoreText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "36px" })
       .setName("text-score")
       .setOrigin(1, 0.5);
 
-    this.luckText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "54px" })
+    this.luckText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "36px" })
       .setName("text-luck")
       .setOrigin(1, 0.5)
       .setVisible(false);
@@ -540,7 +540,7 @@ export class BattleScene extends SceneBase {
       0,
       i18next.t("common:luckIndicator"),
       TextStyle.PARTY,
-      { fontSize: "54px" },
+      { fontSize: "36px" },
     )
       .setName("text-luck-label")
       .setOrigin(1, 0.5)
@@ -1261,6 +1261,11 @@ export class BattleScene extends SceneBase {
     double?: boolean,
     mysteryEncounterType?: MysteryEncounterType,
   ): Battle {
+    // failsafe for corrupt saves (such as due to enum shifting)
+    if (trainerData?.variant === TrainerVariant.DOUBLE && !trainerConfigs[trainerData.trainerType].hasDouble) {
+      trainerData.variant = TrainerVariant.DEFAULT;
+      double = false;
+    }
     const _startingWave = Overrides.STARTING_WAVE_OVERRIDE || startingWave;
     const newWaveIndex = waveIndex || (this.currentBattle?.waveIndex || _startingWave - 1) + 1;
     let newDouble: boolean | undefined;
