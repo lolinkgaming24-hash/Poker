@@ -85,7 +85,7 @@ export function getDailyStartingBiome(): BiomeId {
     return eventBiome;
   }
 
-  // TODO: use weighted RNG utility function
+  // TODO: use weighted RNG utility function `weightedPick` from `src/utils/random.ts`
   const biomes = Object.values(BiomeId);
   let totalWeight = 0;
   const biomeThresholds: number[] = [];
