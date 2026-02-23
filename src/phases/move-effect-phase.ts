@@ -840,7 +840,14 @@ export class MoveEffectPhase extends PokemonPhase {
     target: Pokemon,
     [hitResult, damage, wasCritical]: MoveDamageTuple,
   ): void {
-    const params = { pokemon: target, opponent: user, move: this.move, hitResult, damage };
+    const { move } = this;
+    const params: PostMoveInteractionAbAttrParams = {
+      pokemon: target,
+      opponent: user,
+      move,
+      hitResult,
+      damage,
+    };
     applyAbAttrs("PostDefendAbAttr", params);
 
     if (wasCritical) {
@@ -926,7 +933,7 @@ export class MoveEffectPhase extends PokemonPhase {
       }
 
       // Avoid creating unneeded phases if the ability in question cannot apply.
-      // This does duplicate the relevant checks slightly, but the overhead is likely minimal
+      // This does duplicate the relevant checks slightly, but the overahead is likely minimal
       const newParams: PostMoveUsedAbAttrParams = { ...params, pokemon };
       const attrs = pokemon.getAbilityAttrs("PostMoveUsedAbAttr");
       if (attrs.length === 0 || !attrs.some(attr => attr.canApply(newParams))) {
