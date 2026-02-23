@@ -11,7 +11,7 @@ import { SpeciesId } from "#enums/species-id";
 import { Stat } from "#enums/stat";
 import { StatusEffect } from "#enums/status-effect";
 import { type CopyMoveAttr, NaturePowerAttr } from "#moves/move";
-import { GameManager } from "#test/test-utils/game-manager";
+import { GameManager } from "#test/framework/game-manager";
 import type { CallMoveAttrWithBanlist, MoveAttrMap } from "#types/move-types";
 import type { InferKeys } from "#types/type-helpers";
 import { getEnumValues } from "#utils/enums";
