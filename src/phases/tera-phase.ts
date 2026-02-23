@@ -12,7 +12,7 @@ import i18next from "i18next";
 
 export class TeraPhase extends BattlePhase {
   public readonly phaseName = "TeraPhase";
-  public pokemon: Pokemon;
+  public readonly pokemon: Pokemon;
 
   constructor(pokemon: Pokemon) {
     super();
@@ -29,6 +29,7 @@ export class TeraPhase extends BattlePhase {
         type: i18next.t(`pokemonInfo:type.${toCamelCase(PokemonType[this.pokemon.getTeraType()])}`),
       }),
     );
+
     new CommonBattleAnim(CommonAnim.TERASTALLIZE, this.pokemon).play(false, () => {
       this.end();
     });
@@ -37,12 +38,6 @@ export class TeraPhase extends BattlePhase {
   end() {
     this.pokemon.isTerastallized = true;
     this.pokemon.updateSpritePipelineData();
-
-    if (this.pokemon.isPlayer()) {
-      globalScene.arena.playerTerasUsed += 1;
-    } else {
-      globalScene.currentBattle.enemyTerasUsed += 1;
-    }
 
     globalScene.triggerPokemonFormChange(this.pokemon, SpeciesFormChangeTeraTrigger);
 

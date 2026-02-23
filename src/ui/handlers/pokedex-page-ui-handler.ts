@@ -53,7 +53,13 @@ import { MoveInfoOverlay } from "#ui/move-info-overlay";
 import { PokedexInfoOverlay } from "#ui/pokedex-info-overlay";
 import { RibbonTray } from "#ui/ribbon-tray-container";
 import { StatsContainer } from "#ui/stats-container";
-import { addBBCodeTextObject, addTextObject, getTextColor, getTextStyleOptions } from "#ui/text";
+import {
+  addBBCodeTextObject,
+  addTextObject,
+  getTextColor,
+  getTextStyleOptions,
+  updateCandyCountTextStyle,
+} from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
 import { BooleanHolder, getLocalizedSpriteKey, padInt, rgbHexToRgba } from "#utils/common";
 import { getEnumValues } from "#utils/enums";
@@ -73,101 +79,114 @@ interface LanguageSetting {
 const languageSettings: { [key: string]: LanguageSetting } = {
   en: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   de: {
     starterInfoTextSize: "54px",
-    instructionTextSize: "35px",
+    instructionTextSize: "25px",
     starterInfoXPos: 35,
   },
   "es-ES": {
     starterInfoTextSize: "50px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 38,
   },
   "es-419": {
     starterInfoTextSize: "50px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 38,
   },
   fr: {
     starterInfoTextSize: "54px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   it: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   "pt-BR": {
     starterInfoTextSize: "48px",
-    instructionTextSize: "42px",
+    instructionTextSize: "32px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 33,
   },
   zh: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "36px",
+    instructionTextSize: "26px",
     starterInfoXPos: 26,
   },
   ko: {
     starterInfoTextSize: "60px",
-    instructionTextSize: "38px",
+    instructionTextSize: "26px",
     starterInfoYOffset: -0.5,
     starterInfoXPos: 30,
   },
   ja: {
     starterInfoTextSize: "48px",
-    instructionTextSize: "40px",
+    instructionTextSize: "32px",
     starterInfoYOffset: 1,
     starterInfoXPos: 32,
   },
   ca: {
     starterInfoTextSize: "48px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 29,
   },
   da: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+  },
+  th: {
+    starterInfoTextSize: "50px",
+    instructionTextSize: "30px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 40,
   },
   tr: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+    starterInfoXPos: 34,
   },
   ro: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   ru: {
     starterInfoTextSize: "46px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 26,
   },
   uk: {
     starterInfoTextSize: "46px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 26,
   },
   id: {
-    starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    starterInfoTextSize: "48px",
+    instructionTextSize: "32px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 37,
   },
   hi: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+  },
+  tl: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
   },
   "nb-NO": {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   sv: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
 };
 
@@ -1987,6 +2006,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                         starterData.candyCount -= passiveCost;
                       }
                       this.pokemonCandyCountText.setText(`×${starterData.candyCount}`);
+                      updateCandyCountTextStyle(this.pokemonCandyCountText, starterData.candyCount);
                       globalScene.gameData.saveSystem().then(success => {
                         if (!success) {
                           return globalScene.reset(true);
@@ -2019,6 +2039,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                         starterData.candyCount -= reductionCost;
                       }
                       this.pokemonCandyCountText.setText(`×${starterData.candyCount}`);
+                      updateCandyCountTextStyle(this.pokemonCandyCountText, starterData.candyCount);
                       globalScene.gameData.saveSystem().then(success => {
                         if (!success) {
                           return globalScene.reset(true);
@@ -2061,6 +2082,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                       starterData.candyCount -= sameSpeciesEggCost;
                     }
                     this.pokemonCandyCountText.setText(`×${starterData.candyCount}`);
+                    updateCandyCountTextStyle(this.pokemonCandyCountText, starterData.candyCount);
 
                     const egg = new Egg({
                       scene: globalScene,
@@ -2715,6 +2737,10 @@ export class PokedexPageUiHandler extends MessageUiHandler {
         this.pokemonCandyOverlayIcon.setTint(argbFromRgba(rgbHexToRgba(colorScheme[1])));
         this.pokemonCandyCountText.setText(
           `×${species.speciesId === SpeciesId.PIKACHU ? 0 : globalScene.gameData.starterData[this.starterId].candyCount}`,
+        );
+        updateCandyCountTextStyle(
+          this.pokemonCandyCountText,
+          species.speciesId === SpeciesId.PIKACHU ? 0 : globalScene.gameData.starterData[this.starterId].candyCount,
         );
         this.pokemonCandyContainer.setVisible(true);
 
