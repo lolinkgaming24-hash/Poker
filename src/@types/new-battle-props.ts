@@ -20,7 +20,7 @@ import type { SetOptional, SetRequired } from "type-fest";
  */
 interface NewBattleBaseProps {
   /** The type of battle to create. */
-  battleType: BattleType;
+  battleType: Exclude<BattleType, BattleType.CLEAR>;
   /**
    * The `Trainer` to spawn.
    * Only present in processed data and will be `undefined` for non-trainer battles.
@@ -56,7 +56,7 @@ interface NewBattleBaseProps {
  * Interface representing the return type of {@linkcode BattleScene.getNewBattleProps}, used
  * when converting session data into a new battle.
  */
-export interface NewBattleProps extends Omit<NewBattleBaseProps, "trainer"> {}
+export interface NewBattleSavedProps extends Omit<NewBattleBaseProps, "trainer"> {}
 
 /**
  * Interface representing the type of a new battle config as it is constructed.

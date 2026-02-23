@@ -52,7 +52,9 @@ export interface SessionSaveData {
   money: number;
   score: number;
   waveIndex: number;
-  battleType: BattleType;
+  // TODO: This enum being inside save data is basically useless, being inferrable from the presence or absence of `trainer` and `mysteryEncounterType`.
+  // Remove this later on to reduce save size and improve clarity.
+  battleType: Exclude<BattleType, BattleType.CLEAR>;
   // TODO: This being nullable NEEDS to be reflected in the type signature
   trainer: TrainerData;
   gameVersion: string;

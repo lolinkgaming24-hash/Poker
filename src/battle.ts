@@ -525,14 +525,15 @@ type GetTrainerFunc = () => Trainer;
 type GetEnemyPartyFunc = () => EnemyPokemon[];
 
 export class FixedBattleConfig {
-  public battleType: BattleType;
+  // TODO: All fixed battles are currently trainer battles
+  public battleType: Exclude<BattleType, BattleType.CLEAR>;
   public double: boolean;
   public getTrainer: GetTrainerFunc;
   public getEnemyParty: GetEnemyPartyFunc;
   public seedOffsetWaveIndex: number;
   public customModifierRewardSettings?: CustomModifierSettings;
 
-  setBattleType(battleType: BattleType): FixedBattleConfig {
+  setBattleType(battleType: Exclude<BattleType, BattleType.CLEAR>): FixedBattleConfig {
     this.battleType = battleType;
     return this;
   }

@@ -123,8 +123,8 @@ import type { Localizable } from "#types/locales";
 import type {
   NewBattleConstructedProps,
   NewBattleInitialProps,
-  NewBattleProps,
   NewBattleResolvedProps,
+  NewBattleSavedProps,
 } from "#types/new-battle-props";
 import type { SessionSaveData } from "#types/save-data";
 import { AbilityBar } from "#ui/ability-bar";
@@ -154,11 +154,9 @@ import { deepMergeSpriteData } from "#utils/data";
 import { getEnumValues } from "#utils/enums";
 import { getModifierPoolForType, getModifierType } from "#utils/modifier-utils";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
-import { toTitleCase } from "#utils/strings";
 import i18next from "i18next";
 import Phaser from "phaser";
 import SoundFade from "phaser3-rex-plugins/plugins/soundfade";
-import { SetOptional } from "type-fest";
 
 export interface PokeballCounts {
   [pb: string]: number;
@@ -1275,7 +1273,7 @@ export class BattleScene extends SceneBase {
   /**
    * Create and initialize a new battle.
    * @param fromSession - The {@linkcode SessionSaveData} being used to seed the battle.
-   * Should be omitted if not loading a save file.
+   * Should be omitted if not loading an existing save file.
    * @returns The newly created `Battle` instance.
    */
   public newBattle(fromSession?: SessionSaveData): Battle {
@@ -1283,7 +1281,7 @@ export class BattleScene extends SceneBase {
     const { waveIndex, mysteryEncounterType } = props;
     const resolved: NewBattleInitialProps = { waveIndex, mysteryEncounterType };
 
-    // TODO: Address this during an RNG overhaul - this singular function call would make it FAR
+    // TODO: This _should_ be safe to move elsewhere but idk
     this.resetSeed(waveIndex);
 
     // Set attributes of the `resolved` object based on the type of battle being created.
@@ -1335,12 +1333,13 @@ export class BattleScene extends SceneBase {
   }
 
   /**
-   * Helper function to {@linkcode newBattle} to initialize variables from session data, using defaults if no session data is provided.
+   * Helper function to {@linkcode BattleScene.newBattle | newBattle} to initialize variables
+   * with defaults if no session data is provided.
    * @param fromSession - The session data being used to initialize the battle
    * @returns The new battle props
    */
   // TODO: If or when the `resetSeed` call is (re)moved from `newBattle`, move this inline into `handleSavedBattle`
-  private getNewBattleProps(fromSession?: SessionSaveData): NewBattleProps {
+  private getNewBattleProps(fromSession?: SessionSaveData): NewBattleSavedProps {
     if (fromSession == null) {
       return {
         battleType: BattleType.WILD,
@@ -1352,36 +1351,37 @@ export class BattleScene extends SceneBase {
       };
     }
 
-    const { waveIndex, battleType, trainer: trainerData }: SetOptional<SessionSaveData, "trainer"> = fromSession;
-    const mysteryEncounterType = fromSession.mysteryEncounterType !== -1 ? fromSession.mysteryEncounterType : undefined;
+    const { waveIndex, battleType, trainer: trainerData, mysteryEncounterType: sessionMEType } = fromSession;
+    // TODO: Remove fallback once we stop using `-1` as a default value for session data fields (which wastes space)
+    const mysteryEncounterType = sessionMEType !== -1 ? sessionMEType : undefined;
+
     let fixedDouble: boolean;
     switch (battleType) {
       case BattleType.WILD:
         fixedDouble = fromSession.enemyParty.length > 1;
         break;
-      case BattleType.TRAINER: {
-          // failsafe for corrupt saves (such as due to enum shifting)
-          if (
-            trainerData?.variant === TrainerVariant.DOUBLE
-            && !trainerConfigs[trainerData.trainerType].hasDouble
-            && !trainerConfigs[trainerData.trainerType].doubleOnly
-          ) {
-            console.warn(`TrainerType ${toTitleCase(TrainerType[trainerData.trainerType])} has invalid double battle configuration, resetting...`);
-            trainerData.variant = TrainerVariant.DEFAULT;
-            double = false;
-          }
-
-        fixedDouble =
-          trainerConfigs[trainerData.trainerType]?.doubleOnly
-          || fromSession.trainer.variant === TrainerVariant.DOUBLE;
-
-      }
+      case BattleType.TRAINER:
+        {
+          const config = trainerConfigs[trainerData.trainerType];
+          // failsafe for corrupt saves (such as due to enum shifting) - don't force a double battle if the trainer type
+          // cannot appear as one.
+          // The code inside `handleSavedBattle` will override the trainer's variant if this results in incompatibilities,
+          // since this is only a problem for parsed save data (and is ignored for fixed battles)
+          fixedDouble = config.doubleOnly || (config.hasDouble && trainerData.variant === TrainerVariant.DOUBLE);
+        }
         break;
-      default:
+      case BattleType.MYSTERY_ENCOUNTER:
         fixedDouble = false;
+        break;
     }
 
-    return { battleType, mysteryEncounterType, waveIndex, trainerData, double: fixedDouble };
+    return {
+      battleType,
+      mysteryEncounterType,
+      waveIndex,
+      trainerData,
+      double: fixedDouble,
+    } satisfies NewBattleSavedProps;
   }
 
   /**
@@ -1395,14 +1395,15 @@ export class BattleScene extends SceneBase {
     resolved.double = battleConfig.double;
     resolved.battleType = battleConfig.battleType;
 
-    let t!: Trainer;
+    let t!: Trainer; // Tell TS this is defined
     this.executeWithSeedOffset(
       () => {
         t = battleConfig.getTrainer();
       },
+      // TODO: This is only used to ensure evil team leaders get pre-generated as the same team, which is EXTREMELY susceptible to internal RNG changes
+      // Instead, the save data can store the evil team/gym leader preset used upon run creation
       (battleConfig.seedOffsetWaveIndex || waveIndex) << 8,
     );
-    // Tell TS this is defined
     this.field.add(t);
     resolved.trainer = t;
   }
@@ -1410,11 +1411,17 @@ export class BattleScene extends SceneBase {
   /**
    * Sub-method of {@linkcode newBattle} that handles loading existing saved battles.
    * @param resolved - The object to modify
-   * @param props - The {@linkcode NewBattleProps} created from the save data
+   * @param props - The {@linkcode NewBattleSavedProps} created from the save data
    */
-  private handleSavedBattle(resolved: NewBattleInitialProps, props: NewBattleProps): void {
+  private handleSavedBattle(resolved: NewBattleInitialProps, props: NewBattleSavedProps): void {
     resolved.battleType = props.battleType;
     resolved.double = props.double;
+    if (!resolved.double && props.trainerData?.variant === TrainerVariant.DOUBLE) {
+      console.warn(
+        "Save data indicates a non-double battle but trainer variant is double!\nForcing battle to default variant to avoid crashes.",
+      );
+      props.trainerData.variant = TrainerVariant.DEFAULT;
+    }
     resolved.trainer = props.trainerData?.toTrainer();
     if (resolved.trainer) {
       this.field.add(resolved.trainer);
@@ -1454,7 +1461,7 @@ export class BattleScene extends SceneBase {
   }
 
   /**
-   * Randomly determine the attributes of a newly generated trainer.
+   * Helper function to randomly determine the attributes of a newly generated trainer.
    * @param waveIndex - The wave number being generated
    * @returns The generated trainer.
    */
@@ -1486,33 +1493,33 @@ export class BattleScene extends SceneBase {
   }
 
   /**
-   * Sub-method of `newBattle` that returns whether the new battle is a double battle.
+   * Sub-method of {@linkcode newBattle} that returns whether the new battle is a double battle.
    * @param __namedParameters - Needed for typedoc to function
    * @returns Whether the battle should be a double battle.
    */
-  private checkIsDouble({ double, battleType, waveIndex, trainer }: NewBattleConstructedProps): boolean {
+  private checkIsDouble({ double: forcedDouble, battleType, waveIndex, trainer }: NewBattleConstructedProps): boolean {
     // Disallow using double battle overrides on trainer waves (need `RANDOM_TRAINER_OVERRIDE` instead)
     // TODO: Rework logic later on to make sense - if wave 1 doubles cause crashes then why don't we check it before everything else?
-    // (Also the bug report is from AGES ago - review)
-    const overriddenDouble = this.doCheckDoubleOverride(waveIndex);
-    if (overriddenDouble === true || (battleType !== BattleType.TRAINER && overriddenDouble === false)) {
-      return overriddenDouble;
+    const doubleBattleOverride = this.doCheckDoubleOverride(waveIndex);
+    if (doubleBattleOverride === true || (battleType !== BattleType.TRAINER && doubleBattleOverride === false)) {
+      return doubleBattleOverride;
     }
 
     // Edge cases
     if (
       // Wave 1 doubles cause crashes
-      // TODO: Investigate why this occurs and fix it for good - this is a constant PITA while testing and doing local dev
+      // TODO: Investigate why this occurs and fix it for good - this is a constant PITA inside testing and local dev
       waveIndex === 1
-      || this.gameMode.isWaveFinal(waveIndex)
+      || // Endless bosses and classic mode finales are never double battles
+      this.gameMode.isWaveFinal(waveIndex)
       || this.gameMode.isEndlessBoss(waveIndex)
       || battleType === BattleType.MYSTERY_ENCOUNTER // MEs are never double battles
     ) {
       return false;
     }
 
-    if (double != null) {
-      return double;
+    if (forcedDouble != null) {
+      return forcedDouble;
     }
 
     // Standard wild battle chance
