@@ -154,9 +154,11 @@ import { deepMergeSpriteData } from "#utils/data";
 import { getEnumValues } from "#utils/enums";
 import { getModifierPoolForType, getModifierType } from "#utils/modifier-utils";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
+import { toTitleCase } from "#utils/strings";
 import i18next from "i18next";
 import Phaser from "phaser";
 import SoundFade from "phaser3-rex-plugins/plugins/soundfade";
+import { SetOptional } from "type-fest";
 
 export interface PokeballCounts {
   [pb: string]: number;
@@ -539,11 +541,11 @@ export class BattleScene extends SceneBase {
       .setName("text-money")
       .setOrigin(1, 0.5);
 
-    this.scoreText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "54px" })
+    this.scoreText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "36px" })
       .setName("text-score")
       .setOrigin(1, 0.5);
 
-    this.luckText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "54px" })
+    this.luckText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "36px" })
       .setName("text-luck")
       .setOrigin(1, 0.5)
       .setVisible(false);
@@ -553,7 +555,7 @@ export class BattleScene extends SceneBase {
       0,
       i18next.t("common:luckIndicator"),
       TextStyle.PARTY,
-      { fontSize: "54px" },
+      { fontSize: "36px" },
     )
       .setName("text-luck-label")
       .setOrigin(1, 0.5)
@@ -1350,18 +1352,30 @@ export class BattleScene extends SceneBase {
       };
     }
 
-    const { waveIndex, battleType, trainer: trainerData } = fromSession;
+    const { waveIndex, battleType, trainer: trainerData }: SetOptional<SessionSaveData, "trainer"> = fromSession;
     const mysteryEncounterType = fromSession.mysteryEncounterType !== -1 ? fromSession.mysteryEncounterType : undefined;
-
     let fixedDouble: boolean;
     switch (battleType) {
       case BattleType.WILD:
         fixedDouble = fromSession.enemyParty.length > 1;
         break;
-      case BattleType.TRAINER:
+      case BattleType.TRAINER: {
+          // failsafe for corrupt saves (such as due to enum shifting)
+          if (
+            trainerData?.variant === TrainerVariant.DOUBLE
+            && !trainerConfigs[trainerData.trainerType].hasDouble
+            && !trainerConfigs[trainerData.trainerType].doubleOnly
+          ) {
+            console.warn(`TrainerType ${toTitleCase(TrainerType[trainerData.trainerType])} has invalid double battle configuration, resetting...`);
+            trainerData.variant = TrainerVariant.DEFAULT;
+            double = false;
+          }
+
         fixedDouble =
-          trainerConfigs[fromSession.trainer.trainerType]?.doubleOnly
+          trainerConfigs[trainerData.trainerType]?.doubleOnly
           || fromSession.trainer.variant === TrainerVariant.DOUBLE;
+
+      }
         break;
       default:
         fixedDouble = false;
@@ -1478,7 +1492,8 @@ export class BattleScene extends SceneBase {
    */
   private checkIsDouble({ double, battleType, waveIndex, trainer }: NewBattleConstructedProps): boolean {
     // Disallow using double battle overrides on trainer waves (need `RANDOM_TRAINER_OVERRIDE` instead)
-    // TODO: Rework logic later on to make sense - if wave 1 doubles cause crashes then why don't we check it before everything else
+    // TODO: Rework logic later on to make sense - if wave 1 doubles cause crashes then why don't we check it before everything else?
+    // (Also the bug report is from AGES ago - review)
     const overriddenDouble = this.doCheckDoubleOverride(waveIndex);
     if (overriddenDouble === true || (battleType !== BattleType.TRAINER && overriddenDouble === false)) {
       return overriddenDouble;
