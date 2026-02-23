@@ -2,21 +2,21 @@ import { MoveId } from "#enums/move-id";
 import { SpeciesId } from "#enums/species-id";
 import { Stat } from "#enums/stat";
 import { GameManager } from "#test/framework/game-manager";
-import Phaser from "phaser";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import type Phaser from "phaser";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("Moves - Tackle", () => {
-  let phaserGame: Phaser.Game;
+  let _phaserGame: Phaser.Game;
   let game: GameManager;
 
-  beforeAll(() => {
-    phaserGame = new Phaser.Game({
-      type: Phaser.HEADLESS,
-    });
-  });
+  // beforeAll(() => {
+  //   phaserGame = new Phaser.Game({
+  //     type: Phaser.HEADLESS,
+  //   });
+  // });
 
   beforeEach(() => {
-    game = new GameManager(phaserGame);
+    game = new GameManager();
     const moveToUse = MoveId.TACKLE;
     game.override
       .battleStyle("single")
