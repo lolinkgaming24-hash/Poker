@@ -7,7 +7,7 @@
 import type { UserConfig } from "vite";
 import { defineConfig } from "vitest/config";
 import { BaseSequencer, type TestSpecification } from "vitest/node";
-import { CustomDefaultReporter } from "./test/test-utils/reporters/custom-default-reporter";
+import { CustomDefaultReporter } from "./test/reporters/custom-default-reporter";
 import { sharedConfig } from "./vite.config";
 
 // biome-ignore lint/style/noDefaultExport: required for vitest
@@ -46,7 +46,7 @@ export default defineConfig(async config => {
       },
       typecheck: {
         tsconfig: "tsconfig.json",
-        include: ["./test/types/**/*.{test,spec}-d.ts"],
+        include: ["./test/tests/types/**/*.{test,spec}-d.ts"],
       },
       restoreMocks: true,
       watch: false,
@@ -59,7 +59,7 @@ export default defineConfig(async config => {
             ? []
             : ["text-summary", "html"],
         exclude: ["{src,test}/**/*.d.ts"],
-        include: ["src/**/*.ts", "test/test-utils/**/*.ts"],
+        include: ["src/**/*.ts", "test/utils/**/*.ts"],
       },
       name: "main",
       include: ["./test/**/*.{test,spec}.ts"],
