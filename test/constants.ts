@@ -1,7 +1,7 @@
 import { url } from "node:inspector";
 
 /** Whether test code is currently running inside a debug session. */
-export const isDebug = url() !== undefined;
+export const IS_DEBUG = url() !== undefined;
 
 /**
  * The amount of time to wait for tests to finish before forcibly cancelling them, in milliseconds. \
@@ -10,4 +10,4 @@ export const isDebug = url() !== undefined;
  * Code providing timeouts to external code that will cancel, crash or otherwise stop the test **must** use this constant
  * to avoid prematurely ending debug sessions.
  */
-export const TEST_TIMEOUT = isDebug ? Math.pow(2, 31) - 1 : 20_000;
+export const TEST_TIMEOUT = IS_DEBUG ? Math.pow(2, 31) - 1 : 20_000;
