@@ -63,7 +63,7 @@ export class SettingsHelper extends GameManagerHelper {
    */
   public skipLevelPrompt(enable: boolean): this {
     this.game.scene.hideMoveSkipConfirm = enable;
-    this.log(`Skip Move Confirmtion ${enable ? "enabled" : "disabled"}!`);
+    this.log(`Skip Move Confirmation ${enable ? "enabled" : "disabled"}!`);
     return this;
   }
 
