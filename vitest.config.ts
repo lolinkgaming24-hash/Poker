@@ -37,7 +37,16 @@ export default defineConfig(async config => {
       // expect: {
       //   requireAssertions: true,
       // },
-      setupFiles: ["./test/setup/font-face.setup.ts", "./test/setup/vitest.setup.ts", "./test/setup/matchers.setup.ts"],
+
+      // The ordering of these files is very particular:
+      // `font-face-setup` must go first to stub out `globalThis.FontFace`
+      // phaser.setup.ts must initialize phaser code before anything else tries to access it
+      setupFiles: [
+        "./test/setup/font-face.setup.ts",
+        "./test/setup/phaser.setup.ts",
+        "./test/setup/vitest.setup.ts",
+        "./test/setup/matchers.setup.ts",
+      ],
       sequence: {
         sequencer: MySequencer,
       },

@@ -20,7 +20,6 @@ import { SelectStarterPhase } from "#phases/select-starter-phase";
 import type { SelectTargetPhase } from "#phases/select-target-phase";
 import { TurnEndPhase } from "#phases/turn-end-phase";
 import { GameData } from "#system/game-data";
-import { GameWrapper } from "#test/framework/game-wrapper";
 import type { InputsHandler } from "#test/framework/inputs-handler";
 import { PhaseInterceptor } from "#test/framework/phase-interceptor";
 import { TextInterceptor } from "#test/framework/text-interceptor";
@@ -55,7 +54,6 @@ import { expect, vi } from "vitest";
  * Class to manage the game state and transitions between phases.
  */
 export class GameManager {
-  public gameWrapper: GameWrapper;
   public scene: BattleScene;
   public phaseInterceptor: PhaseInterceptor;
   public textInterceptor: TextInterceptor;
@@ -77,12 +75,11 @@ export class GameManager {
    * @param phaserGame - The Phaser game instance.
    * @param bypassLogin - Whether to bypass the login phase.
    */
-  constructor(phaserGame: Phaser.Game, bypassLogin = true) {
+  constructor() {
     localStorage.clear();
     // Simulate max rolls on RNG functions
     // TODO: Create helpers for disabling/enabling battle RNG
     BattleScene.prototype.randBattleSeedInt = (range, min = 0) => min + range - 1;
-    this.gameWrapper = new GameWrapper(phaserGame, bypassLogin);
 
     // TODO: Figure out a way to optimize and re-use the same game manager for each test
 
@@ -92,9 +89,9 @@ export class GameManager {
       this.phaseInterceptor = new PhaseInterceptor(this.scene);
       this.resetScene();
     } else {
-      this.scene = new BattleScene();
-      this.phaseInterceptor = new PhaseInterceptor(this.scene);
-      this.gameWrapper.setScene(this.scene);
+      // this.scene = new BattleScene();
+      // this.phaseInterceptor = new PhaseInterceptor(this.scene);
+      throw new Error("this should have been defined by now");
     }
 
     this.textInterceptor = new TextInterceptor(this.scene);
@@ -126,8 +123,6 @@ export class GameManager {
 
     this.scene.reset(false, true);
     (this.scene.ui.handlers[UiMode.STARTER_SELECT] as StarterSelectUiHandler).clearStarterPreferences();
-
-    this.gameWrapper.scene = this.scene;
 
     this.scene.phaseManager.toTitleScreen(true);
     this.scene.phaseManager.shiftPhase();
