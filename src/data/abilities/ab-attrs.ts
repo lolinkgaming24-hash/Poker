@@ -45,7 +45,6 @@ import { BerryModifier, HitHealModifier, PokemonHeldItemModifier } from "#modifi
 import { BerryModifierType } from "#modifiers/modifier-type";
 import { PokemonMove } from "#moves/pokemon-move";
 import type { HitCheckEntry, MoveEffectPhase } from "#phases/move-effect-phase";
-import type { StatStageChangePhase } from "#phases/stat-stage-change-phase";
 import type {
   AbAttrCondition,
   AbAttrMap,
