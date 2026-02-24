@@ -20,8 +20,6 @@ import {
   BypassSpeedChanceAbAttr,
   ChangeMovePriorityAbAttr,
   ChangeMovePriorityInBracketAbAttr,
-  ClearTerrainAbAttr,
-  ClearWeatherAbAttr,
   CommanderAbAttr,
   ConditionalCritAbAttr,
   ConditionalUserFieldBattlerTagImmunityAbAttr,
@@ -49,6 +47,7 @@ import {
   GorillaTacticsAbAttr,
   getWeatherCondition,
   HealFromBerryUseAbAttr,
+  IceFaceFormChangeAbAttr,
   IgnoreContactAbAttr,
   IgnoreMoveEffectsAbAttr,
   IgnoreOpponentStatStagesAbAttr,
@@ -129,7 +128,6 @@ import {
   PostSummonUserFieldRemoveStatusEffectAbAttr,
   PostSummonWeatherChangeAbAttr,
   PostSummonWeatherSuppressedFormChangeAbAttr,
-  PostTeraFormChangeStatChangeAbAttr,
   PostTerrainChangeAddBattlerTagAttr,
   PostTurnFormChangeAbAttr,
   PostTurnHurtIfSleepingAbAttr,
@@ -206,7 +204,7 @@ import { applyMoveAttrs } from "#moves/apply-attrs";
 import { noAbilityTypeOverrideMoves } from "#moves/invalid-moves";
 import type { AbAttrCondition, PokemonAttackCondition } from "#types/ability-types";
 import type { Move } from "#types/move-types";
-import { NumberHolder, randSeedInt, toDmgValue } from "#utils/common";
+import { NumberHolder, randSeedInt } from "#utils/common";
 import i18next from "i18next";
 
 export function initAbilities() {
@@ -718,7 +716,7 @@ export function initAbilities() {
       .bypassFaint()
       .build(),
     new AbBuilder(AbilityId.ANTICIPATION, 4) //
-      .conditionalAttr(getAnticipationCondition(), PostSummonMessageAbAttr, (pokemon: Pokemon) =>
+      .conditionalAttr(anticipationCondition, PostSummonMessageAbAttr, (pokemon: Pokemon) =>
         i18next.t("abilityTriggers:postSummonAnticipation", { pokemonNameWithAffix: getPokemonNameWithAffix(pokemon) }),
       )
       .build(),
@@ -1298,14 +1296,10 @@ export function initAbilities() {
       .attr(MoveTypePowerBoostAbAttr, PokemonType.STEEL)
       .build(),
     new AbBuilder(AbilityId.BERSERK, 7) //
-      .attr(
-        PostDefendHpGatedStatStageChangeAbAttr,
-        (_target, _user, move) => move.category !== MoveCategory.STATUS,
-        0.5,
-        [Stat.SPATK],
-        1,
-      )
+      .attr(PostDefendHpGatedStatStageChangeAbAttr, 0.5, [Stat.SPATK], 1)
       .condition(sheerForceHitDisableAbCondition)
+      // Should trigger after the last strike of multi-strike moves, not in the middle
+      .edgeCase()
       .build(),
     new AbBuilder(AbilityId.SLUSH_RUSH, 7) //
       .attr(StatMultiplierAbAttr, Stat.SPD, 2)
@@ -1345,26 +1339,7 @@ export function initAbilities() {
     new AbBuilder(AbilityId.DISGUISE, 7) //
       .attr(NoTransformAbilityAbAttr)
       .attr(NoFusionAbilityAbAttr)
-      // Add BattlerTagType.DISGUISE if the pokemon is in its disguised form
-      .conditionalAttr(
-        pokemon => pokemon.formIndex === 0,
-        PostSummonAddBattlerTagAbAttr,
-        BattlerTagType.DISGUISE,
-        0,
-        false,
-      )
-      .attr(
-        FormBlockDamageAbAttr,
-        (target, user, move) => !!target.getTag(BattlerTagType.DISGUISE) && target.getMoveEffectiveness(user, move) > 0,
-        0,
-        BattlerTagType.DISGUISE,
-        (pokemon, abilityName) =>
-          i18next.t("abilityTriggers:disguiseAvoidedDamage", {
-            pokemonNameWithAffix: getPokemonNameWithAffix(pokemon),
-            abilityName,
-          }),
-        pokemon => toDmgValue(pokemon.getMaxHp() / 8),
-      )
+      .attr(FormBlockDamageAbAttr, 0, "abilityTriggers:disguiseAvoidedDamage", 0.125)
       .attr(PostBattleInitFormChangeAbAttr, () => 0)
       .attr(PostFaintFormChangeAbAttr, () => 0)
       .uncopiable()
@@ -1374,10 +1349,27 @@ export function initAbilities() {
       .ignorable()
       .build(),
     new AbBuilder(AbilityId.BATTLE_BOND, 7) //
-      .attr(PostVictoryFormChangeAbAttr, () => 2)
-      .attr(PostBattleInitFormChangeAbAttr, () => 1)
-      .attr(PostFaintFormChangeAbAttr, () => 1)
-      .attr(NoFusionAbilityAbAttr)
+      .conditionalAttr(
+        p => p.species.speciesId === SpeciesId.GRENINJA && !p.isFusion(),
+        PostVictoryFormChangeAbAttr,
+        () => 2,
+      )
+      .conditionalAttr(
+        p => p.species.speciesId === SpeciesId.GRENINJA && !p.isFusion(),
+        PostBattleInitFormChangeAbAttr,
+        () => 1,
+      )
+      .conditionalAttr(
+        p => p.species.speciesId === SpeciesId.GRENINJA && !p.isFusion(),
+        PostFaintFormChangeAbAttr,
+        () => 1,
+      )
+      .conditionalAttr(
+        p => !p.hasSpecies(SpeciesId.GRENINJA) && !p.summonData.abilitiesApplied.has(AbilityId.BATTLE_BOND),
+        PostVictoryStatStageChangeAbAttr,
+        [Stat.ATK, Stat.SPATK, Stat.SPD],
+        1,
+      )
       .uncopiable()
       .unreplaceable()
       .unsuppressable()
@@ -1623,33 +1615,16 @@ export function initAbilities() {
     new AbBuilder(AbilityId.ICE_FACE, 8, -2) //
       .attr(NoTransformAbilityAbAttr)
       .attr(NoFusionAbilityAbAttr)
-      // Add BattlerTagType.ICE_FACE if the pokemon is in ice face form
-      .conditionalAttr(
-        pokemon => pokemon.formIndex === 0,
-        PostSummonAddBattlerTagAbAttr,
-        BattlerTagType.ICE_FACE,
-        0,
-        false,
-      )
-      // When summoned with active HAIL or SNOW, add BattlerTagType.ICE_FACE
-      .conditionalAttr(
-        getWeatherCondition(WeatherType.HAIL, WeatherType.SNOW),
-        PostSummonAddBattlerTagAbAttr,
-        BattlerTagType.ICE_FACE,
-        0,
-      )
-      // When weather changes to HAIL or SNOW while pokemon is fielded, add BattlerTagType.ICE_FACE
-      .attr(PostWeatherChangeAddBattlerTagAbAttr, BattlerTagType.ICE_FACE, 0, WeatherType.HAIL, WeatherType.SNOW)
+      // Turn into Ice form when switched in during hail/snow in Noice form
+      .conditionalAttr(getWeatherCondition(WeatherType.HAIL, WeatherType.SNOW), PostSummonFormChangeAbAttr, () => 0)
+      // Turn into Ice form when hail/snow starts in Noice form while active
+      .attr(IceFaceFormChangeAbAttr, 1)
       .attr(
         FormBlockDamageAbAttr,
-        (target, _user, move) => move.category === MoveCategory.PHYSICAL && !!target.getTag(BattlerTagType.ICE_FACE),
         0,
-        BattlerTagType.ICE_FACE,
-        (pokemon, abilityName) =>
-          i18next.t("abilityTriggers:iceFaceAvoidedDamage", {
-            pokemonNameWithAffix: getPokemonNameWithAffix(pokemon),
-            abilityName,
-          }),
+        "abilityTriggers:iceFaceAvoidedDamage",
+        0,
+        (_target, _user, move) => move.category === MoveCategory.PHYSICAL,
       )
       .attr(PostBattleInitFormChangeAbAttr, () => 0)
       .uncopiable()
@@ -1770,21 +1745,11 @@ export function initAbilities() {
       .ignorable()
       .build(),
     new AbBuilder(AbilityId.ANGER_SHELL, 9) //
-      .attr(
-        PostDefendHpGatedStatStageChangeAbAttr,
-        (_target, _user, move) => move.category !== MoveCategory.STATUS,
-        0.5,
-        [Stat.ATK, Stat.SPATK, Stat.SPD],
-        1,
-      )
-      .attr(
-        PostDefendHpGatedStatStageChangeAbAttr,
-        (_target, _user, move) => move.category !== MoveCategory.STATUS,
-        0.5,
-        [Stat.DEF, Stat.SPDEF],
-        -1,
-      )
+      .attr(PostDefendHpGatedStatStageChangeAbAttr, 0.5, [Stat.ATK, Stat.SPATK, Stat.SPD], 1)
+      .attr(PostDefendHpGatedStatStageChangeAbAttr, 0.5, [Stat.DEF, Stat.SPDEF], -1)
       .condition(sheerForceHitDisableAbCondition)
+      // Should trigger after the last strike of multi-strike moves, not in the middle
+      .edgeCase()
       .build(),
     new AbBuilder(AbilityId.PURIFYING_SALT, 9) //
       .attr(StatusEffectImmunityAbAttr)
@@ -2002,29 +1967,25 @@ export function initAbilities() {
       .attr(PostAttackApplyStatusEffectAbAttr, false, 30, StatusEffect.TOXIC)
       .build(),
     new AbBuilder(AbilityId.EMBODY_ASPECT_TEAL, 9) //
-      .attr(PostTeraFormChangeStatChangeAbAttr, [Stat.SPD], 1) // Activates immediately upon Terastallizing, as well as upon switching in while Terastallized
-      .conditionalAttr(pokemon => pokemon.isTerastallized, PostSummonStatStageChangeAbAttr, [Stat.SPD], 1, true)
+      .attr(PostSummonStatStageChangeAbAttr, [Stat.SPD], 1, true)
       .uncopiable()
       .unreplaceable() // TODO is this true?
       .attr(NoTransformAbilityAbAttr)
       .build(),
     new AbBuilder(AbilityId.EMBODY_ASPECT_WELLSPRING, 9) //
-      .attr(PostTeraFormChangeStatChangeAbAttr, [Stat.SPDEF], 1)
-      .conditionalAttr(pokemon => pokemon.isTerastallized, PostSummonStatStageChangeAbAttr, [Stat.SPDEF], 1, true)
+      .attr(PostSummonStatStageChangeAbAttr, [Stat.SPDEF], 1, true)
       .uncopiable()
       .unreplaceable()
       .attr(NoTransformAbilityAbAttr)
       .build(),
     new AbBuilder(AbilityId.EMBODY_ASPECT_HEARTHFLAME, 9) //
-      .attr(PostTeraFormChangeStatChangeAbAttr, [Stat.ATK], 1)
-      .conditionalAttr(pokemon => pokemon.isTerastallized, PostSummonStatStageChangeAbAttr, [Stat.ATK], 1, true)
+      .attr(PostSummonStatStageChangeAbAttr, [Stat.ATK], 1, true)
       .uncopiable()
       .unreplaceable()
       .attr(NoTransformAbilityAbAttr)
       .build(),
     new AbBuilder(AbilityId.EMBODY_ASPECT_CORNERSTONE, 9) //
-      .attr(PostTeraFormChangeStatChangeAbAttr, [Stat.DEF], 1)
-      .conditionalAttr(pokemon => pokemon.isTerastallized, PostSummonStatStageChangeAbAttr, [Stat.DEF], 1, true)
+      .attr(PostSummonStatStageChangeAbAttr, [Stat.DEF], 1, true)
       .uncopiable()
       .unreplaceable()
       .attr(NoTransformAbilityAbAttr)
@@ -2043,10 +2004,9 @@ export function initAbilities() {
       .ignorable()
       .build(),
     new AbBuilder(AbilityId.TERAFORM_ZERO, 9) //
-      .attr(ClearWeatherAbAttr)
-      .attr(ClearTerrainAbAttr)
+      .attr(PostSummonWeatherChangeAbAttr, WeatherType.NONE)
+      .attr(PostSummonTerrainChangeAbAttr, TerrainType.NONE)
       .uncopiable()
-      .condition(getOncePerBattleCondition(AbilityId.TERAFORM_ZERO))
       .build(),
     new AbBuilder(AbilityId.POISON_PUPPETEER, 9) //
       .uncopiable()
@@ -2075,66 +2035,37 @@ function getTerrainCondition(...terrainTypes: TerrainType[]): AbAttrCondition {
   };
 }
 
-function getAnticipationCondition(): AbAttrCondition {
-  return (pokemon: Pokemon) => {
-    for (const opponent of pokemon.getOpponents()) {
-      for (const move of opponent.moveset) {
-        // ignore null/undefined moves
-        if (!move) {
-          continue;
-        }
-        // the move's base type (not accounting for variable type changes) is super effective
-        if (
-          move.getMove().is("AttackMove")
-          && pokemon.getAttackTypeEffectiveness(move.getMove().type, opponent, true, undefined, move.getMove()) >= 2
-        ) {
-          return true;
-        }
-        // move is a OHKO
-        if (move.getMove().hasAttr("OneHitKOAttr")) {
-          return true;
-        }
-        // edge case for hidden power, type is computed
-        if (move.getMove().id === MoveId.HIDDEN_POWER) {
-          const iv_val = Math.floor(
-            (((opponent.ivs[Stat.HP] & 1)
-              + (opponent.ivs[Stat.ATK] & 1) * 2
-              + (opponent.ivs[Stat.DEF] & 1) * 4
-              + (opponent.ivs[Stat.SPD] & 1) * 8
-              + (opponent.ivs[Stat.SPATK] & 1) * 16
-              + (opponent.ivs[Stat.SPDEF] & 1) * 32)
-              * 15)
-              / 63,
-          );
-
-          const type = [
-            PokemonType.FIGHTING,
-            PokemonType.FLYING,
-            PokemonType.POISON,
-            PokemonType.GROUND,
-            PokemonType.ROCK,
-            PokemonType.BUG,
-            PokemonType.GHOST,
-            PokemonType.STEEL,
-            PokemonType.FIRE,
-            PokemonType.WATER,
-            PokemonType.GRASS,
-            PokemonType.ELECTRIC,
-            PokemonType.PSYCHIC,
-            PokemonType.ICE,
-            PokemonType.DRAGON,
-            PokemonType.DARK,
-          ][iv_val];
-
-          if (pokemon.getAttackTypeEffectiveness(type, opponent) >= 2) {
-            return true;
-          }
-        }
+/**
+ * Condition used by {@link https://bulbapedia.bulbagarden.net/wiki/Anticipation_(Ability) | Anticipation}
+ * to show a message if any opponent knows a "dangerous" move.
+ * @param pokemon - The {@linkcode Pokemon} with this ability
+ * @returns Whether the message should be shown
+ */
+const anticipationCondition: AbAttrCondition = (pokemon: Pokemon) =>
+  pokemon.getOpponents().some(opponent =>
+    opponent.moveset.some(movesetMove => {
+      const move = movesetMove.getMove();
+      if (!move.is("AttackMove")) {
+        return false;
       }
-    }
-    return false;
-  };
-}
+
+      if (move.hasAttr("OneHitKOAttr")) {
+        return true;
+      }
+
+      // Check whether the move's base type (not accounting for variable type changes) is super effective
+      // Edge case for hidden power, type is computed
+      const typeHolder = new NumberHolder(move.type);
+      applyMoveAttrs("HiddenPowerTypeAttr", opponent, pokemon, move, typeHolder);
+
+      const eff = pokemon.getAttackTypeEffectiveness(typeHolder.value, {
+        source: opponent,
+        ignoreStrongWinds: true,
+        move,
+      });
+      return eff >= 2;
+    }),
+  );
 
 /**
  * Condition function checking whether a move can have its type changed by an ability.
