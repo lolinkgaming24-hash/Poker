@@ -623,20 +623,14 @@ export class TrainerConfig {
    * Initializes the trainer configuration for an evil team leader. Temporarily hardcoding evil leader teams though.
    * @param signatureSpecies The signature species for the evil team leader.
    * @param specialtyType The specialty type for the evil team Leader.
-   * @param boolean Whether or not this is the rematch fight
    * @returns The updated TrainerConfig instance.
    */
   initForEvilTeamLeader(
     title: string,
     signatureSpecies: (SpeciesId | SpeciesId[])[],
-    rematch = false,
     specialtyType?: PokemonType,
   ): TrainerConfig {
-    if (rematch) {
-      this.setPartyTemplates(trainerPartyTemplates.ELITE_FOUR);
-    } else {
-      this.setPartyTemplates(trainerPartyTemplates.RIVAL_5);
-    }
+    this.setPartyTemplates(trainerPartyTemplates.EVIL_LEADER);
     signatureSpecies.forEach((speciesPool, s) => {
       this.setPartyMemberFunc(-(s + 1), getRandomPartyMemberFunc(coerceArray(speciesPool)));
     });
@@ -6037,15 +6031,15 @@ export const trainerConfigs: TrainerConfigs = {
     .setVictoryBgm("victory_team_plasma")
     .setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.MIENSHAO]))
     .setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.HONCHKROW, SpeciesId.TALONFLAME]))
+    .setPartyMemberFunc(2, getRandomPartyMemberFunc([SpeciesId.AEGISLASH, SpeciesId.HISUI_GOODRA]))
+    .setPartyMemberFunc(3, getRandomPartyMemberFunc([SpeciesId.MALAMAR]))
     .setPartyMemberFunc(
-      2,
+      4,
       getRandomPartyMemberFunc([SpeciesId.PYROAR], TrainerSlot.TRAINER, true, p => {
         p.generateAndPopulateMoveset();
         p.gender = Gender.MALE;
       }),
     )
-    .setPartyMemberFunc(3, getRandomPartyMemberFunc([SpeciesId.MALAMAR]))
-    .setPartyMemberFunc(4, getRandomPartyMemberFunc([SpeciesId.AEGISLASH, SpeciesId.HISUI_GOODRA]))
     .setPartyMemberFunc(
       5,
       getRandomPartyMemberFunc([SpeciesId.GYARADOS], TrainerSlot.TRAINER, true, p => {
