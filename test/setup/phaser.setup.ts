@@ -16,9 +16,8 @@ import { expect } from "vitest";
 // #region Phaser stuff
 const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.HEADLESS,
-  audio: {
-    noAudio: true,
-  },
+  audio: { noAudio: true },
+  fps: { forceSetTimeOut: true, deltaHistory: 1, target: 60 },
   seed: ["test"],
   scene: [BattleScene],
   scale: {
@@ -58,14 +57,12 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
       },
     ],
   },
+  banner: false,
   input: {
-    mouse: {
-      target: "app",
-    },
-    touch: {
-      target: "app",
-    },
-    gamepad: true,
+    mouse: false,
+    touch: false,
+    keyboard: false,
+    gamepad: false,
   },
   dom: {
     createContainer: true,
@@ -114,21 +111,39 @@ function createFetchBadResponse(url: string): Response {
   } as Response;
 }
 
+/** Manually start Phaser's main game loop. */
+function startGameLoop(game: Phaser.Game): void {
+  const { loop } = game;
+
+  if (!loop.running) {
+    loop.start(() => {});
+  }
+
+  // Run a few frames to stabilize systems
+  for (let i = 0; i < 6; i++) {
+    game.step(Date.now(), 20);
+  }
+}
 // #endregion Phaser stuffs
+
+// #region Initialization
 
 console.log("Creating phaser game...");
 const game = new Phaser.Game(gameConfig);
 game.sound.pauseOnBlur = false;
+
+await new Promise<void>(resolve => game.events.once(Phaser.Core.Events.READY, () => resolve()));
+expect(game.renderer).not.toBeNull();
+startGameLoop(game);
+console.log(game.loop.running);
 console.log("Phaser game created!");
 
-// TODO: Figure out how to wait for this to load in a way that doesn't crash and burn
-await new Promise<void>(res => game.events.once(Phaser.Core.Events.SYSTEM_READY, res));
+const battleScene = game.scene.getScene<BattleScene>("battle");
 
-const scene = game.scene.getScene<BattleScene>("battle");
-console.log("Systems ready!");
-expect(scene.game).toBe(game);
-expect(scene.time).toBeInstanceOf(MockClock);
-scene.cachedFetch = async (url, _init): Promise<Response> => {
+console.log("BattleScene initialized!");
+expect(battleScene.game).toBe(game);
+expect(battleScene.time).toBeInstanceOf(MockClock);
+battleScene.cachedFetch = async (url, _init): Promise<Response> => {
   // Replace all battle anim fetches solely with the tackle anim to save time.
   // TODO: This effectively bars us from testing battle animation related code ever
   const newUrl = url.includes("./battle-anims/") ? prependPath("./battle-anims/tackle.json") : prependPath(url);
@@ -140,5 +155,6 @@ scene.cachedFetch = async (url, _init): Promise<Response> => {
   }
 };
 
-await new Promise<void>(res => game.events.once(Phaser.Core.Events.READY, res));
-console.log("Game starting!");
+console.log("Game started successfully!");
+
+// #endregion Initialization
