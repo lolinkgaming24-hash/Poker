@@ -67,7 +67,8 @@ import { TrainerType } from "#enums/trainer-type";
 import { TrainerVariant } from "#enums/trainer-variant";
 import { UiTheme } from "#enums/ui-theme";
 import { NewArenaEvent } from "#events/battle-scene";
-import { Arena, ArenaBase } from "#field/arena";
+import { Arena, getArenaBgmLoopPoint, getBgTerrainColorRatioForBiome } from "#field/arena";
+import { ArenaBase } from "#field/arena-base";
 import { DamageNumberHandler } from "#field/damage-number-handler";
 import type { Pokemon } from "#field/pokemon";
 import { EnemyPokemon, PlayerPokemon } from "#field/pokemon";
@@ -128,7 +129,7 @@ import { CharSprite } from "#ui/char-sprite";
 import { PartyExpBar } from "#ui/party-exp-bar";
 import { PokeballTray } from "#ui/pokeball-tray";
 import { PokemonInfoContainer } from "#ui/pokemon-info-container";
-import { addTextObject, getTextColor } from "#ui/text";
+import { addTextObject, getTextColor, RAINBOW_TINT } from "#ui/text";
 import { UI } from "#ui/ui";
 import { addUiThemeOverrides } from "#ui/ui-theme";
 import { playTween } from "#utils/anim-utils";
@@ -243,6 +244,7 @@ export class BattleScene extends SceneBase {
   public disableMenu = false;
 
   public gameData: GameData;
+  /** The numeric slot number of the current save slot being played. */
   public sessionSlotId: number;
 
   /** Manager for the phases active in the battle scene */
@@ -526,11 +528,11 @@ export class BattleScene extends SceneBase {
       .setName("text-money")
       .setOrigin(1, 0.5);
 
-    this.scoreText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "54px" })
+    this.scoreText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "36px" })
       .setName("text-score")
       .setOrigin(1, 0.5);
 
-    this.luckText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "54px" })
+    this.luckText = addTextObject(this.scaledCanvas.width - 2, 0, "", TextStyle.PARTY, { fontSize: "36px" })
       .setName("text-luck")
       .setOrigin(1, 0.5)
       .setVisible(false);
@@ -540,7 +542,7 @@ export class BattleScene extends SceneBase {
       0,
       i18next.t("common:luckIndicator"),
       TextStyle.PARTY,
-      { fontSize: "54px" },
+      { fontSize: "36px" },
     )
       .setName("text-luck-label")
       .setOrigin(1, 0.5)
@@ -1264,6 +1266,11 @@ export class BattleScene extends SceneBase {
     double?: boolean,
     mysteryEncounterType?: MysteryEncounterType,
   ): Battle {
+    // failsafe for corrupt saves (such as due to enum shifting)
+    if (trainerData?.variant === TrainerVariant.DOUBLE && !trainerConfigs[trainerData.trainerType].hasDouble) {
+      trainerData.variant = TrainerVariant.DEFAULT;
+      double = false;
+    }
     const _startingWave = Overrides.STARTING_WAVE_OVERRIDE || startingWave;
     const newWaveIndex = waveIndex || (this.currentBattle?.waveIndex || _startingWave - 1) + 1;
     let newDouble: boolean | undefined;
@@ -1492,7 +1499,7 @@ export class BattleScene extends SceneBase {
     this.eventTarget.dispatchEvent(new NewArenaEvent());
 
     this.arenaBg.pipelineData = {
-      terrainColorRatio: this.arena.getBgTerrainColorRatioForBiome(),
+      terrainColorRatio: getBgTerrainColorRatioForBiome(this.arena.biomeId),
     };
 
     return this.arena;
@@ -1702,7 +1709,7 @@ export class BattleScene extends SceneBase {
         if (ignoreArena) {
           return randSeedInt(species.forms.length);
         }
-        switch (this.arena.biomeType) {
+        switch (this.arena.biomeId) {
           case BiomeId.BEACH:
             return 1;
           case BiomeId.SLUM:
@@ -1962,7 +1969,7 @@ export class BattleScene extends SceneBase {
 
   updateBiomeWaveText(): void {
     const isBoss = !(this.currentBattle.waveIndex % 10);
-    const biomeString: string = getBiomeName(this.arena.biomeType);
+    const biomeString: string = getBiomeName(this.arena.biomeId);
     this.fieldUI.moveAbove(this.biomeWaveText, this.luckText);
     this.biomeWaveText
       .setText(biomeString + " - " + this.currentBattle.waveIndex.toString())
@@ -2020,7 +2027,7 @@ export class BattleScene extends SceneBase {
     if (luckValue < 14) {
       this.luckText.setTint(getLuckTextTint(luckValue));
     } else {
-      this.luckText.setTint(0xffef5c, 0x47ff69, 0x6b6bff, 0xff6969);
+      this.luckText.setTint(...RAINBOW_TINT);
     }
     this.luckLabelText.setX(this.scaledCanvas.width - 2 - (this.luckText.displayWidth + 2));
     this.tweens.add({
@@ -2192,7 +2199,7 @@ export class BattleScene extends SceneBase {
     this.bgmCache.add(bgmName);
     this.loadBgm(bgmName);
     let loopPoint = 0;
-    loopPoint = bgmName === this.arena.bgm ? this.arena.getBgmLoopPoint() : this.getBgmLoopPoint(bgmName);
+    loopPoint = bgmName === this.arena.bgm ? getArenaBgmLoopPoint(this.arena.biomeId) : this.getBgmLoopPoint(bgmName);
     let loaded = false;
     const playNewBgm = () => {
       this.ui.bgmBar.setBgmToBgmBar(bgmName);
@@ -3291,7 +3298,7 @@ export class BattleScene extends SceneBase {
     const gameInfo = {
       playTime: this.sessionPlayTime ?? 0,
       gameMode: this.currentBattle ? this.gameMode.getName() : "Title",
-      biome: this.currentBattle ? getBiomeName(this.arena.biomeType) : "",
+      biome: this.currentBattle ? getBiomeName(this.arena.biomeId) : "",
       wave: this.currentBattle?.waveIndex ?? 0,
       party:
         this.party?.map(p => ({
@@ -3645,7 +3652,7 @@ export class BattleScene extends SceneBase {
     const previousEncounter = this.mysteryEncounterSaveData.encounteredEvents.at(-1)?.type ?? null; // TODO: This being `null` is a bit weird
     const disabledEncounters = timedEventManager.getEventMysteryEncountersDisabled();
     const biomeMysteryEncounters =
-      mysteryEncountersByBiome.get(this.arena.biomeType)?.filter(enc => !disabledEncounters.includes(enc)) ?? [];
+      mysteryEncountersByBiome.get(this.arena.biomeId)?.filter(enc => !disabledEncounters.includes(enc)) ?? [];
     // If no valid encounters exist at tier, checks next tier down, continuing until there are some encounters available
     while (availableEncounters.length === 0 && tier !== null) {
       availableEncounters = biomeMysteryEncounters
