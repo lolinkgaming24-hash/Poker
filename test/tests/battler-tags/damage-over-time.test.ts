@@ -1,4 +1,3 @@
-import { GameManager } from "##test/framework/game-manager";
 import { getPokemonNameWithAffix } from "#app/messages";
 import type { DamagingBattlerTag, SaltCuredTag } from "#data/battler-tags";
 import { AbilityId } from "#enums/ability-id";
@@ -8,6 +7,7 @@ import { PokemonType } from "#enums/pokemon-type";
 import { SpeciesId } from "#enums/species-id";
 import { StatusEffect } from "#enums/status-effect";
 import type { EnemyPokemon, PlayerPokemon } from "#field/pokemon";
+import { GameManager } from "#test/framework/game-manager";
 import type { DamagingBattlerTagType } from "#types/battler-tags";
 import i18next from "i18next";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";

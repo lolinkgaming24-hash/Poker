@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GameManager } from "##test/framework/game-manager";
 import { getPokemonNameWithAffix } from "#app/messages";
 import { AbilityId } from "#enums/ability-id";
 import { BattlerTagType } from "#enums/battler-tag-type";
@@ -12,6 +11,7 @@ import { MoveId } from "#enums/move-id";
 import { PokemonType } from "#enums/pokemon-type";
 import { SpeciesId } from "#enums/species-id";
 import { Stat } from "#enums/stat";
+import { GameManager } from "#test/framework/game-manager";
 import i18next from "i18next";
 import Phaser from "phaser";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
