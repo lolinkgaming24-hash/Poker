@@ -281,7 +281,8 @@ interface BattlerSwitchOutParams {
    * by showing the player party modal or prompting the enemy AI.
    * @defaultValue `-1`
    */
-  switchInIndex?: number;
+  // TODO: Convert to IntClosedRange<0, 5> in the wimp out code duplication PR
+  switchInIndex?: number | undefined;
 }
 //#endregion Constants
 
@@ -319,7 +320,7 @@ export class PhaseManager {
   }
 
   /**
-   * Queue a sequence of phases to switch out a Pokemon on the field.
+   * Queue a sequence of phases to switch out a Pokemon on the field with another Pokemon.
    * @param battlerIndex - The {@linkcode FieldBattlerIndex} of the Pokemon to switch out
    * @param __namedParameters - Needed for Typedoc to function
    */
