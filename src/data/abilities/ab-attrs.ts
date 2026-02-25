@@ -2201,6 +2201,8 @@ export abstract class PostSummonAbAttr extends AbAttr {
   // TODO: Make this a publicly accessible getter
   private readonly activateOnGain: boolean;
 
+  // TODO: Evaluate if this should default to `false` for base class consistency
+  // TODO: Make `activateOnGain` parameter an overridable property
   constructor(showAbility = true, activateOnGain = true) {
     super(showAbility);
     this.activateOnGain = activateOnGain;
@@ -2361,7 +2363,7 @@ export class PostSummonStatStageChangeAbAttr extends PostSummonAbAttr {
   private readonly selfTarget: boolean;
   private readonly intimidate: boolean;
 
-  constructor(stats: readonly BattleStat[], stages: number, selfTarget = false, intimidate = true) {
+  constructor(stats: readonly BattleStat[], stages: number, selfTarget = false, intimidate = false) {
     super(true);
 
     this.stats = stats;
@@ -2914,6 +2916,10 @@ export class PreSwitchOutResetStatusAbAttr extends PreSwitchOutAbAttr {
 }
 
 export class PreSwitchOutHealAbAttr extends PreSwitchOutAbAttr {
+  constructor() {
+    super(false);
+  }
+
   override canApply({ pokemon }: AbAttrBaseParams): boolean {
     return !pokemon.isFullHp();
   }
