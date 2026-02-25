@@ -1,5 +1,5 @@
 /**
- * Manager for phases used by battle scene.
+ * Manager fo r phase s used by battle scene.
  *
  * @remarks
  * **This file must not be imported or used directly.**
@@ -255,7 +255,7 @@ interface BattlerEntranceParams extends SummonPhaseOptions {
   checkSwitch?: boolean;
 }
 
-type queueBattlerEntranceParams<P extends boolean> = P extends true
+type QueueBattlerEntranceParams<P extends boolean> = P extends true
   ? BattlerEntranceParams
   : Omit<BattlerEntranceParams, "checkSwitch">;
 
@@ -356,7 +356,7 @@ export class PhaseManager {
    */
   public queueBattlerEntrance<T extends FieldBattlerIndex>(
     battlerIndex: T,
-    params: queueBattlerEntranceParams<T extends BattlerIndex.PLAYER | BattlerIndex.PLAYER_2 ? true : false>,
+    params: QueueBattlerEntranceParams<T extends BattlerIndex.PLAYER | BattlerIndex.PLAYER_2 ? true : false>,
   ): void;
   public queueBattlerEntrance(
     battlerIndex: FieldBattlerIndex,

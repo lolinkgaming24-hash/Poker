@@ -22,6 +22,7 @@ const PREFIXES = [
   "misc", // A change that doesn't fit any other prefix
   "perf", // A refactor aimed at improving performance
   "refactor", // A change that doesn't impact functionality or fix any bugs (except incidentally)
+  "revert", // Reverting a bad commit
   "test", // Primarily adding/updating tests or modifying the test framework
 ] as const;
 
@@ -56,8 +57,12 @@ const PREFIX_SCOPE_MAP = {
   misc: [],
   perf: [],
   refactor: ALL_SCOPES,
+  revert: [],
   test: ALL_SCOPES,
 } as const satisfies Record<Prefixes, readonly AllScopes[]>;
+
+// @ts-expect-error: Add special scope for fixing bugs that only existed on the beta branch
+PREFIX_SCOPE_MAP.fix = [...ALL_SCOPES, "beta"];
 
 async function run(): Promise<void> {
   try {

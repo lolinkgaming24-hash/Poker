@@ -6,6 +6,11 @@ import type { Variant } from "#sprites/variant";
 import { toCamelCase } from "#utils/strings";
 import i18next from "i18next";
 
+// Re-export the value holder classes for compatibility with existing imports looking over here
+// TODO: Remove these re-exports and update associated imports
+// biome-ignore lint/performance/noBarrelFile: stopgap to avoid massive merge conflicts
+export { BooleanHolder, NumberHolder } from "#utils/value-holder";
+
 export const MissingTextureKey = "__MISSING";
 
 // TODO: Draft tests for these utility functions
@@ -295,26 +300,6 @@ export async function localPing(): Promise<void> {
   }
 }
 
-export class BooleanHolder {
-  public value: boolean;
-
-  constructor(value: boolean) {
-    this.value = value;
-  }
-}
-
-export class NumberHolder {
-  public value: number;
-
-  constructor(value: number) {
-    this.value = value;
-  }
-
-  valueOf(): number {
-    return this.value;
-  }
-}
-
 export class FixedInt {
   public readonly value: number;
 
@@ -417,6 +402,7 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "zh-Hant":
     case "pt-BR":
     case "ro":
+    case "th":
     case "tr":
     case "ko":
     case "ja":
@@ -427,6 +413,7 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "tl":
     case "nb-NO":
     case "sv":
+    case "uk":
       return true;
     default:
       return false;
