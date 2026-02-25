@@ -6,6 +6,7 @@ import { SpeciesId } from "#enums/species-id";
  * If a species is in here, during moveset generation, the signature move will be forced
  * with {@linkcode FORCED_SIGNATURE_MOVE_CHANCE}-% probability before any other
  * moves are added.
+ * If a species is in here, during moveset generation, the signature move will be forced with x% probability before any other moves are added
  *
  * @privateRemarks
  * If multiple moves are in the map, those that the species can learn will be selected with equal probability.
@@ -26,6 +27,33 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.DHELMISE]: MoveId.ANCHOR_SHOT,
 
   // It's OKAY for forms-specific moves on RHS. If the base species can't learn it, it just won't be forced.
+
+  // Pokemon with Limited Movesets, helps them with generation
+  [SpeciesId.WYNAUT]: [MoveId.COUNTER, MoveId.MIRROR_COAT],
+  [SpeciesId.WOBBUFFET]: [MoveId.COUNTER, MoveId.MIRROR_COAT],
+  [SpeciesId.PYUKUMUKU]: [MoveId.COUNTER, MoveId.MIRROR_COAT],
+
+  // Generally supportive Pokemon, prefer disruptive moves over straight damage.
+  [SpeciesId.SHUCKLE]: [MoveId.INFESTATION, MoveId.STEALTH_ROCK],
+  [SpeciesId.FORRETRESS]: [MoveId.SPIKES, MoveId.STEALTH_ROCK, MoveId.BODY_PRESS],
+  [SpeciesId.SPIDOPS]: [MoveId.SILK_TRAP, MoveId.STICKY_WEB],
+  [SpeciesId.SABLEYE]: [MoveId.WILL_O_WISP, MoveId.THUNDER_WAVE],
+  [SpeciesId.KLEFKI]: [MoveId.LIGHT_SCREEN, MoveId.REFLECT],
+  [SpeciesId.ALOMOMOLA]: [MoveId.WISH, MoveId.TOXIC],
+  [SpeciesId.PACHIRISU]: [MoveId.SUPER_FANG, MoveId.NUZZLE],
+  [SpeciesId.CLODSIRE]: [MoveId.TOXIC, MoveId.TOXIC_SPIKES],
+  [SpeciesId.MANDIBUZZ]: [MoveId.TOXIC, MoveId.KNOCK_OFF],
+  [SpeciesId.LEDIAN]: [MoveId.LIGHT_SCREEN, MoveId.REFLECT],
+  [SpeciesId.ORTHWORM]: [MoveId.STEALTH_ROCK, MoveId.SHED_TAIL],
+  [SpeciesId.QUAGSIRE]: [MoveId.TOXIC, MoveId.YAWN],
+  [SpeciesId.HYPNO]: [MoveId.LIGHT_SCREEN, MoveId.REFLECT, MoveId.HYPNOSIS],
+  [SpeciesId.VOLBEAT]: [MoveId.TAIL_GLOW],
+  [SpeciesId.BASTIODON]: [MoveId.BODY_PRESS, MoveId.FOUL_PLAY],
+  [SpeciesId.TOXAPEX]: [MoveId.BANEFUL_BUNKER, MoveId.TOXIC_SPIKES, MoveId.TOXIC],
+  [SpeciesId.CARBINK]: [MoveId.LIGHT_SCREEN, MoveId.REFLECT],
+  [SpeciesId.COFAGRIGUS]: [MoveId.WILL_O_WISP, MoveId.BODY_PRESS, MoveId.TOXIC],
+  [SpeciesId.NACLSTACK]: MoveId.SALT_CURE,
+  [SpeciesId.GARGANACL]: MoveId.SALT_CURE,
 
   // Starters
   [SpeciesId.HISUI_SAMUROTT]: [MoveId.RAZOR_SHELL, MoveId.CEASELESS_EDGE],
@@ -48,6 +76,7 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   // Spores
   [SpeciesId.PARASECT]: MoveId.SPORE,
   [SpeciesId.AMOONGUSS]: [MoveId.SPORE, MoveId.TOXIC],
+  [SpeciesId.BRUTE_BONNET]: MoveId.SPORE,
   [SpeciesId.SHIINOTIC]: MoveId.SPORE,
   [SpeciesId.TOEDSCRUEL]: MoveId.SPORE,
 
@@ -61,10 +90,9 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.VOLCARONA]: MoveId.FIERY_DANCE,
   [SpeciesId.TOUCANNON]: MoveId.BEAK_BLAST,
   [SpeciesId.TOGEDEMARU]: MoveId.ZING_ZAP,
+  [SpeciesId.GOLISOPOD]: MoveId.FIRST_IMPRESSION,
   [SpeciesId.BRUXISH]: MoveId.PSYCHIC_FANGS,
   [SpeciesId.CRABOMINABLE]: MoveId.ICE_HAMMER,
-  [SpeciesId.NACLSTACK]: MoveId.SALT_CURE,
-  [SpeciesId.GARGANACL]: MoveId.SALT_CURE,
   [SpeciesId.ARMAROUGE]: MoveId.ARMOR_CANNON,
   [SpeciesId.CERULEDGE]: MoveId.BITTER_BLADE,
   [SpeciesId.ESPATHRA]: MoveId.LUMINA_CRASH,
@@ -73,6 +101,7 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.GHOLDENGO]: MoveId.MAKE_IT_RAIN,
   [SpeciesId.SINISTCHA]: MoveId.MATCHA_GOTCHA,
   [SpeciesId.MALAMAR]: MoveId.TOPSY_TURVY,
+  [SpeciesId.TOGEDEMARU]: MoveId.ZING_ZAP,
   [SpeciesId.WUGTRIO]: MoveId.TRIPLE_DIVE,
   [SpeciesId.REVAVROOM]: [
     MoveId.SPIN_OUT,
@@ -173,12 +202,17 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
     MoveId.SAPPY_SEED,
     MoveId.SPARKLY_SWIRL,
   ],
+  [SpeciesId.FLAREON]: [MoveId.SIZZLY_SLIDE, MoveId.FLARE_BLITZ],
+  [SpeciesId.VAPOREON]: [MoveId.BOUNCY_BUBBLE, MoveId.SURF],
+  [SpeciesId.JOLTEON]: [MoveId.BUZZY_BUZZ, MoveId.THUNDERBOLT],
+  [SpeciesId.UMBREON]: [MoveId.BADDY_BAD, MoveId.FOUL_PLAY],
+  [SpeciesId.ESPEON]: MoveId.GLITZY_GLOW,
+  [SpeciesId.LEAFEON]: MoveId.SAPPY_SEED,
+  [SpeciesId.GLACEON]: [MoveId.FREEZY_FROST, MoveId.FREEZE_DRY],
   [SpeciesId.ARCTOVISH]: MoveId.FISHIOUS_REND, // Benjie prefers this be addressed outside of signature moves
   [SpeciesId.DRACOVISH]: MoveId.FISHIOUS_REND, // Benjie doesn't approve >:o
   [SpeciesId.ARCTOZOLT]: MoveId.BOLT_BEAK,
   [SpeciesId.DRACOZOLT]: MoveId.BOLT_BEAK, // Benjie prefers this be addressed outside of signature moves
-  [SpeciesId.SPIDOPS]: MoveId.SILK_TRAP,
-  [SpeciesId.TOXAPEX]: MoveId.BANEFUL_BUNKER,
   [SpeciesId.ARIADOS]: MoveId.TOXIC_THREAD,
   [SpeciesId.BLISSEY]: MoveId.SOFT_BOILED,
   [SpeciesId.MEDICHAM]: [MoveId.ZEN_HEADBUTT, MoveId.PSYCHO_CUT], // Avoids special moves on level
@@ -211,11 +245,13 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.LUXRAY]: [MoveId.WILD_CHARGE, MoveId.SUPERCELL_SLAM],
   // Force shadow ball because it is the only good special ghost move
   [SpeciesId.MISMAGIUS]: MoveId.SHADOW_BALL,
-  // Avoids dazzling gleam possibility
+  // Avoids bad moves from spawning due to poor learnsets
   [SpeciesId.GRANBULL]: MoveId.PLAY_ROUGH,
+  [SpeciesId.SKUNTANK]: MoveId.POISON_JAB,
+  [SpeciesId.VENOMOTH]: MoveId.SLUDGE_BOMB,
 };
 export const FORCED_RIVAL_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]>> = {
   [SpeciesId.UNFEZANT]: MoveId.SLASH,
   [SpeciesId.SWELLOW]: MoveId.BOOMBURST,
-  [SpeciesId.STARAPTOR]: MoveId.HEAD_CHARGE,
+  [SpeciesId.STARAPTOR]: MoveId.BRAVE_BIRD,
 };
