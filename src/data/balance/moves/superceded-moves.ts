@@ -7,7 +7,7 @@
 import { MoveId } from "#enums/move-id";
 
 // Save memory by reusing same arrays for common replacement sets here
-const _60_POW_DARK_TYPE_REPLACEMENTS: readonly MoveId[] = [
+const DARK_TYPE_60_POW_REPLACEMENTS: readonly MoveId[] = [
   MoveId.CRUNCH,
   MoveId.KNOCK_OFF,
   MoveId.NIGHT_SLASH,
@@ -73,7 +73,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.FLYING_PRESS,
     MoveId.COLLISION_COURSE,
   ],
-  [MoveId.ASSURANCE]: _60_POW_DARK_TYPE_REPLACEMENTS,
+  [MoveId.ASSURANCE]: DARK_TYPE_60_POW_REPLACEMENTS,
   [MoveId.ASTONISH]: [
     MoveId.LICK,
     MoveId.SHADOW_PUNCH,
@@ -97,7 +97,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.TAIL_SLAP,
   ],
   [MoveId.BIND]: [MoveId.WRAP],
-  [MoveId.BITE]: _60_POW_DARK_TYPE_REPLACEMENTS,
+  [MoveId.BITE]: DARK_TYPE_60_POW_REPLACEMENTS,
   // Commented because they are rare as base moves.
   // [MoveId.BONE_CLUB]: [
   //   MoveId.EARTHQUAKE,
@@ -122,7 +122,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.IVY_CUDGEL,
   ],
   [MoveId.BRINE]: [MoveId.SURF, MoveId.SCALD, MoveId.STEAM_ERUPTION, MoveId.SPARKLING_ARIA, MoveId.SPLISHY_SPLASH],
-  [MoveId.BRUTAL_SWING]: _60_POW_DARK_TYPE_REPLACEMENTS,
+  [MoveId.BRUTAL_SWING]: DARK_TYPE_60_POW_REPLACEMENTS,
   [MoveId.BUBBLE]: [
     MoveId.WATER_GUN,
     MoveId.SURF,
@@ -297,7 +297,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.CHIP_AWAY,
     MoveId.RETALIATE,
   ],
-  [MoveId.FEINT_ATTACK]: _60_POW_DARK_TYPE_REPLACEMENTS,
+  [MoveId.FEINT_ATTACK]: DARK_TYPE_60_POW_REPLACEMENTS,
   [MoveId.FELL_STINGER]: [
     MoveId.LEECH_LIFE,
     MoveId.X_SCISSOR,
@@ -474,7 +474,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.CHIP_AWAY,
     MoveId.RETALIATE,
   ],
-  [MoveId.PAYBACK]: _60_POW_DARK_TYPE_REPLACEMENTS,
+  [MoveId.PAYBACK]: DARK_TYPE_60_POW_REPLACEMENTS,
   [MoveId.PECK]: [
     MoveId.WING_ATTACK,
     MoveId.DRILL_PECK,

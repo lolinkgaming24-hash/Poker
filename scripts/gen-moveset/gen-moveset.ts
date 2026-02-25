@@ -17,7 +17,7 @@ import { SpeciesId } from "#enums/species-id";
 import { TrainerSlot } from "#enums/trainer-slot";
 import type { Pokemon } from "#field/pokemon";
 import { EnemyPokemon } from "#field/pokemon";
-import { GameManager } from "#test/test-utils/game-manager";
+import { GameManager } from "#test/framework/game-manager";
 import { randomString } from "#utils/common";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import net from "node:net";

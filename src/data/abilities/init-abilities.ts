@@ -285,8 +285,8 @@ export function initAbilities() {
       .build(),
     new AbBuilder(AbilityId.COMPOUND_EYES, 3) //
       .attr(StatMultiplierAbAttr, Stat.ACC, 1.3)
-      .attr(AiMovegenMoveStatsAbAttr, params => {
-        params.accMult.value *= 1.3;
+      .attr(AiMovegenMoveStatsAbAttr, ({ accMult }) => {
+        accMult.value *= 1.3;
       })
       .build(),
     new AbBuilder(AbilityId.INSOMNIA, 3) //
@@ -670,7 +670,7 @@ export function initAbilities() {
       .build(),
     new AbBuilder(AbilityId.SKILL_LINK, 4) //
       .attr(MaxMultiHitAbAttr)
-      .attr(AiMovegenMoveStatsAbAttr, ({ maxMultiHit }: AiMovegenMoveStatsAbAttrParams) => {
+      .attr(AiMovegenMoveStatsAbAttr, ({ maxMultiHit }) => {
         maxMultiHit.value = true;
       })
       .build(),
@@ -704,7 +704,7 @@ export function initAbilities() {
       .build(),
     new AbBuilder(AbilityId.SNIPER, 4) //
       .attr(MultCritAbAttr, 1.5)
-      .attr(AiMovegenMoveStatsAbAttr, ({ move, powerMult }: AiMovegenMoveStatsAbAttrParams) => {
+      .attr(AiMovegenMoveStatsAbAttr, ({ move, powerMult }) => {
         if (move.hasAttr("CritOnlyAttr")) {
           powerMult.value *= 1.5;
         }
@@ -802,7 +802,7 @@ export function initAbilities() {
     new AbBuilder(AbilityId.SNOW_WARNING, 4) //
       .attr(PostSummonWeatherChangeAbAttr, WeatherType.SNOW)
       .attr(PostBiomeChangeWeatherChangeAbAttr, WeatherType.SNOW)
-      .attr(AiMovegenMoveStatsAbAttr, ({ move, powerMult, accMult, instantCharge }: AiMovegenMoveStatsAbAttrParams) => {
+      .attr(AiMovegenMoveStatsAbAttr, ({ move, powerMult, accMult, instantCharge }) => {
         if (move.id === MoveId.WEATHER_BALL) {
           // double power in addition to weather boost
           powerMult.value *= 2;
@@ -1577,20 +1577,23 @@ export function initAbilities() {
       .unreplaceable()
       .unsuppressable()
       .build(),
-    new AbBuilder(AbilityId.ELECTRIC_SURGE, 7)
+    new AbBuilder(AbilityId.ELECTRIC_SURGE, 7) //
       .attr(PostSummonTerrainChangeAbAttr, TerrainType.ELECTRIC)
       .attr(PostBiomeChangeTerrainChangeAbAttr, TerrainType.ELECTRIC)
       .attr(SummonTerrainAiMovegenMoveStatsAbAttr, PokemonType.ELECTRIC, [MoveId.RISING_VOLTAGE, 2])
       .build(),
-    new AbBuilder(AbilityId.PSYCHIC_SURGE, 7)
+    new AbBuilder(AbilityId.PSYCHIC_SURGE, 7) //
       .attr(PostSummonTerrainChangeAbAttr, TerrainType.PSYCHIC)
       .attr(PostBiomeChangeTerrainChangeAbAttr, TerrainType.PSYCHIC)
       .attr(SummonTerrainAiMovegenMoveStatsAbAttr, PokemonType.PSYCHIC, [MoveId.EXPANDING_FORCE, 1.5])
       .build(),
-    new AbBuilder(AbilityId.MISTY_SURGE, 7)
+    new AbBuilder(AbilityId.MISTY_SURGE, 7) //
       .attr(PostSummonTerrainChangeAbAttr, TerrainType.MISTY)
       .attr(PostBiomeChangeTerrainChangeAbAttr, TerrainType.MISTY)
       .attr(AiMovegenMoveStatsAbAttr, ({ pokemon, move, powerMult }) => {
+        // NB: Though Misty terrain only protects grounded defenders from Dragon
+        // moves, we have no way of knowing the defender's attributes during
+        // moveset gen (hence why we ignore this)
         if (move.type === PokemonType.DRAGON) {
           powerMult.value *= 0.5;
         }
@@ -1604,7 +1607,7 @@ export function initAbilities() {
         }
       })
       .build(),
-    new AbBuilder(AbilityId.GRASSY_SURGE, 7)
+    new AbBuilder(AbilityId.GRASSY_SURGE, 7) //
       .attr(PostSummonTerrainChangeAbAttr, TerrainType.GRASSY)
       .attr(PostBiomeChangeTerrainChangeAbAttr, TerrainType.GRASSY)
       .attr(SummonTerrainAiMovegenMoveStatsAbAttr, PokemonType.GRASS)

@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2024-2025 Pagefault Games
+ * SPDX-FileContributor: SirzBenjie
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -35,5 +36,3 @@ export default defineConfig(async config => {
   };
   return opts;
 });
-
-//#region Helpers

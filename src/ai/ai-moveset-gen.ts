@@ -54,6 +54,7 @@ import { PokemonMove } from "#moves/pokemon-move";
 import type { Move, StatStageChangeAttr } from "#types/move-types";
 import { NumberHolder, randSeedInt, randSeedItem } from "#utils/common";
 import { willTerastallize } from "#utils/pokemon-utils";
+import { ValueHolder } from "#utils/value-holder";
 
 /**
  * Compute and assign a weight to the level-up moves currently available to the Pokémon
@@ -326,16 +327,16 @@ function getAndWeightEggMoves(
  * @param otherPools - Other move pools to consider as available when filtering
  */
 function filterSupercededMoves(pool: Map<MoveId, number>, ...otherPools: Map<MoveId, number>[]): void {
-  const presentMoves = new Set<MoveId>(pool.keys());
+  const currentMoves = new Set<MoveId>(pool.keys());
 
   for (const otherPool of otherPools) {
     for (const moveId of otherPool.keys()) {
-      presentMoves.add(moveId);
+      currentMoves.add(moveId);
     }
   }
   for (const move of pool.keys()) {
     const superceded = SUPERCEDED_MOVES[move];
-    if (superceded == null || new Set(superceded).isDisjointFrom(presentMoves)) {
+    if (superceded == null || new Set(superceded).isDisjointFrom(currentMoves)) {
       continue;
     }
     pool.delete(move);
@@ -435,7 +436,7 @@ function adjustDamageMoveWeights(pool: Map<MoveId, number>, pokemon: Pokemon, wi
   const higherStat = Math.max(atk, spAtk);
   const worseCategory = atk > spAtk ? MoveCategory.SPECIAL : MoveCategory.PHYSICAL;
   const statRatio = lowerStat / higherStat;
-  const adjustmentRatio = Math.min(Math.pow(statRatio, 3) * 2.0, 1);
+  const adjustmentRatio = Math.min(Math.pow(statRatio, 3) * 2, 1);
 
   for (const [moveId, weight] of pool) {
     const move = allMoves[moveId];
@@ -444,8 +445,6 @@ function adjustDamageMoveWeights(pool: Map<MoveId, number>, pokemon: Pokemon, wi
       continue;
     }
     const power = movePowers[moveId] ?? move.calculateEffectivePower(pokemon);
-
-    // Take power and multiply by the
 
     // Scale weight based on their ratio to the highest power move, capping at 75% reduction
     adjustedWeight *= Phaser.Math.Clamp(power / maxPower, 0.25, 1);
@@ -623,15 +622,14 @@ function forceStabMove(
   tmPool: Map<MoveId, number>,
   eggPool: Map<MoveId, number>,
   pokemon: Pokemon,
-  tmCount: NumberHolder,
-  eggMoveCount: NumberHolder,
+  tmCount: ValueHolder<number>,
+  eggMoveCount: ValueHolder<number>,
   willTera = false,
   forceAnyDamageIfNoStab = false,
 ): void {
-  // Attempt to force a signature move first
   const typesForStab = new Set(pokemon.getTypes());
   // All Pokemon force a STAB move first
-  const totalWeight = new NumberHolder(0);
+  const totalWeight = new ValueHolder(0);
   const stabMovePool = filterPool(
     pool,
     moveId => {
@@ -674,11 +672,13 @@ function getMoveType(move: MoveId | Move, pokemon: Pokemon, willTera: boolean): 
     move = allMoves[move];
   }
 
-  if (move.category !== MoveCategory.STATUS) {
-    const VariableMoveTypeAttr = move.getAttrs("VariableMoveTypeAttr").at(-1);
-    if (VariableMoveTypeAttr != null) {
-      return VariableMoveTypeAttr.getTypeForMovegen(pokemon, move, willTera);
-    }
+  if (move.category === MoveCategory.STATUS) {
+    return move.type;
+  }
+
+  const variableMoveTypeAttr = move.getAttrs("VariableMoveTypeAttr").at(-1);
+  if (variableMoveTypeAttr != null) {
+    return variableMoveTypeAttr.getTypeForMovegen(pokemon, move, willTera);
   }
 
   return move.type;
@@ -709,10 +709,10 @@ function getExistingDamageMoveTypes(pokemon: Pokemon, willTera: boolean): Set<Po
 /**
  * Determine whether there is a move in the moveset that benefits from boosting the specified offensive stat.
  * @param moveset - The moveset to check against
- * @param attr - The sole `StatStageChangeAttr` from the move being considered
+ * @param attr - The sole `StatStageChangeAttr` from the move being considered; if undefined, this method returns false
  * @returns Whether no moves in the moveset would benefit from the stat stage change described by `attr`
  */
-export function removeSelfStatBoost(pokemon: Pokemon, attr: StatStageChangeAttr | undefined): boolean {
+function removeSelfStatBoost(pokemon: Pokemon, attr: StatStageChangeAttr | undefined): boolean {
   if (attr == null || attr.stats.length !== 1) {
     return false;
   }
@@ -748,7 +748,7 @@ export function removeSelfStatBoost(pokemon: Pokemon, attr: StatStageChangeAttr 
  * @param pokemon - The Pokémon under examination
  * @returns Whether the Pokémon would benefit from Rain Dance
  */
-export function shouldRemoveRainDance(pokemon: Pokemon): boolean {
+function shouldRemoveRainDance(pokemon: Pokemon): boolean {
   if (getExistingDamageMoveTypes(pokemon, false).has(PokemonType.WATER)) {
     return false;
   }
@@ -772,7 +772,7 @@ export function shouldRemoveRainDance(pokemon: Pokemon): boolean {
  * @param pokemon - The Pokémon under examination
  * @returns Whether the Pokémon would benefit from Sunny Day
  */
-export function shouldRemoveSunnyDay(pokemon: Pokemon): boolean {
+function shouldRemoveSunnyDay(pokemon: Pokemon): boolean {
   if (getExistingDamageMoveTypes(pokemon, false).has(PokemonType.FIRE)) {
     return true;
   }
@@ -810,9 +810,9 @@ export function shouldRemoveSunnyDay(pokemon: Pokemon): boolean {
  * @returns Whether the Pokémon would benefit from Snow/Hail
  */
 // TODO: Extract out common functionality between this and sandstorm
-export function removeSnowscapeHail(pokemon: Pokemon, willTera: boolean): boolean {
+function removeSnowscapeHail(pokemon: Pokemon, willTera: boolean): boolean {
   const types = new Set(pokemon.getTypes(willTera, true));
-  if (!types.isDisjointFrom(new Set([PokemonType.GROUND, PokemonType.STEEL, PokemonType.ROCK]))) {
+  if (types.has(PokemonType.ICE)) {
     return false;
   }
   for (const snowAbility of [
@@ -848,7 +848,7 @@ export function removeSnowscapeHail(pokemon: Pokemon, willTera: boolean): boolea
  * @param pokemon - The Pokémon under examination
  * @returns Whether the Pokémon would benefit from Sandstorm
  */
-export function shouldRemoveSandstorm(pokemon: Pokemon, willTera: boolean): boolean {
+function shouldRemoveSandstorm(pokemon: Pokemon, willTera: boolean): boolean {
   if (pokemon.getTypes(willTera, true).includes(PokemonType.ROCK)) {
     return false;
   }
@@ -907,7 +907,7 @@ function hasSleepInducingMove(pokemon: Pokemon, targetSelf = false): boolean {
  * @param willTera - Whether the Pokémon is guaranteed to Tera
  * @returns Whether any moves were removed from the moveset
  */
-export function filterUselessMoves(pokemon: Pokemon, willTera: boolean): boolean {
+function filterUselessMoves(pokemon: Pokemon, willTera: boolean): boolean {
   let numWeatherMoves = 0;
   const moveset = pokemon.moveset;
   for (let i = moveset.length - 1; i >= 0; i--) {
@@ -1073,7 +1073,6 @@ function debugMoveWeights(pokemon: Pokemon, pool: Map<MoveId, number>, note: str
       moveNameToWeightMap.set(allMoves[moveId].name, weight);
     }
     console.log("%cComputed move weights [%s] for %s", "color: blue", note, pokemon.name, moveNameToWeightMap);
-  } else {
   }
 }
 

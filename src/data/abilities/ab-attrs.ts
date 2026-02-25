@@ -6233,5 +6233,6 @@ export const AbilityAttrs = Object.freeze({
   AiMovegenMoveStatsAbAttr,
   SummonTerrainAiMovegenMoveStatsAbAttr,
 });
+
 /** A map of of all {@linkcode AbAttr} constructors */
 export type AbAttrConstructorMap = typeof AbilityAttrs;

@@ -268,9 +268,11 @@ export class BattleScene extends SceneBase {
    * Global state variable indicating AI moveset generation is in progress
    *
    * @remarks
-   * It is intended that this is set to `true` (or rival) while movesets are being generated.
+   * It is intended that this is set to `true` while movesets are being generated.
    * Its purpose is to skip certain checks and effects that are not relevant during
    * the moveset generation process, such as ability suppression checks.
+   *
+   * @defaultValue `false`
    */
   public movesetGenInProgress = false;
 
