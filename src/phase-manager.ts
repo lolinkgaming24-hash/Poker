@@ -1,5 +1,5 @@
 /**
- * Manager fo r phase s used by battle scene.
+ * Manager for phases used by battle scene.
  *
  * @remarks
  * **This file must not be imported or used directly.**

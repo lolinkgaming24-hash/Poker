@@ -49,7 +49,7 @@ export function queueBattlerEntrancePhases(params: BattlerEntranceParams): void 
   globalScene.phaseManager.unshiftPhase(phases[0], ...phases.slice(1));
 }
 
-//#region Helpers
+// #region Helpers
 function getBattlerEntrancePhases(
   addPlayer2: boolean,
   addEnemy2: boolean,
@@ -59,6 +59,7 @@ function getBattlerEntrancePhases(
   const enemyMons = globalScene.getEnemyParty().slice(0, 1 + +addEnemy2);
 
   // Type assertion is valid as these will always unshift at least 1 phase
+  // TODO:
   const phases = [
     ...getSummonPhases(playerMons, enemyMons, params),
     ...getIvScannerPhases(enemyMons),
@@ -73,8 +74,8 @@ function getBattlerEntrancePhases(
 }
 
 function getSummonPhases(
-  playerMons: PlayerPokemon[],
-  enemyMons: EnemyPokemon[],
+  playerMons: readonly PlayerPokemon[],
+  enemyMons: readonly EnemyPokemon[],
   { skipEnemySummon, ...rest }: BattlerEntranceParams,
 ): SummonPhase[] {
   const { phaseManager } = globalScene;
@@ -83,7 +84,7 @@ function getSummonPhases(
   return mons.map(p => phaseManager.create("SummonPhase", p.getBattlerIndex(), rest));
 }
 
-function getIvScannerPhases(enemyMons: EnemyPokemon[]): ScanIvsPhase[] {
+function getIvScannerPhases(enemyMons: readonly EnemyPokemon[]): ScanIvsPhase[] {
   const { phaseManager } = globalScene;
 
   // do nothing if no IV Scanner is present
@@ -95,13 +96,14 @@ function getIvScannerPhases(enemyMons: EnemyPokemon[]): ScanIvsPhase[] {
 }
 
 function getPostSummonPhases(
-  mons: (PlayerPokemon | EnemyPokemon)[],
+  battlers: readonly (PlayerPokemon | EnemyPokemon)[],
   { checkSwitch }: BattlerEntranceParams,
 ): (CheckSwitchPhase | PostSummonPhase)[] {
   const { phaseManager } = globalScene;
 
-  return mons.map(p =>
+  return battlers.map(p =>
     phaseManager.create(p.isPlayer() && checkSwitch ? "CheckSwitchPhase" : "PostSummonPhase", p.getBattlerIndex()),
   );
 }
-//#endregion Helpers
+
+// #endregion Helpers
