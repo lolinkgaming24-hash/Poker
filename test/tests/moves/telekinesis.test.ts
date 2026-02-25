@@ -7,6 +7,7 @@ import { MoveResult } from "#enums/move-result";
 import { SpeciesFormKey } from "#enums/species-form-key";
 import { SpeciesId } from "#enums/species-id";
 import { invalidTelekinesisSpecies } from "#moves/invalid-moves";
+import { GameManager } from "#test/framework/game-manager";
 import { getEnumStr } from "#test/utils/string-utils";
 import i18next from "i18next";
 import Phaser from "phaser";
