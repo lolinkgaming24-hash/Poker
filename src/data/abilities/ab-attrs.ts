@@ -4473,7 +4473,7 @@ abstract class PostMoveUsedAbAttr extends AbAttr {
  * Dancer triggers whenever another Pokemon uses a dance move, copying it against either the original user or the move's original target as applicable.
  */
 export class PostDancingMoveAbAttr extends PostMoveUsedAbAttr {
-  public override canApply({ move, pokemon }: PostMoveUsedAbAttrParams): boolean {
+  public override canApply({ pokemon, move }: PostMoveUsedAbAttrParams): boolean {
     return move.hasFlag(MoveFlags.DANCE_MOVE) && !pokemon.getTag(SemiInvulnerableTag);
   }
   public override apply(params: PostMoveUsedAbAttrParams): void {
@@ -4490,18 +4490,10 @@ export class PostDancingMoveAbAttr extends PostMoveUsedAbAttr {
 
   /**
    * Helper function to compute the correct targets of Dancer's copied move use.
-   * @param dancer - The {@linkcode Pokemon} with Dancer that will copy the move
-   * @param source - The {@linkcode Pokemon} that originally used the dancing move
-   * @param move - The {@linkcode Move} that was originally used
-   * @param targets - The original targets of the move
+   * @param params - The parameters passed to the ability attribute
    * @returns The modified set of targets to use
    */
-  private getMoveTargets({
-    pokemon,
-    source,
-    move,
-    targets,
-  }: Pick<PostMoveUsedAbAttrParams, "pokemon" | "source" | "move" | "targets">): BattlerIndex[] {
+  private getMoveTargets({ pokemon, source, move, targets }: PostMoveUsedAbAttrParams): BattlerIndex[] {
     if (move.isMultiTarget()) {
       return getMoveTargets(pokemon, move.id).targets;
     }
