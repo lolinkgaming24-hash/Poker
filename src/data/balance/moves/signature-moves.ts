@@ -89,7 +89,6 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.BOUFFALANT]: MoveId.HEAD_CHARGE,
   [SpeciesId.VOLCARONA]: MoveId.FIERY_DANCE,
   [SpeciesId.TOUCANNON]: MoveId.BEAK_BLAST,
-  [SpeciesId.TOGEDEMARU]: MoveId.ZING_ZAP,
   [SpeciesId.GOLISOPOD]: MoveId.FIRST_IMPRESSION,
   [SpeciesId.BRUXISH]: MoveId.PSYCHIC_FANGS,
   [SpeciesId.CRABOMINABLE]: MoveId.ICE_HAMMER,
