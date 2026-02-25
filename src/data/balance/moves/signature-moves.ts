@@ -6,7 +6,6 @@ import { SpeciesId } from "#enums/species-id";
  * If a species is in here, during moveset generation, the signature move will be forced
  * with {@linkcode FORCED_SIGNATURE_MOVE_CHANCE}-% probability before any other
  * moves are added.
- * If a species is in here, during moveset generation, the signature move will be forced with x% probability before any other moves are added
  *
  * @privateRemarks
  * If multiple moves are in the map, those that the species can learn will be selected with equal probability.
