@@ -114,7 +114,6 @@ export function initSceneWithoutEncounterPhase(scene: BattleScene, speciesIds?: 
   scene.currentBattle = new Battle(getGameMode(GameModes.CLASSIC), {
     waveIndex: 5,
     battleType: BattleType.WILD,
-    trainer: undefined,
     double: false,
   });
 }
