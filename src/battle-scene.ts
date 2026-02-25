@@ -3670,7 +3670,7 @@ export class BattleScene extends SceneBase {
    * @returns Whether an ME can legally spawn on the given wave.
    * @see {@linkcode BattleScene.isWaveMysteryEncounter} - Function that rolls for ME creation on new wave start
    */
-  isMysteryEncounterValidForWave(battleType: BattleType, waveIndex: number): boolean {
+  public isMysteryEncounterValidForWave(battleType: BattleType, waveIndex: number): boolean {
     const [lowestMysteryEncounterWave, highestMysteryEncounterWave] = this.gameMode.getMysteryEncounterLegalWaves();
     return (
       this.gameMode.hasMysteryEncounters
