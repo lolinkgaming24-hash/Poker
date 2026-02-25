@@ -171,10 +171,11 @@ export interface InfoToggle {
 
 /**
  * The `BattleScene` is the primary scene for the game.
+ *
  * Despite its name, it handles _everything_ other than initial asset loading,
  * up to and including title menuing and settings handling.
- * @todo Breakup into multiple scenes
  */
+// TODO: Breakup into multiple scenes if possible/practical
 export class BattleScene extends SceneBase {
   public inputController: InputsController;
   public uiInputs: UiInputs;
@@ -1316,9 +1317,9 @@ export class BattleScene extends SceneBase {
       }
     }
 
-    // NB: Type assertion is fine as resolved should always be populated at this point
     this.executeWithSeedOffset(
       () => {
+        // NB: Type assertion is fine as resolved should always be populated at this point
         this.currentBattle = new Battle(this.gameMode, resolved as NewBattleResolvedProps);
       },
       waveIndex << 3, // TODO: Why use this specific bitshift?
@@ -1360,16 +1361,15 @@ export class BattleScene extends SceneBase {
       case BattleType.WILD:
         fixedDouble = fromSession.enemyParty.length > 1;
         break;
-      case BattleType.TRAINER:
-        {
-          const config = trainerConfigs[trainerData.trainerType];
-          // failsafe for corrupt saves (such as due to enum shifting) - don't force a double battle if the trainer type
-          // cannot appear as one.
-          // The code inside `handleSavedBattle` will override the trainer's variant if this results in incompatibilities,
-          // since this is only a problem for parsed save data (and is ignored for fixed battles)
-          fixedDouble = config.doubleOnly || (config.hasDouble && trainerData.variant === TrainerVariant.DOUBLE);
-        }
+      case BattleType.TRAINER: {
+        const config = trainerConfigs[trainerData.trainerType];
+        // failsafe for corrupt saves (such as due to enum shifting) - don't force a double battle if the trainer type
+        // cannot appear as one.
+        // The code inside `handleSavedBattle` will override the trainer's variant if this results in incompatibilities,
+        // since this is only a problem for parsed save data (and is ignored for fixed battles)
+        fixedDouble = config.doubleOnly || (config.hasDouble && trainerData.variant === TrainerVariant.DOUBLE);
         break;
+      }
       case BattleType.MYSTERY_ENCOUNTER:
         fixedDouble = false;
         break;
@@ -1395,17 +1395,18 @@ export class BattleScene extends SceneBase {
     resolved.double = battleConfig.double;
     resolved.battleType = battleConfig.battleType;
 
-    let t!: Trainer; // Tell TS this is defined
+    // `!` tells TS this will always be defined; necessary due to block scoping from using `executeWithSeedOffset`
+    let trainer!: Trainer;
     this.executeWithSeedOffset(
       () => {
-        t = battleConfig.getTrainer();
+        trainer = battleConfig.getTrainer();
       },
       // TODO: This is only used to ensure evil team leaders get pre-generated as the same team, which is EXTREMELY susceptible to internal RNG changes
       // Instead, the save data can store the evil team/gym leader preset used upon run creation
       (battleConfig.seedOffsetWaveIndex || waveIndex) << 8,
     );
-    this.field.add(t);
-    resolved.trainer = t;
+    this.field.add(trainer);
+    resolved.trainer = trainer;
   }
 
   /**
@@ -1418,7 +1419,7 @@ export class BattleScene extends SceneBase {
     resolved.double = props.double;
     if (!resolved.double && props.trainerData?.variant === TrainerVariant.DOUBLE) {
       console.warn(
-        "Save data indicates a non-double battle but trainer variant is double!\nForcing battle to default variant to avoid crashes.",
+        "Save data indicates a double battle but this trainer has no doubles variant!\nForcing battle to default variant to avoid crashes.",
       );
       props.trainerData.variant = TrainerVariant.DEFAULT;
     }
@@ -1570,10 +1571,10 @@ export class BattleScene extends SceneBase {
     if (resetArenaState) {
       this.arena.resetArenaEffects();
 
-      this.getPlayerField().forEach((pokemon, p) => {
+      this.getPlayerField().forEach((pokemon, index) => {
         pokemon.lapseTag(BattlerTagType.COMMANDED);
         if (pokemon.isOnField()) {
-          this.phaseManager.pushNew("ReturnPhase", p);
+          this.phaseManager.pushNew("ReturnPhase", index);
         }
       });
 
