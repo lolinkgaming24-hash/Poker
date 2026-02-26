@@ -2,7 +2,7 @@ import type { Ability } from "#abilities/ability";
 import { PLAYER_PARTY_MAX_SIZE } from "#app/constants";
 import { globalScene } from "#app/global-scene";
 import { starterColors } from "#app/global-vars/starter-colors";
-import Overrides from "#app/overrides";
+import { activeOverrides } from "#app/overrides";
 import { handleTutorial, Tutorial } from "#app/tutorial";
 import { speciesEggMoves } from "#balance/egg-moves";
 import { pokemonPrevolutions } from "#balance/pokemon-evolutions";
@@ -2224,10 +2224,10 @@ export class StarterSelectUiHandler extends MessageUiHandler {
               options.push({
                 label: `×${passiveCost} ${i18next.t("starterSelectUiHandler:unlockPassive")}`,
                 handler: () => {
-                  if (Overrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= passiveCost) {
+                  if (activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= passiveCost) {
                     persistentStarterData.passiveAttr |= PassiveAttr.UNLOCKED | PassiveAttr.ENABLED;
                     starterData.passiveAttr = persistentStarterData.passiveAttr;
-                    if (!Overrides.FREE_CANDY_UPGRADE_OVERRIDE) {
+                    if (!activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE) {
                       persistentStarterData.candyCount -= passiveCost;
                       starterData.candyCount = persistentStarterData.candyCount;
                     }
@@ -2265,10 +2265,10 @@ export class StarterSelectUiHandler extends MessageUiHandler {
               options.push({
                 label: `×${reductionCost} ${i18next.t("starterSelectUiHandler:reduceCost")}`,
                 handler: () => {
-                  if (Overrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= reductionCost) {
+                  if (activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= reductionCost) {
                     persistentStarterData.valueReduction++;
                     starterData.valueReduction = persistentStarterData.valueReduction;
-                    if (!Overrides.FREE_CANDY_UPGRADE_OVERRIDE) {
+                    if (!activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE) {
                       persistentStarterData.candyCount -= reductionCost;
                       starterData.candyCount = persistentStarterData.candyCount;
                     }
@@ -2304,8 +2304,8 @@ export class StarterSelectUiHandler extends MessageUiHandler {
             options.push({
               label: `×${sameSpeciesEggCost} ${i18next.t("starterSelectUiHandler:sameSpeciesEgg")}`,
               handler: () => {
-                if (Overrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= sameSpeciesEggCost) {
-                  if (globalScene.gameData.eggs.length >= 99 && !Overrides.UNLIMITED_EGG_COUNT_OVERRIDE) {
+                if (activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= sameSpeciesEggCost) {
+                  if (globalScene.gameData.eggs.length >= 99 && !activeOverrides.UNLIMITED_EGG_COUNT_OVERRIDE) {
                     // Egg list full, show error message at the top of the screen and abort
                     this.showText(
                       i18next.t("egg:tooManyEggs"),
@@ -2318,7 +2318,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
                     );
                     return false;
                   }
-                  if (!Overrides.FREE_CANDY_UPGRADE_OVERRIDE) {
+                  if (!activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE) {
                     persistentStarterData.candyCount -= sameSpeciesEggCost;
                     starterData.candyCount = persistentStarterData.candyCount;
                   }
