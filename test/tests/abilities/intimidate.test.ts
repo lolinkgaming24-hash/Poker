@@ -73,7 +73,7 @@ describe("Abilities - Intimidate", () => {
   });
 
   it("should lower ATK of all opponents in a double battle", async () => {
-    game.override.startingWave(2).battleStyle("double");
+    game.override.battleStyle("double");
     await game.classicMode.startBattle(SpeciesId.MIGHTYENA);
 
     const [enemy1, enemy2] = game.scene.getEnemyField();
