@@ -48,7 +48,7 @@ This document is intended to serve as a guide for how to (and not to) document c
    - Adding too many comments can risk distracting from the actual code in favor of repeating the self-evident.
    - Where possible, try to summarize blocks of code instead of singular lines where possible, always preferring giving a reason over stating a fact. Single line comments should call out specific oddities or features.
 
-[^1]: With exceptions for extremely long, convoluted or unintuitive methods (though a dependency on said comments is likely a symptom of poorly structured code).
+[^1]: With exceptions for extremely long, convoluted or unintuitive methods (though a dependence on said comments is likely a symptom of poorly structured code).
 
 ## TSDoc
 The codebase makes extensive use of [TSDoc](https://tsdoc.org), a TypeScript-specific version of [JSDoc](https://jsdoc.app/about-getting-started) with standardized syntax and Markdown support.
