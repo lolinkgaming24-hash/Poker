@@ -40,6 +40,7 @@ export interface DailySeedBoss {
   ability?: AbilityId | undefined;
   passive?: AbilityId | undefined;
   segments?: number | undefined;
+  catchable?: boolean | undefined;
 }
 
 /**

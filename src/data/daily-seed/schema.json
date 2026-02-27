@@ -62,6 +62,9 @@
         "segments": {
           "type": "integer",
           "minimum": 1
+        },
+        "catchable": {
+          "type": "boolean"
         }
       },
       "required": ["speciesId"],
