@@ -1,13 +1,13 @@
 import "#app/extensions"; // Setup Phaser extension methods/etc
 
-import { initAbilities } from "#abilities/ability";
+import { initAbilities } from "#abilities/init-abilities";
 import { initBiomes } from "#balance/init-biomes";
 import { initPokemonPrevolutions, initPokemonStarters } from "#balance/pokemon-evolutions";
 import { initSpecies } from "#balance/pokemon-species";
 import { initChallenges } from "#data/challenge";
 import { initTrainerTypeDialogue } from "#data/dialogue";
 import { initPokemonForms } from "#data/pokemon-forms";
-import { initHeldItems } from "#items/all-held-items";
+import "#items/all-held-items";
 import { initTrainerItems } from "#items/all-trainer-items";
 import { initHeldItemPools } from "#items/init-held-item-pools";
 import { initRewardPools } from "#items/init-reward-pools";
@@ -40,7 +40,6 @@ export function initializeGame() {
  * Sub-method to initialize all the item-related code.
  */
 function initItems() {
-  initHeldItems();
   initHeldItemPools();
   initTrainerItems();
   initTrainerItemPools();

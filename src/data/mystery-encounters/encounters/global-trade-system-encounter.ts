@@ -17,7 +17,6 @@ import { RarityTier } from "#enums/reward-tier";
 import { SpeciesId } from "#enums/species-id";
 import { TrainerSlot } from "#enums/trainer-slot";
 import { TrainerType } from "#enums/trainer-type";
-import { doShinySparkleAnim } from "#field/anims";
 import type { PlayerPokemon, Pokemon } from "#field/pokemon";
 import { EnemyPokemon } from "#field/pokemon";
 import type { RewardOption } from "#items/reward";
@@ -722,7 +721,7 @@ function doPokemonTradeSequence(tradedPokemon: PlayerPokemon, receivedPokemon: P
             tradedPokemonTintSprite.setVisible(true);
 
             // TODO: need to add particles to fieldUI instead of field
-            // addPokeballOpenParticles(tradedPokemon.x, tradedPokemon.y, tradedPokemon.pokeball);
+            // globalScene.animations.addPokeballOpenParticles(tradedPokemon.x, tradedPokemon.y, tradedPokemon.pokeball);
 
             globalScene.tweens.add({
               targets: [tradedPokemonTintSprite, tradedPokemonSprite],
@@ -933,7 +932,7 @@ function doTradeReceivedSequence(
             onComplete: () => {
               if (receivedPokemon.shiny) {
                 globalScene.time.delayedCall(500, () => {
-                  doShinySparkleAnim(pokemonShinySparkle, receivedPokemon.variant);
+                  globalScene.animations.doShinySparkleAnim(pokemonShinySparkle, receivedPokemon.variant);
                 });
               }
               receivedPokeballSprite.destroy();

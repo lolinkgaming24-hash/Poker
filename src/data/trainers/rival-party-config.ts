@@ -1,4 +1,6 @@
 import { timedEventManager } from "#app/global-event-manager";
+import { AbilityId } from "#enums/ability-id";
+import { HeldItemId } from "#enums/held-item-id";
 import { PokeballType } from "#enums/pokeball";
 import { SpeciesId } from "#enums/species-id";
 import type { EnemyPokemon } from "#field/pokemon";
@@ -155,7 +157,7 @@ const SLOT_1_FINAL = [
  * @param bars - (default `0`) The number of boss bar segments to set. If `zero`, the pokemon will not be a boss
  */
 
-function forceRivalBirdAbility(pokemon: EnemyPokemon, bars = 0): void {
+function forceRivalBirdAbility(pokemon: EnemyPokemon, bars = 0, forceGutsFlameOrb = false): void {
   switch (pokemon.species.speciesId) {
     // Guts for Tailow line
     case SpeciesId.TAILLOW:
@@ -197,11 +199,17 @@ function forceRivalBirdAbility(pokemon: EnemyPokemon, bars = 0): void {
     }
   }
 
+  // force swellow to spawn with flame orb if it has guts
+  if (forceGutsFlameOrb && pokemon.hasAbility(AbilityId.GUTS)) {
+    pokemon.heldItemManager.add(HeldItemId.FLAME_ORB);
+  }
+
   if (bars > 0) {
     pokemon.setBoss(true, bars);
     pokemon.generateAndPopulateMoveset();
   }
 }
+
 /** Rival's slot 2 species pool for fight 1 */
 const SLOT_2_FIGHT_1 = [
   SpeciesId.PIDGEY,
@@ -669,7 +677,7 @@ export const RIVAL_5_POOL: RivalPoolConfig = [
 /** Pools for the sixth rival fight */
 export const RIVAL_6_POOL: RivalPoolConfig = [
   { pool: SLOT_1_FINAL, postProcess: p => forceRivalStarterTraits(p, 3) },
-  { pool: SLOT_2_FINAL, postProcess: p => forceRivalBirdAbility(p, 2) },
+  { pool: SLOT_2_FINAL, postProcess: p => forceRivalBirdAbility(p, 2, true) },
   {
     pool: SLOT_3_FINAL,
     postProcess: p => (p.level = SLOT_3_FIGHT_6_LEVEL),

@@ -5,21 +5,21 @@ import type { Pokemon } from "#field/pokemon";
 import type { allRewardsType } from "#items/all-rewards";
 import type { RewardGenerator } from "#items/reward";
 
-// TODO: Remove party from arguments can be accessed from `globalScene`
+// TODO: Remove party from arguments - can be accessed from `globalScene`
 export type WeightedRewardWeightFunc = (party: Pokemon[], rerollCount?: number) => number;
 
 export type RewardPoolId = RewardId | HeldItemId | TrainerItemId;
 
-type allRewardGenerators = {
+type AllRewardGenerators = {
   [k in keyof allRewardsType as allRewardsType[k] extends RewardGenerator ? k : never]: allRewardsType[k];
 };
 
 type RewardGeneratorArgMap = {
-  [k in keyof allRewardGenerators]: Exclude<Parameters<allRewardGenerators[k]["generateReward"]>[0], undefined>;
+  [k in keyof AllRewardGenerators]: NonNullable<Parameters<AllRewardGenerators[k]["generateReward"]>[0]>;
 };
 
 /** Union type containing all {@linkcode RewardId}s corresponding to valid {@linkcode RewardGenerator}s. */
-type RewardGeneratorId = keyof allRewardGenerators;
+type RewardGeneratorId = keyof AllRewardGenerators;
 
 type RewardGeneratorSpecs<T extends RewardGeneratorId = RewardGeneratorId> = {
   id: T;

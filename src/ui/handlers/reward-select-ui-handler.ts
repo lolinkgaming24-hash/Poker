@@ -381,7 +381,7 @@ export class RewardSelectUiHandler extends AwaitableUiHandler {
 
           updateCursorTarget();
 
-          handleTutorial(Tutorial.Select_Item).then(res => {
+          handleTutorial(Tutorial.SELECT_ITEM).then(res => {
             if (res) {
               updateCursorTarget();
             }
@@ -412,13 +412,13 @@ export class RewardSelectUiHandler extends AwaitableUiHandler {
         const originalOnActionInput = this.onActionInput;
         this.awaitingActionInput = false;
         this.onActionInput = null;
-        if (!originalOnActionInput(this.rowCursor, this.cursor)) {
-          this.awaitingActionInput = true;
-          this.onActionInput = originalOnActionInput;
-        } else {
+        if (originalOnActionInput(this.rowCursor, this.cursor)) {
           this.moveInfoOverlayActive = this.moveInfoOverlay.active;
           this.moveInfoOverlay.setVisible(false);
           this.moveInfoOverlay.active = false; // this is likely unnecessary, but it should help future prove the UI
+        } else {
+          this.awaitingActionInput = true;
+          this.onActionInput = originalOnActionInput;
         }
       }
     } else if (button === Button.CANCEL) {

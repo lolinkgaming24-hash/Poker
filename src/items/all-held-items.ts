@@ -221,7 +221,7 @@ const heldItems = Object.freeze({
     SpeciesId.GIMMIGHOUL,
     10,
   ),
-} satisfies Record<HeldItemId, CosmeticHeldItem | HeldItem<any>>);
+} satisfies Readonly<Record<HeldItemId, CosmeticHeldItem | HeldItem<any>>>); // any typeparam used to avoid errors about individual items not accepting `HeldItemEffect`
 
 /**
  * Resolved type of {@linkcode allHeldItems}.

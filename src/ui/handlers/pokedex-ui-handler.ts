@@ -47,7 +47,7 @@ import { addWindow } from "#ui/ui-theme";
 import { BooleanHolder, fixedInt, getLocalizedSpriteKey, padInt, randIntRange, rgbHexToRgba } from "#utils/common";
 import type { StarterPreferences } from "#utils/data";
 import { loadStarterPreferences } from "#utils/data";
-import { getPokemonSpeciesForm, getPokerusStarters } from "#utils/pokemon-utils";
+import { getDexNumber, getPokemonSpeciesForm, getPokerusStarters } from "#utils/pokemon-utils";
 import { toCamelCase } from "#utils/strings";
 import { argbFromRgba } from "@material/material-color-utilities";
 import i18next from "i18next";
@@ -62,52 +62,114 @@ interface LanguageSetting {
 const languageSettings: { [key: string]: LanguageSetting } = {
   en: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   de: {
-    starterInfoTextSize: "48px",
-    instructionTextSize: "35px",
-    starterInfoXPos: 33,
+    starterInfoTextSize: "54px",
+    instructionTextSize: "25px",
+    starterInfoXPos: 35,
   },
   "es-ES": {
-    starterInfoTextSize: "56px",
-    instructionTextSize: "35px",
+    starterInfoTextSize: "50px",
+    instructionTextSize: "28px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 38,
+  },
+  "es-419": {
+    starterInfoTextSize: "50px",
+    instructionTextSize: "28px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 38,
   },
   fr: {
     starterInfoTextSize: "54px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   it: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
-  pt_BR: {
-    starterInfoTextSize: "47px",
-    instructionTextSize: "38px",
+  "pt-BR": {
+    starterInfoTextSize: "48px",
+    instructionTextSize: "32px",
+    starterInfoYOffset: 0.5,
     starterInfoXPos: 33,
   },
   zh: {
-    starterInfoTextSize: "47px",
-    instructionTextSize: "38px",
-    starterInfoYOffset: 1,
-    starterInfoXPos: 24,
-  },
-  pt: {
-    starterInfoTextSize: "48px",
-    instructionTextSize: "42px",
-    starterInfoXPos: 33,
+    starterInfoTextSize: "56px",
+    instructionTextSize: "26px",
+    starterInfoXPos: 26,
   },
   ko: {
-    starterInfoTextSize: "52px",
-    instructionTextSize: "38px",
+    starterInfoTextSize: "60px",
+    instructionTextSize: "28px",
+    starterInfoYOffset: -0.5,
+    starterInfoXPos: 30,
   },
   ja: {
-    starterInfoTextSize: "51px",
-    instructionTextSize: "38px",
+    starterInfoTextSize: "48px",
+    instructionTextSize: "32px",
+    starterInfoYOffset: 1,
+    starterInfoXPos: 32,
   },
-  "ca-ES": {
+  ca: {
+    starterInfoTextSize: "48px",
+    instructionTextSize: "28px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 29,
+  },
+  da: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+  },
+  th: {
+    starterInfoTextSize: "50px",
+    instructionTextSize: "30px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 40,
+  },
+  tr: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
+    starterInfoXPos: 34,
+  },
+  ro: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
+  },
+  ru: {
+    starterInfoTextSize: "46px",
+    instructionTextSize: "28px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 26,
+  },
+  uk: {
+    starterInfoTextSize: "46px",
+    instructionTextSize: "28px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 26,
+  },
+  id: {
+    starterInfoTextSize: "48px",
+    instructionTextSize: "32px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 37,
+  },
+  hi: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
+  },
+  tl: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
+  },
+  "nb-NO": {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
+  },
+  sv: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
   },
 };
 
@@ -152,12 +214,12 @@ function calcStarterPosition(index: number): { x: number; y: number } {
 }
 
 interface SpeciesDetails {
-  shiny?: boolean;
-  formIndex?: number;
-  female?: boolean;
-  variant?: Variant;
-  abilityIndex?: number;
-  natureIndex?: number;
+  shiny?: boolean | undefined;
+  formIndex?: number | undefined;
+  female?: boolean | undefined;
+  variant?: Variant | undefined;
+  abilityIndex?: number | undefined;
+  natureIndex?: number | undefined;
 }
 
 export class PokedexUiHandler extends MessageUiHandler {
@@ -238,7 +300,7 @@ export class PokedexUiHandler extends MessageUiHandler {
   private filteredIndices: SpeciesId[];
 
   private gameData: GameData;
-  private exitCallback?: () => void;
+  private exitCallback?: (() => void) | undefined;
   private blockOpenPage = false;
 
   constructor() {
@@ -1064,12 +1126,12 @@ export class PokedexUiHandler extends MessageUiHandler {
         error = true;
       }
     } else if (button === Button.CYCLE_SHINY) {
-      if (!this.showingTray) {
+      if (this.showingTray) {
+        error = true;
+      } else {
         this.showDecorations = !this.showDecorations;
         this.updateScroll();
         success = true;
-      } else {
-        error = true;
       }
     } else if (this.filterMode) {
       switch (button) {
@@ -1122,10 +1184,10 @@ export class PokedexUiHandler extends MessageUiHandler {
           }
           break;
         case Button.ACTION:
-          if (!this.filterBar.openDropDown) {
-            this.filterBar.toggleDropDown(this.filterBarCursor);
-          } else {
+          if (this.filterBar.openDropDown) {
             this.filterBar.toggleOptionState();
+          } else {
+            this.filterBar.toggleDropDown(this.filterBarCursor);
           }
           success = true;
           break;
@@ -1320,13 +1382,13 @@ export class PokedexUiHandler extends MessageUiHandler {
     if (gamepadType === "touch") {
       gamepadType = "keyboard";
       switch (iconSetting) {
-        case SettingKeyboard.Button_Cycle_Shiny:
+        case SettingKeyboard.BUTTON_CYCLE_SHINY:
           iconPath = "R.png";
           break;
-        case SettingKeyboard.Button_Cycle_Form:
+        case SettingKeyboard.BUTTON_CYCLE_FORM:
           iconPath = "F.png";
           break;
-        case SettingKeyboard.Button_Stats:
+        case SettingKeyboard.BUTTON_STATS:
           iconPath = "C.png";
           break;
         default:
@@ -2140,7 +2202,9 @@ export class PokedexUiHandler extends MessageUiHandler {
       species
       && (this.speciesStarterDexEntry?.seenAttr || this.speciesStarterDexEntry?.caughtAttr || globalScene.dexForDevs)
     ) {
-      this.pokemonNumberText.setText(i18next.t("pokedexUiHandler:pokemonNumber") + padInt(species.speciesId, 4));
+      this.pokemonNumberText.setText(
+        i18next.t("pokedexUiHandler:pokemonNumber") + padInt(getDexNumber(species.speciesId), 4),
+      );
 
       this.pokemonNameText.setText(species.name);
 
@@ -2165,7 +2229,7 @@ export class PokedexUiHandler extends MessageUiHandler {
       }
     } else {
       this.pokemonNumberText.setText(
-        species ? i18next.t("pokedexUiHandler:pokemonNumber") + padInt(species.speciesId, 4) : "",
+        species ? i18next.t("pokedexUiHandler:pokemonNumber") + padInt(getDexNumber(species.speciesId), 4) : "",
       );
       this.pokemonNameText.setText(species ? "???" : "");
       this.pokemonFormText.setText("");

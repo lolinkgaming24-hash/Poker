@@ -200,9 +200,11 @@ export class SpeciesFormChangePostMoveTrigger extends SpeciesFormChangeMoveTrigg
   }
 
   canChange(pokemon: Pokemon): boolean {
-    return (
-      pokemon.summonData && pokemon.getLastXMoves(1).filter(m => this.movePredicate(m.move)).length > 0 === this.used
-    );
+    const lastMove = pokemon.getLastXMoves(1).at(0);
+    if (!lastMove) {
+      return false;
+    }
+    return this.movePredicate(lastMove.move) === this.used;
   }
 }
 

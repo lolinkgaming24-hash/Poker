@@ -6,6 +6,11 @@ import type { Variant } from "#sprites/variant";
 import { toCamelCase } from "#utils/strings";
 import i18next from "i18next";
 
+// Re-export the value holder classes for compatibility with existing imports looking over here
+// TODO: Remove these re-exports and update associated imports
+// biome-ignore lint/performance/noBarrelFile: stopgap to avoid massive merge conflicts
+export { BooleanHolder, NumberHolder } from "#utils/value-holder";
+
 export const MissingTextureKey = "__MISSING";
 
 // TODO: Draft tests for these utility functions
@@ -135,9 +140,9 @@ export function randSeedItem<T>(items: ArrayLike<T>): T {
 }
 
 /**
- * Shuffle a list in place using the seeded rng and the Fisher-Yates algorithm.
- * @param items - An array of items.
- * @returns The same `items` array, now shuffled in place.
+ * Shuffle an array using seeded RNG via the Fisher-Yates algorithm.
+ * @param items - The array to shuffle; will be mutated
+ * @returns A reference to the same `items` array, now shuffled in place.
  */
 export function randSeedShuffle<T>(items: T[]): T[] {
   for (let i = items.length - 1; i > 0; i--) {
@@ -147,8 +152,16 @@ export function randSeedShuffle<T>(items: T[]): T[] {
   return items;
 }
 
+const FPS = 60;
+const MILLISECONDS_PER_FRAME = 1000 / FPS;
+
+/**
+ * Convert a frame count into a millisecond duration for Phaser.
+ * @param frameCount - The desired number of frames
+ * @returns The duration of `frameCount` in milliseconds, assuming constant frame rate.
+ */
 export function getFrameMs(frameCount: number): number {
-  return Math.floor((1 / 60) * 1000 * frameCount);
+  return Math.floor(MILLISECONDS_PER_FRAME * frameCount);
 }
 
 export function getCurrentTime(): number {
@@ -273,8 +286,8 @@ export function getTypedEntries<T extends object>(obj: T): [keyof T, T[keyof T]]
   return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
 
-export function executeIf<T>(condition: boolean, promiseFunc: () => Promise<T>): Promise<T | null> {
-  return condition ? promiseFunc() : new Promise<T | null>(resolve => resolve(null));
+export function executeIf<T>(condition: boolean, promiseFunc: () => Promise<T>): Promise<T | undefined> {
+  return condition ? promiseFunc() : Promise.resolve(undefined);
 }
 
 export const sessionIdKey = "pokerogue_sessionId";
@@ -292,26 +305,6 @@ export async function localPing(): Promise<void> {
     const titleStats = await pokerogueApi.getGameTitleStats();
     isLocalServerConnected = !!titleStats;
     console.log("isLocalServerConnected:", isLocalServerConnected);
-  }
-}
-
-export class BooleanHolder {
-  public value: boolean;
-
-  constructor(value: boolean) {
-    this.value = value;
-  }
-}
-
-export class NumberHolder {
-  public value: number;
-
-  constructor(value: number) {
-    this.value = value;
-  }
-
-  valueOf(): number {
-    return this.value;
   }
 }
 
@@ -417,6 +410,7 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "zh-Hant":
     case "pt-BR":
     case "ro":
+    case "th":
     case "tr":
     case "ko":
     case "ja":
@@ -426,6 +420,8 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "hi":
     case "tl":
     case "nb-NO":
+    case "sv":
+    case "uk":
       return true;
     default:
       return false;

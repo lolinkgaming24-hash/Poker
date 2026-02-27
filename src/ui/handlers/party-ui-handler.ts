@@ -1052,11 +1052,10 @@ export class PartyUiHandler extends MessageUiHandler {
 
     // Pressing return button
     if (this.cursor === 6) {
-      if (!this.allowCancel()) {
-        ui.playError();
-      } else {
+      if (this.allowCancel()) {
         return this.processInput(Button.CANCEL);
       }
+      ui.playError();
     }
     return true;
   }
@@ -1443,11 +1442,11 @@ export class PartyUiHandler extends MessageUiHandler {
         this.updateOptionsWithRememberMoveRewardMode(pokemon);
         break;
       case PartyUiMode.ITEM_TRANSFER:
-        if (!this.transferMode) {
-          this.updateOptionsWithItemTransferMode(pokemon);
-        } else {
+        if (this.transferMode) {
           this.options.push(PartyOption.TRANSFER);
           this.addCommonOptions(pokemon);
+        } else {
+          this.updateOptionsWithModifierTransferMode(pokemon);
         }
         break;
       case PartyUiMode.DISCARD:
@@ -1475,9 +1474,6 @@ export class PartyUiHandler extends MessageUiHandler {
           this.options.push(isBatonPassMove && !allowBatonSwitch ? PartyOption.PASS_BATON : PartyOption.SEND_OUT);
         }
         this.addCommonOptions(pokemon);
-        if (this.partyUiMode === PartyUiMode.SWITCH && pokemon.isFusion()) {
-          this.options.push(PartyOption.UNSPLICE);
-        }
         break;
       case PartyUiMode.REVIVAL_BLESSING:
         this.options.push(PartyOption.REVIVE);
@@ -1511,6 +1507,9 @@ export class PartyUiHandler extends MessageUiHandler {
       case PartyUiMode.CHECK:
         this.addCommonOptions(pokemon);
         if (globalScene.phaseManager.getCurrentPhase().is("SelectRewardPhase")) {
+          if (pokemon.isFusion()) {
+            this.options.push(PartyOption.UNSPLICE);
+          }
           this.options.push(PartyOption.RELEASE);
           const formChangeItems = this.getFormChangeItems(pokemon);
           for (let i = 0; i < formChangeItems.length; i++) {
@@ -1535,11 +1534,11 @@ export class PartyUiHandler extends MessageUiHandler {
 
     switch (this.partyUiMode) {
       case PartyUiMode.ITEM_TRANSFER:
-        if (!this.transferMode) {
-          this.updateOptionsWithItemTransferMode(pokemon);
-        } else {
+        if (this.transferMode) {
           this.options.push(PartyOption.TRANSFER);
           this.addCommonOptions(pokemon);
+        } else {
+          this.updateOptionsWithItemTransferMode(pokemon);
         }
         break;
       case PartyUiMode.DISCARD:
@@ -1547,7 +1546,12 @@ export class PartyUiHandler extends MessageUiHandler {
         break;
       case PartyUiMode.SWITCH:
       case PartyUiMode.RELEASE:
+        this.options.push(PartyOption.RELEASE);
+        break;
       case PartyUiMode.CHECK:
+        if (globalScene.phaseManager.getCurrentPhase().is("MysteryEncounterPhase")) {
+          break;
+        }
         this.options.push(PartyOption.RELEASE);
         break;
     }
@@ -1892,8 +1896,6 @@ class PartySlot extends Phaser.GameObjects.Container {
   }
 
   setup(partyUiMode: PartyUiMode, tmMoveId: MoveId) {
-    const currentLanguage = i18next.resolvedLanguage ?? "en";
-    const offsetJa = currentLanguage === "ja";
     const isItemManageMode = partyUiMode === PartyUiMode.ITEM_TRANSFER || partyUiMode === PartyUiMode.DISCARD;
 
     this.slotBgKey = this.isBenched
@@ -1916,13 +1918,13 @@ class PartySlot extends Phaser.GameObjects.Container {
     // icon position relative to slot background
     let slotPb = { x: 4, y: 4 };
     // name position relative to slot background
-    let namePosition = { x: 24, y: 10 + (offsetJa ? 2 : 0) };
+    let namePosition = { x: 24, y: 10 };
     // maximum allowed length of name; must accomodate fusion symbol
     let maxNameTextWidth = 76 - (isFusion ? 8 : 0);
     // "Lv." label position relative to slot background
     let levelLabelPosition = { x: 24 + 8, y: 10 + 12 };
     // offset from "Lv." to the level number; should not be changed.
-    const levelTextToLevelLabelOffset = { x: 9, y: offsetJa ? 1.5 : 0 };
+    const levelTextToLevelLabelOffset = { x: 9, y: 0 };
     // offests from "Lv." to gender, spliced and status icons, these depend on the type of slot.
     let genderTextToLevelLabelOffset = { x: 68 - (isFusion ? 8 : 0), y: -9 };
     let splicedIconToLevelLabelOffset = { x: 68, y: 3.5 - 12 };
@@ -1933,7 +1935,7 @@ class PartySlot extends Phaser.GameObjects.Container {
     let hpBarPosition = { x: 8, y: 31 };
     // offsets of hp bar overlay (showing the remaining hp) and number; should not be changed.
     const hpOverlayToBarOffset = { x: 16, y: 2 };
-    const hpTextToBarOffset = { x: -3, y: -2 + (offsetJa ? 2 : 0) };
+    const hpTextToBarOffset = { x: -3, y: -2 };
     // description position relative to slot background
     let descriptionLabelPosition = { x: 32, y: 46 };
 
@@ -1948,7 +1950,7 @@ class PartySlot extends Phaser.GameObjects.Container {
     // Benched slots have significantly different parameters
     if (this.isBenched) {
       slotPb = { x: 2, y: 12 };
-      namePosition = { x: 21, y: 2 + (offsetJa ? 2 : 0) };
+      namePosition = { x: 21, y: 2 };
       maxNameTextWidth = 52;
       levelLabelPosition = { x: 21 + 8, y: 2 + 12 };
       genderTextToLevelLabelOffset = { x: 36, y: 0 };
@@ -1970,7 +1972,7 @@ class PartySlot extends Phaser.GameObjects.Container {
     const slotInfoContainer = globalScene.add.container(0, 0);
     this.add(slotInfoContainer);
 
-    let displayName = this.pokemon.getNameToRender(false);
+    let displayName = this.pokemon.getNameToRender({ useIllusion: false });
     let nameTextWidth: number;
 
     const nameSizeTest = addTextObject(0, 0, displayName, TextStyle.PARTY);

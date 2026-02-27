@@ -87,6 +87,12 @@ export class SettingsDisplayUiHandler extends AbstractSettingsUiHandler {
             label: "繁體中文",
           };
           break;
+        case "th":
+          this.settings[languageIndex].options[0] = {
+            value: "ไทย",
+            label: "ไทย",
+          };
+          break;
         case "ca":
           this.settings[languageIndex].options[0] = {
             value: "Català",
@@ -103,6 +109,12 @@ export class SettingsDisplayUiHandler extends AbstractSettingsUiHandler {
           this.settings[languageIndex].options[0] = {
             value: "Русский",
             label: "Русский (Needs Help)",
+          };
+          break;
+        case "uk":
+          this.settings[languageIndex].options[0] = {
+            value: "Українська",
+            label: "Українська (Needs Help)",
           };
           break;
         case "id":
@@ -127,6 +139,12 @@ export class SettingsDisplayUiHandler extends AbstractSettingsUiHandler {
           this.settings[languageIndex].options[0] = {
             value: "Norsk bokmål",
             label: "Norsk bokmål (Needs Help)",
+          };
+          break;
+        case "sv":
+          this.settings[languageIndex].options[0] = {
+            value: "Svenska",
+            label: "Svenska",
           };
           break;
         case "ro":

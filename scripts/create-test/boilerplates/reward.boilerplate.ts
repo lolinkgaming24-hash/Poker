@@ -7,7 +7,7 @@ import { HeldItemReward } from "#items/held-item-reward";
 import { GameManager } from "#test/test-utils/game-manager";
 import { generateRewardForTest } from "#test/test-utils/reward-test-utils";
 import Phaser from "phaser";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 describe("{{description}}", () => {
   let phaserGame: Phaser.Game;
@@ -17,10 +17,6 @@ describe("{{description}}", () => {
     phaserGame = new Phaser.Game({
       type: Phaser.HEADLESS,
     });
-  });
-
-  afterEach(() => {
-    game.phaseInterceptor.restoreOg();
   });
 
   beforeEach(() => {

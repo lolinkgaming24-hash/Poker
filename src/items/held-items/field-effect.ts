@@ -7,6 +7,7 @@ import type { FieldEffectParams } from "#types/held-item-parameter";
  * duration of weather and terrain effects.
  * @see {@linkcode apply}
  */
+// TODO: Rename this to be more descriptive
 export class FieldEffectHeldItem extends HeldItem<[typeof HeldItemEffect.FIELD_EFFECT]> {
   public readonly effects = [HeldItemEffect.FIELD_EFFECT] as const;
 

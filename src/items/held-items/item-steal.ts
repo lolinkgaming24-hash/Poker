@@ -4,10 +4,11 @@ import { allHeldItems } from "#data/data-lists";
 import { HeldItemEffect } from "#enums/held-item-effect";
 import type { HeldItemId } from "#enums/held-item-id";
 import { Pokemon } from "#field/pokemon";
-import { type EffectTuple, HeldItem } from "#items/held-item";
+import { HeldItem } from "#items/held-item";
 import type { ItemStealParams } from "#types/held-item-parameter";
 import { coerceArray, randSeedFloat } from "#utils/common";
 import i18next from "i18next";
+import type { NonEmptyTuple } from "type-fest";
 
 //  constructor(type: HeldItemId, maxStackCount: number, boostPercent: number) {
 
@@ -16,18 +17,14 @@ import i18next from "i18next";
  * @see {@linkcode TurnEndItemStealHeldItem}
  * @see {@linkcode ContactItemStealChanceHeldItem}
  */
-export abstract class ItemTransferHeldItem<T extends EffectTuple> extends HeldItem<T> {
-  /**
-   * Steals an item, chosen randomly, from a set of target Pokemon.
-   * @param __namedParameters.pokemon - Needed for proper typedoc rendering
-   * @returns `true` if an item was stolen; false otherwise.
-   */
+export abstract class ItemTransferHeldItem<T extends NonEmptyTuple<HeldItemEffect>> extends HeldItem<T> {
+  /** @sealed */
   // TODO: This works but can perhaps be done more elegantly
-  applySteal(params: ItemStealParams): boolean {
+  public override apply(_effect: this["effects"][number], params: ItemStealParams): void {
     const opponents = this.getTargets(params);
 
     if (opponents.length === 0) {
-      return false;
+      return;
     }
 
     const pokemon = params.pokemon;
@@ -36,7 +33,7 @@ export abstract class ItemTransferHeldItem<T extends EffectTuple> extends HeldIt
 
     const transferredItemCount = this.getTransferredItemCount(params);
     if (!transferredItemCount) {
-      return false;
+      return;
     }
 
     // TODO: Change this logic to use held items
@@ -59,15 +56,13 @@ export abstract class ItemTransferHeldItem<T extends EffectTuple> extends HeldIt
     for (const mt of transferredRewards) {
       globalScene.phaseManager.queueMessage(this.getTransferMessage(params, mt));
     }
-
-    return transferredRewards.length > 0;
   }
 
-  abstract getTargets(params: ItemStealParams): Pokemon[];
+  protected abstract getTargets(params: ItemStealParams): Pokemon[];
 
-  abstract getTransferredItemCount(params: ItemStealParams): number;
+  protected abstract getTransferredItemCount(params: ItemStealParams): number;
 
-  abstract getTransferMessage(params: ItemStealParams, itemId: HeldItemId): string;
+  protected abstract getTransferMessage(params: ItemStealParams, itemId: HeldItemId): string;
 }
 
 /**
@@ -82,10 +77,6 @@ export class TurnEndItemStealHeldItem extends ItemTransferHeldItem<[typeof HeldI
     return i18next.t("modifierType:ModifierType.TurnHeldItemTransferModifierType.description");
   }
 
-  apply(_effect: typeof HeldItemEffect.TURN_END_ITEM_STEAL, params: ItemStealParams): void {
-    super.applySteal(params);
-  }
-
   /**
    * Determines the targets to transfer items from when this applies.
    * @param pokemon the {@linkcode Pokemon} holding this item
@@ -93,6 +84,7 @@ export class TurnEndItemStealHeldItem extends ItemTransferHeldItem<[typeof HeldI
    * @returns the opponents of the source {@linkcode Pokemon}
    */
   getTargets(params: ItemStealParams): Pokemon[] {
+    // TODO: this will always be defined, might be placeholder?
     return params.pokemon instanceof Pokemon ? params.pokemon.getOpponents() : [];
   }
 
@@ -136,10 +128,6 @@ export class ContactItemStealChanceHeldItem extends ItemTransferHeldItem<
     return i18next.t("modifierType:ModifierType.ContactHeldItemTransferChanceModifierType.description", {
       chancePercent: this.chancePercent,
     });
-  }
-
-  apply(_effect: typeof HeldItemEffect.CONTACT_ITEM_STEAL_CHANCE, params: ItemStealParams) {
-    super.applySteal(params);
   }
 
   /**

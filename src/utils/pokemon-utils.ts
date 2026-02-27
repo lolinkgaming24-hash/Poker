@@ -7,7 +7,7 @@ import { BattlerIndex } from "#enums/battler-index";
 import { SpeciesId } from "#enums/species-id";
 import { TrainerItemId } from "#enums/trainer-item-id";
 import type { EnemyPokemon, PlayerPokemon, Pokemon } from "#field/pokemon";
-import { randSeedItem } from "./common";
+import { randSeedItem } from "#utils/common";
 
 /**
  * Gets the {@linkcode PokemonSpecies} object associated with the {@linkcode SpeciesId} enum given
@@ -26,6 +26,15 @@ export function getPokemonSpecies(species: SpeciesId | SpeciesId[]): PokemonSpec
     return allSpecies.find(s => s.speciesId === species)!;
   }
   return allSpecies[species - 1];
+}
+
+/**
+ * Converts the internal id of the Pokemon into its national dex number
+ * @param speciesId - The {@linkcode SpeciesId} to get the dex number of
+ * @returns The national dex number matching the `SpeciesId`
+ */
+export function getDexNumber(speciesId: SpeciesId): SpeciesId {
+  return speciesId % 2000;
 }
 
 /**

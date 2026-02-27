@@ -74,7 +74,7 @@ export interface InstantReviveParams extends DefaultHeldItemParams {}
 
 export interface ItemStealParams extends DefaultHeldItemParams {
   /** The pokemon to steal from (optional) */
-  // TODO: https://github.com/pagefaultgames/pokerogue/pull/5656#discussion_r2135607083
+  // TODO: This should not be optional
   target?: Pokemon;
 }
 

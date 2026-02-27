@@ -16,6 +16,7 @@ import type { EggData } from "#system/egg-data";
 import type { GameStats } from "#system/game-stats";
 import type { PokemonData } from "#system/pokemon-data";
 import type { TrainerData } from "#system/trainer-data";
+import type { SerializedDailyRunConfig } from "./daily-run";
 import type { DexData } from "./dex-data";
 import type { TrainerItemSaveData } from "./trainer-item-data-types";
 
@@ -41,6 +42,7 @@ export interface SessionSaveData {
   seed: string;
   playTime: number;
   gameMode: GameModes;
+  dailyConfig?: SerializedDailyRunConfig;
   party: PokemonData[];
   enemyParty: PokemonData[];
   trainerItems: TrainerItemSaveData;
@@ -92,15 +94,15 @@ export interface StarterMoveData {
 }
 
 export interface StarterAttributes {
-  nature?: number;
-  ability?: number;
-  variant?: number;
-  form?: number;
-  female?: boolean;
-  shiny?: boolean;
-  favorite?: boolean;
-  nickname?: string;
-  tera?: PokemonType;
+  nature?: number | undefined;
+  ability?: number | undefined;
+  variant?: number | undefined;
+  form?: number | undefined;
+  female?: boolean | undefined;
+  shiny?: boolean | undefined;
+  favorite?: boolean | undefined;
+  nickname?: string | undefined;
+  tera?: PokemonType | undefined;
 }
 
 export interface DexAttrProps {
@@ -115,14 +117,14 @@ export interface Starter {
   shiny: boolean;
   variant: Variant;
   formIndex: number;
-  female?: boolean;
+  female?: boolean | undefined;
   abilityIndex: number;
   passive: boolean;
   nature: Nature;
-  moveset?: StarterMoveset;
+  moveset?: StarterMoveset | undefined;
   pokerus: boolean;
-  nickname?: string;
-  teraType?: PokemonType;
+  nickname?: string | undefined;
+  teraType?: PokemonType | undefined;
   ivs: number[];
 }
 
