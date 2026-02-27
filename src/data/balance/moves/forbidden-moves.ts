@@ -130,6 +130,7 @@ export const LEVEL_BASED_DENYLIST: ReadonlySet<MoveId> = new Set([
   MoveId.WATER_SPORT,
   MoveId.WITHDRAW,
   MoveId.WRAP,
+  MoveId.TAKE_DOWN,
   // Really bad moves
   MoveId.RAZOR_WIND,
   MoveId.SLAM,
