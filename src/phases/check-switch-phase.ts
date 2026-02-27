@@ -6,6 +6,8 @@ import { BattlerTagType } from "#enums/battler-tag-type";
 import { SwitchType } from "#enums/switch-type";
 import { UiMode } from "#enums/ui-mode";
 import { BattlePhase } from "#phases/battle-phase";
+import type { RecallPhase } from "#phases/recall-phase";
+import type { SwitchPhase } from "#phases/switch-phase";
 import { PartyOption, PartyUiMode } from "#ui/party-ui-handler";
 import i18next from "i18next";
 
@@ -13,7 +15,7 @@ import i18next from "i18next";
  * Phase handling asking the player to switch Pokemon at the start of a battle.
  *
  * If the prompt is confirmed, the corresponding Pokemon will be {@linkcode RecallPhase | recalled}
- * and the selected replacement {@linkcode SwitchPhase | switched in}.
+ * and the selected replacement {@linkcode SwitchPhase | switched in}. \
  * If the prompt is denied or the conditions for it to appear are not met, a {@linkcode PostSummonPhase}
  * will be queued to trigger on-summon abilities and similar effects.
  */
@@ -28,13 +30,21 @@ export class CheckSwitchPhase extends BattlePhase {
     this.fieldIndex = fieldIndex;
   }
 
-  start() {
+  public override start(): void {
     super.start();
 
     const pokemon = globalScene.getPlayerField()[this.fieldIndex];
-    const { field, battleStyle } = globalScene;
+    const { field, battleStyle, phaseManager } = globalScene;
 
     // End this phase early...
+
+    // ...if the checked Pokemon is somehow not on the field
+    // TODO: Do we need this check anymore?
+    if (!field.getAll().includes(pokemon)) {
+      phaseManager.queueBattlerEntrance(pokemon.getBattlerIndex(), { when: "eager" });
+      super.end();
+      return;
+    }
 
     // ...if the user is playing in Set Mode
     if (battleStyle === BattleStyle.SET) {
@@ -43,14 +53,7 @@ export class CheckSwitchPhase extends BattlePhase {
     }
 
     // ... if the battle type is ineligible
-    if (!this.checkBattleType()) {
-      this.end();
-      return;
-    }
-
-    // ...if the checked Pokemon is somehow not on the field
-    // TODO: Do we need this check anymore?
-    if (!field.getAll().includes(pokemon)) {
+    if (!this.checkBattle()) {
       this.end();
       return;
     }
@@ -79,7 +82,10 @@ export class CheckSwitchPhase extends BattlePhase {
     this.showSwitchPrompt();
   }
 
-  private checkBattleType(): boolean {
+  /**
+   * @returns Whether the current battle is eligible for a switch prompt.
+   */
+  private checkBattle(): boolean {
     const { double, battleType, waveIndex } = globalScene.currentBattle;
     const availablePartyMembers = globalScene.getPokemonAllowedInBattle().length;
     const minPartySize = double ? 2 : 1;
@@ -105,12 +111,12 @@ export class CheckSwitchPhase extends BattlePhase {
       }),
       null,
       () => {
-        globalScene.ui.setMode(UiMode.CONFIRM, this.onConfirm, this.onDeny);
+        globalScene.ui.setMode(UiMode.CONFIRM, this.onConfirm.bind(this), this.onDeny.bind(this));
       },
     );
   }
 
-  private onConfirm(): void {
+  private onConfirm(this: CheckSwitchPhase): void {
     globalScene.ui.setMode(UiMode.PARTY, PartyUiMode.SWITCH, this.fieldIndex, (cursor: number, option: PartyOption) =>
       this.onPartyModeSelection(cursor, option),
     );
@@ -135,16 +141,16 @@ export class CheckSwitchPhase extends BattlePhase {
   /**
    * End the phase upon denying the switch prompt.
    */
-  private async onDeny(): Promise<void> {
+  private async onDeny(this: CheckSwitchPhase): Promise<void> {
     await globalScene.ui.setMode(UiMode.MESSAGE);
     this.end();
   }
 
   /**
-   * @param success - Whether the switch out prompt was accepted; default `false`
+   * @param promptAccepted - Whether the switch out prompt was accepted; default `false`
    */
-  public override end(success?: true): void {
-    if (!success) {
+  public override end(promptAccepted?: true): void {
+    if (!promptAccepted) {
       globalScene.phaseManager.pushNew("PostSummonPhase", this.fieldIndex);
     }
     super.end();

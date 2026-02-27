@@ -353,7 +353,7 @@ export class PhaseManager {
    * @throws {Error}
    * Throws an error if `battlerIndex` corresponds to an enemy Pokemon with `checkSwitch` set to `true`
    * @see {@linkcode queueBattlerEntrancePhases}
-   * Alternate helper function that queues phases for multiple Pokemon entering the field.
+   * Alternate helper function that queues phases for multiple Pokemon entering the field on battle start.
    */
   public queueBattlerEntrance<T extends FieldBattlerIndex>(
     battlerIndex: T,

@@ -1,5 +1,6 @@
 import { globalScene } from "#app/global-scene";
 import type { Phase } from "#app/phase";
+import type { PhaseManager } from "#app/phase-manager";
 import type { EnemyPokemon, PlayerPokemon } from "#field/pokemon";
 import { IvScannerModifier } from "#modifiers/modifier";
 import type { CheckSwitchPhase } from "#phases/check-switch-phase";
@@ -14,8 +15,8 @@ import type { NonEmptyTuple } from "type-fest";
 interface BattlerEntranceParams extends SummonPhaseOptions {
   /**
    * Whether to queue {@linkcode CheckSwitchPhase}s instead of {@linkcode PostSummonPhase}s for player pokemon
-   * to ask the player if they would like to switch _BEFORE_ applying on-entrance effects.
-   * If the switch prompt is denied, a regular {@linkcode PostSummonPhase} will be queued after said phase ends.
+   * to ask the player if they would like to switch _BEFORE_ applying on-entrance effects. \
+   * If the switch prompt is denied or otherwise rendered ineligible, a regular {@linkcode PostSummonPhase} will be queued after said phase ends.
    * @defaultValue `true`
    * @privateRemarks
    * Ignored when summoning `EnemyPokemon` (for whom `CheckSwitchPhase`s cannot be queued).
@@ -35,9 +36,10 @@ interface BattlerEntranceParams extends SummonPhaseOptions {
 /**
  * Queue a sequence of phases to add all player and/or enemy Pokemon to the field. \
  * Encompasses both visual and logical elements, and checks whether each individual Pokemon
- * is already on field before attempting to summon them.
+ * is already on-field before attempting to summon them.
  * @param params - Parameters used to customize switching behavior.
  * Any excess parameters will be passed to the the queued `SummonPhase`s.
+ * @see {@linkcode PhaseManager.queueBattlerEntrance} - Function that queues a single entrance sequence for 1 Pokemon
  */
 export function queueBattlerEntrancePhases(params: BattlerEntranceParams): void {
   const { double } = globalScene.currentBattle;
@@ -46,10 +48,11 @@ export function queueBattlerEntrancePhases(params: BattlerEntranceParams): void 
   const addEnemy2 = double && globalScene.getEnemyParty().filter(p => p.isAllowedInBattle()).length > 1;
 
   const phases = getBattlerEntrancePhases(addPlayer2, addEnemy2, params);
-  globalScene.phaseManager.unshiftPhase(phases[0], ...phases.slice(1));
+  globalScene.phaseManager.unshiftPhase(...phases);
 }
 
 // #region Helpers
+
 function getBattlerEntrancePhases(
   addPlayer2: boolean,
   addEnemy2: boolean,
@@ -59,7 +62,6 @@ function getBattlerEntrancePhases(
   const enemyMons = globalScene.getEnemyParty().slice(0, 1 + +addEnemy2);
 
   // Type assertion is valid as these will always unshift at least 1 phase
-  // TODO:
   const phases = [
     ...getSummonPhases(playerMons, enemyMons, params),
     ...getIvScannerPhases(enemyMons),
