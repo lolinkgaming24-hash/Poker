@@ -1,6 +1,7 @@
 import type { AbilityId } from "#enums/ability-id";
 import type { BiomeId } from "#enums/biome-id";
 import type { BiomePoolTier } from "#enums/biome-pool-tier";
+import type { Challenges } from "#enums/challenges";
 import type { Nature } from "#enums/nature";
 import type { SpeciesId } from "#enums/species-id";
 import type { Variant } from "#sprites/variant";
@@ -79,6 +80,11 @@ export interface DailyTrainerManipulation {
   isTrainer: boolean;
 }
 
+export interface DailyEventCHallenge {
+  id: Challenges;
+  value: number;
+}
+
 /**
  * Configuration for a custom daily run seed.
  * @privateRemarks
@@ -93,6 +99,7 @@ export interface CustomDailyRunConfig {
   startingMoney?: number;
   forcedWaves?: DailyForcedWave[];
   trainerManipulations?: DailyTrainerManipulation[];
+  challenges?: DailyEventCHallenge[];
   /** The actual seed used for the daily run. */
   seed: string;
 }

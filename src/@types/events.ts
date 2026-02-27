@@ -1,5 +1,4 @@
 import type { BiomeId } from "#enums/biome-id";
-import type { Challenges } from "#enums/challenges";
 import type { EventType } from "#enums/event-type";
 import type { ClassicFixedBossWaves } from "#enums/fixed-boss-waves";
 import type { MysteryEncounterTier } from "#enums/mystery-encounter-tier";
@@ -39,11 +38,6 @@ export interface EventWaveReward {
 
 export type EventMusicReplacement = readonly [string, string];
 
-export interface EventChallenge {
-  readonly challenge: Challenges;
-  readonly value: number;
-}
-
 export type EventWeatherPools = Readonly<Partial<Record<BiomeId, WeatherPool>>>;
 export type EventTerrainPools = Readonly<Partial<Record<BiomeId, TerrainPool>>>;
 
@@ -67,6 +61,5 @@ export interface TimedEvent extends EventBanner {
   readonly classicWaveRewards?: readonly EventWaveReward[]; // Rival battle rewards
   readonly trainerShinyChance?: number; // Odds over 65536 of trainer mon generating as shiny
   readonly music?: readonly EventMusicReplacement[];
-  readonly dailyRunChallenges?: readonly EventChallenge[];
   readonly dailyRunStartingItems?: readonly ModifierTypeKeys[];
 }

@@ -92,6 +92,12 @@
         "$ref": "#/$defs/trainerManipulation"
       }
     },
+    "challenges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/challenge"
+      }
+    },
     "seed": {
       "type": "string"
     },
@@ -187,6 +193,22 @@
         }
       },
       "required": ["waveIndex", "isTrainer"],
+      "additionalProperties": false
+    },
+    "challenge": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["id", "value"],
       "additionalProperties": false
     }
   },

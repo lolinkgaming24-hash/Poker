@@ -276,6 +276,18 @@ export function getDailyTrainerManipulation(waveIndex: number): boolean | null {
   return trainerManipulation.isTrainer;
 }
 
+export function startDailyEventChallenges(): void {
+  if (!isDailyEventSeed()) {
+    return;
+  }
+
+  const { dailyConfig } = globalScene.gameMode;
+
+  for (const dailyChallenge of dailyConfig?.challenges ?? []) {
+    globalScene.gameMode.setChallengeValue(dailyChallenge.id, dailyChallenge.value);
+  }
+}
+
 /**
  * Sets a custom starting biome for the daily run if specified in the config.
  * @see {@linkcode CustomDailyRunConfig}

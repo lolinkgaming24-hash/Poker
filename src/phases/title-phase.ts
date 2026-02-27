@@ -6,7 +6,7 @@ import { globalScene } from "#app/global-scene";
 import Overrides from "#app/overrides";
 import { Phase } from "#app/phase";
 import { bypassLogin } from "#constants/app-constants";
-import { getDailyRunStarters } from "#data/daily-seed/daily-run";
+import { getDailyRunStarters, startDailyEventChallenges } from "#data/daily-seed/daily-run";
 import { modifierTypes } from "#data/data-lists";
 import { Gender } from "#data/gender";
 import { BattleType } from "#enums/battle-type";
@@ -228,10 +228,11 @@ export class TitlePhase extends Phase {
 
       const generateDaily = (seed: string) => {
         globalScene.gameMode = getGameMode(GameModes.DAILY);
-        // Daily runs don't support all challenges yet (starter select restrictions aren't considered)
-        timedEventManager.startEventChallenges();
 
         seed = globalScene.gameMode.trySetCustomDailyConfig(seed);
+
+        // Daily runs don't support all challenges yet (starter select restrictions aren't considered)
+        startDailyEventChallenges();
 
         globalScene.setSeed(seed);
         globalScene.resetSeed();

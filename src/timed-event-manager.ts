@@ -1,4 +1,3 @@
-import { globalScene } from "#app/global-scene";
 import { SHINY_CATCH_RATE_MULTIPLIER } from "#balance/rates";
 import { CLASSIC_CANDY_FRIENDSHIP_MULTIPLIER } from "#balance/starters";
 import type { PokemonSpeciesFilter } from "#data/pokemon-species";
@@ -202,15 +201,6 @@ export class TimedEventManager {
       }
     }
     return bgm;
-  }
-
-  /**
-   * Activate any challenges on {@linkcode globalScene.gameMode} for the currently active event
-   */
-  startEventChallenges(): void {
-    for (const eventChal of this.activeEvent()?.dailyRunChallenges ?? []) {
-      globalScene.gameMode.setChallengeValue(eventChal.challenge, eventChal.value);
-    }
   }
 
   getEventDailyStartingItems(): readonly ModifierTypeKeys[] {
