@@ -18,6 +18,7 @@ interface LoadingFontFaceProperty {
 
 const unicodeRanges = {
   fullwidth: "U+FF00-FFEF",
+  hangul: "U+1100-11FF,U+3130-318F,U+A960-A97F,U+AC00-D7AF,U+D7B0-D7FF",
   kana: "U+3040-30FF",
   CJKCommon: "U+2E80-2EFF,U+3000-303F,U+31C0-31EF,U+3200-32FF,U+3400-4DBF,U+F900-FAFF,U+FE30-FE4F",
   CJKIdeograph: "U+4E00-9FFF",
@@ -27,6 +28,7 @@ const unicodeRanges = {
 };
 
 const rangesByLanguage = {
+  korean: [unicodeRanges.CJKCommon, unicodeRanges.hangul].join(","),
   chinese: [unicodeRanges.CJKCommon, unicodeRanges.fullwidth, unicodeRanges.CJKIdeograph].join(","),
   japanese: [unicodeRanges.CJKCommon, unicodeRanges.fullwidth, unicodeRanges.kana, unicodeRanges.CJKIdeograph].join(
     ",",
@@ -36,46 +38,50 @@ const rangesByLanguage = {
 const fonts: LoadingFontFaceProperty[] = [
   // unicode (special characters)
   {
-    face: new FontFace("pkmnems", "url(./fonts/pokemon-emerald-pro.ttf)", {
+    face: new FontFace("emerald", "url(./fonts/PokePT_Wansung.woff2)", {
       unicodeRange: unicodeRanges.specialCharacters,
+    }),
+    extraOptions: { sizeAdjust: "133%" },
+  },
+  // unicode (korean)
+  {
+    face: new FontFace("emerald", "url(./fonts/PokePT_Wansung.woff2)", {
+      unicodeRange: rangesByLanguage.korean,
+    }),
+  },
+  {
+    face: new FontFace("pkmnems", "url(./fonts/PokePT_Wansung.woff2)", {
+      unicodeRange: rangesByLanguage.korean,
     }),
     extraOptions: { sizeAdjust: "133%" },
   },
   // unicode (chinese)
   {
+    face: new FontFace("emerald", "url(./fonts/unifont-15.1.05.subset.woff2)", {
+      unicodeRange: rangesByLanguage.chinese,
+    }),
+    extraOptions: { sizeAdjust: "70%", format: "woff2" },
+    only: ["zh"],
+  },
+  {
     face: new FontFace("pkmnems", "url(./fonts/pokemon-emerald-pro.ttf)", {
       unicodeRange: rangesByLanguage.chinese,
     }),
     extraOptions: { sizeAdjust: "133%" },
-    only: [
-      "en",
-      "es",
-      "fr",
-      "it",
-      "de",
-      "pt",
-      "ko",
-      "ja",
-      "ca",
-      "da",
-      "tr",
-      "th",
-      "ro",
-      "ru",
-      "uk",
-      "id",
-      "hi",
-      "tl",
-      "sv",
-      "zh",
-    ],
+    only: ["zh"],
   },
   // japanese
   {
     face: new FontFace("emerald", "url(./fonts/pokemon-bw.ttf)", {
       unicodeRange: rangesByLanguage.japanese,
     }),
-    only: ["ja"],
+    only: ["en", "es", "fr", "it", "de", "pt", "ko", "ja", "ca", "da", "th", "tr", "ro", "ru", "id", "hi", "tl", "sv"],
+  },
+  {
+    face: new FontFace("pkmnems", "url(./fonts/pokemon-bw.ttf)", {
+      unicodeRange: rangesByLanguage.japanese,
+    }),
+    only: ["en", "es", "fr", "it", "de", "pt", "ko", "ja", "ca", "da", "th", "tr", "ro", "ru", "id", "hi", "tl", "sv"],
   },
   // devanagari
   {
@@ -91,6 +97,11 @@ const fonts: LoadingFontFaceProperty[] = [
   // thai
   {
     face: new FontFace("emerald", "url(./fonts/fsrebellion.otf)", {
+      unicodeRange: unicodeRanges.thai,
+    }),
+  },
+  {
+    face: new FontFace("pkmnems", "url(./fonts/terrible-thaifix.ttf)", {
       unicodeRange: unicodeRanges.thai,
     }),
   },
