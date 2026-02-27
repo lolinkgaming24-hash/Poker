@@ -20,7 +20,8 @@ export interface DailySeedStarter {
   variant?: Variant | undefined;
   moveset?: StarterMoveset | undefined;
   nature?: Nature | undefined;
-  abilityIndex?: number | undefined;
+  ability?: AbilityId | undefined;
+  passive?: AbilityId | undefined;
 }
 
 type DailySeedStarterTuple = TupleRange<1, 6, DailySeedStarter>;
@@ -81,7 +82,7 @@ export interface DailyTrainerManipulation {
   isTrainer: boolean;
 }
 
-export interface DailyEventCHallenge {
+export interface DailyEventChallenge {
   id: Challenges;
   value: number;
 }

@@ -245,7 +245,7 @@ export class TitlePhase extends Phase {
         // TODO: Dedupe this
         const party = globalScene.getPlayerParty();
         const loadPokemonAssets: Promise<void>[] = [];
-        for (const starter of starters) {
+        for (const [index, starter] of starters.entries()) {
           const species = getPokemonSpecies(starter.speciesId);
           const starterFormIndex = starter.formIndex;
           const starterGender =
@@ -265,6 +265,14 @@ export class TitlePhase extends Phase {
           if (starter.moveset) {
             // avoid validating daily run starter movesets which are pre-populated already
             starterPokemon.tryPopulateMoveset(starter.moveset, true);
+          }
+
+          const customStarterConfig = globalScene.gameMode.dailyConfig?.starters?.[index];
+          if (customStarterConfig?.ability != null) {
+            starterPokemon.customPokemonData.ability = customStarterConfig.ability;
+          }
+          if (customStarterConfig?.passive != null) {
+            starterPokemon.customPokemonData.passive = customStarterConfig.passive;
           }
 
           party.push(starterPokemon);

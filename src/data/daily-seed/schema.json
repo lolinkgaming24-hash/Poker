@@ -24,8 +24,11 @@
           "nature": {
             "$ref": "#/$defs/nature"
           },
-          "abilityIndex": {
-            "$ref": "#/$defs/abilityIndex"
+          "ability": {
+            "$ref": "#/$defs/ability"
+          },
+          "passive": {
+            "$ref": "#/$defs/passive"
           }
         },
         "required": ["speciesId"],
@@ -132,11 +135,6 @@
     "passive": {
       "type": "integer",
       "exclusiveMinimum": 0
-    },
-    "abilityIndex": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 2
     },
     "moveset": {
       "type": "array",

@@ -116,9 +116,15 @@ export function validateDailyStarterConfig(config: DailySeedStarter): DailySeedS
     config.nature = undefined;
   }
 
-  if (config.abilityIndex != null && !isBetween(config.abilityIndex, 0, 2)) {
-    console.warn("Invalid ability index used for custom daily run seed starter:", config.abilityIndex);
-    config.abilityIndex = undefined;
+  const abilityIds = getEnumValues(AbilityId);
+  if (config.ability != null && !abilityIds.includes(config.ability)) {
+    console.warn("Invalid ability used for custom daily run seed starter:", config.ability);
+    config.ability = undefined;
+  }
+
+  if (config.passive != null && !abilityIds.includes(config.passive)) {
+    console.warn("Invalid passive used for custom daily run seed starter:", config.passive);
+    config.passive = undefined;
   }
 
   return config;
@@ -200,7 +206,7 @@ export function getDailyRunStarter(species: PokemonSpecies, config?: DailySeedSt
   const pokemon = globalScene.addPlayerPokemon(
     species,
     startingLevel,
-    config?.abilityIndex,
+    undefined,
     config?.formIndex,
     undefined,
     isShiny,
