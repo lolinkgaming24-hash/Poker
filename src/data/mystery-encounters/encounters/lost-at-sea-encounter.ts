@@ -34,6 +34,7 @@ export const LostAtSeaEncounter: MysteryEncounter = MysteryEncounterBuilder.with
 )
   .withEncounterTier(MysteryEncounterTier.COMMON)
   .withSceneWaveRangeRequirement(...CLASSIC_MODE_MYSTERY_ENCOUNTER_WAVES)
+  .withScenePartySizeRequirement(2, 6, true)
   .withIntroSpriteConfigs([
     {
       spriteKey: "lost_at_sea_buoy",

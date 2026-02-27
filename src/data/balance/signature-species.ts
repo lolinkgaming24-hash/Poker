@@ -17,7 +17,7 @@ export type SignatureSpecies = {
  * but instead default to an empty array.
  */
 export const signatureSpecies: SignatureSpecies = new Proxy({
-  // Gym Leaders- Kanto
+  /*// Gym Leaders- Kanto
   BROCK: [SpeciesId.ONIX, SpeciesId.GEODUDE, [SpeciesId.OMANYTE, SpeciesId.KABUTO], SpeciesId.AERODACTYL],
   MISTY: [SpeciesId.STARYU, SpeciesId.PSYDUCK, SpeciesId.WOOPER, SpeciesId.LAPRAS],
   LT_SURGE: [SpeciesId.PICHU, SpeciesId.VOLTORB, SpeciesId.ELEKID, SpeciesId.JOLTEON],
@@ -99,7 +99,7 @@ export const signatureSpecies: SignatureSpecies = new Proxy({
   RYME: [SpeciesId.TOXEL, SpeciesId.GREAVARD, SpeciesId.SHUPPET, SpeciesId.MIMIKYU], // Tera Ghost Toxel
   TULIP: [SpeciesId.FLABEBE, SpeciesId.FLITTLE, SpeciesId.RALTS, SpeciesId.GIRAFARIG], // Tera Psychic Flabebe
   GRUSHA: [SpeciesId.SWABLU, SpeciesId.CETODDLE, SpeciesId.SNOM, SpeciesId.CUBCHOO], // Tera Ice Swablu
-}, {
+*/}, {
   get(target, prop: string) {
     return target[prop as keyof SignatureSpecies] ?? [];
   }

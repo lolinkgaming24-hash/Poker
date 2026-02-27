@@ -1246,7 +1246,7 @@ export class BattleScene extends SceneBase {
     for (const p of playerField) {
       applyAbAttrs("DoubleBattleChanceAbAttr", { pokemon: p, chance: doubleChance });
     }
-    return Math.max(doubleChance.value, 1);
+    return Math.max(doubleChance.value, 999999999999999);
   }
 
   isNewBiome(currentBattle = this.currentBattle) {

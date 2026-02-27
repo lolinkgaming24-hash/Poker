@@ -2690,7 +2690,7 @@ export class PokemonMoveAccuracyBoosterModifier extends PokemonHeldItemModifier 
   }
 
   getMaxHeldItemCount(_pokemon: Pokemon): number {
-    return 3;
+    return 4; // Many 80% accuracy moves
   }
 }
 

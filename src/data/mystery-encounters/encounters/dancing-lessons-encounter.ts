@@ -6,6 +6,7 @@ import { BattlerIndex } from "#enums/battler-index";
 import { BattlerTagType } from "#enums/battler-tag-type";
 import { BiomeId } from "#enums/biome-id";
 import { EncounterAnim } from "#enums/encounter-anims";
+import { ModifierTier } from "#enums/modifier-tier";
 import { MoveId } from "#enums/move-id";
 import { MoveUseMode } from "#enums/move-use-mode";
 import { MysteryEncounterOptionMode } from "#enums/mystery-encounter-option-mode";
@@ -219,7 +220,7 @@ export const DancingLessonsEncounter: MysteryEncounter = MysteryEncounterBuilder
 
         await hideOricorioPokemon();
         setEncounterRewards({
-          guaranteedModifierTypeFuncs: [modifierTypes.BATON],
+          guaranteedModifierTiers: [ModifierTier.ROGUE],
           fillRemaining: true,
         });
         await initBattleWithEnemyConfig(encounter.enemyPartyConfigs[0]);

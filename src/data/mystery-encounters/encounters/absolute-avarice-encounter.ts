@@ -338,7 +338,7 @@ export const AbsoluteAvariceEncounter: MysteryEncounter = MysteryEncounterBuilde
           const stolenBerries: BerryModifier[] = berryMap.get(pokemon.id);
           const berryTypesAsArray: BerryType[] = [];
           stolenBerries?.forEach(bMod => berryTypesAsArray.push(...new Array(bMod.stackCount).fill(bMod.berryType)));
-          const returnedBerryCount = Math.floor(((berryTypesAsArray.length ?? 0) * 2) / 5);
+          const returnedBerryCount = Math.floor(((berryTypesAsArray.length ?? 0) * 5) / 5);
 
           if (returnedBerryCount > 0) {
             for (let i = 0; i < returnedBerryCount; i++) {

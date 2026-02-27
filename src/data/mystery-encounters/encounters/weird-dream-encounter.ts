@@ -128,7 +128,7 @@ export const WeirdDreamEncounter: MysteryEncounter = MysteryEncounterBuilder.wit
   .withEncounterTier(MysteryEncounterTier.ROGUE)
   .withDisallowedChallenges(Challenges.SINGLE_TYPE, Challenges.SINGLE_GENERATION)
   .withSceneWaveRangeRequirement(30, 140)
-  .withScenePartySizeRequirement(3, 6)
+  .withScenePartySizeRequirement(1, 6)
   .withMaxAllowedEncounters(1)
   .withIntroSpriteConfigs([
     {
@@ -287,7 +287,7 @@ export const WeirdDreamEncounter: MysteryEncounter = MysteryEncounterBuilder.wit
           isBoss: newPokemon.getSpeciesForm().getBaseStatTotal() > NON_LEGENDARY_BST_THRESHOLD,
           level: previousPokemon.level,
           dataSource,
-          modifierConfigs: newPokemonHeldItemConfigs,
+          //modifierConfigs: newPokemonHeldItemConfigs,
         };
 
         enemyPokemonConfigs.push(enemyConfig);

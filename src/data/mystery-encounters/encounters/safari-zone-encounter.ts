@@ -55,6 +55,7 @@ export const SafariZoneEncounter: MysteryEncounter = MysteryEncounterBuilder.wit
 )
   .withEncounterTier(MysteryEncounterTier.GREAT)
   .withSceneWaveRangeRequirement(...CLASSIC_MODE_MYSTERY_ENCOUNTER_WAVES)
+  .withScenePartySizeRequirement(2, 6, true)
   .withSceneRequirement(new MoneyRequirement(0, SAFARI_MONEY_MULTIPLIER)) // Cost equal to 1 Max Revive
   .withAutoHideIntroVisuals(false)
   .withIntroSpriteConfigs([

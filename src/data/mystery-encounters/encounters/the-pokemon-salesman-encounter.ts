@@ -52,6 +52,7 @@ export const ThePokemonSalesmanEncounter: MysteryEncounter = MysteryEncounterBui
 )
   .withEncounterTier(MysteryEncounterTier.ULTRA)
   .withSceneWaveRangeRequirement(...CLASSIC_MODE_MYSTERY_ENCOUNTER_WAVES)
+  .withScenePartySizeRequirement(2, 6, true)
   .withSceneRequirement(new MoneyRequirement(0, MAX_POKEMON_PRICE_MULTIPLIER)) // Some costs may not be as significant, this is the max you'd pay
   .withAutoHideIntroVisuals(false)
   .withIntroSpriteConfigs([

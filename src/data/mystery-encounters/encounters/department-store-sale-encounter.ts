@@ -94,7 +94,7 @@ export const DepartmentStoreSaleEncounter: MysteryEncounter = MysteryEncounterBu
         // 2/1 weight on base stat booster vs PP Up
         const roll = randSeedInt(3);
         if (roll === 0) {
-          modifiers.push(modifierTypes.PP_UP);
+          modifiers.push(modifierTypes.BASE_STAT_BOOSTER);
         } else {
           modifiers.push(modifierTypes.BASE_STAT_BOOSTER);
         }

@@ -1577,7 +1577,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
     [BiomePoolTier.BOSS]: []
   },
   [BiomeId.PLAINS]: {
-    [BiomePoolTier.COMMON]: [ TrainerType.BREEDER, TrainerType.TWINS ],
+    [BiomePoolTier.COMMON]: [ TrainerType.BREEDER ],
     [BiomePoolTier.UNCOMMON]: [ TrainerType.ACE_TRAINER, TrainerType.CYCLIST ],
     [BiomePoolTier.RARE]: [ TrainerType.BLACK_BELT ],
     [BiomePoolTier.SUPER_RARE]: [],
@@ -1642,7 +1642,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
   },
   [BiomeId.LAKE]: {
     [BiomePoolTier.COMMON]: [ TrainerType.BREEDER, TrainerType.FISHERMAN, TrainerType.PARASOL_LADY ],
-    [BiomePoolTier.UNCOMMON]: [ TrainerType.ACE_TRAINER, TrainerType.YOUNG_COUPLE ],
+    [BiomePoolTier.UNCOMMON]: [ TrainerType.ACE_TRAINER ],
     [BiomePoolTier.RARE]: [ TrainerType.BLACK_BELT ],
     [BiomePoolTier.SUPER_RARE]: [],
     [BiomePoolTier.ULTRA_RARE]: [],
@@ -1723,7 +1723,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
   [BiomeId.GRAVEYARD]: {
     [BiomePoolTier.COMMON]: [ TrainerType.PSYCHIC ],
     [BiomePoolTier.UNCOMMON]: [ TrainerType.HEX_MANIAC ],
-    [BiomePoolTier.RARE]: [ TrainerType.MYSTERIOUS_SISTERS ],
+    [BiomePoolTier.RARE]: [],
     [BiomePoolTier.SUPER_RARE]: [],
     [BiomePoolTier.ULTRA_RARE]: [],
     [BiomePoolTier.BOSS]: [ TrainerType.MORTY, TrainerType.ALLISTER, TrainerType.RYME ]
@@ -1795,7 +1795,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
   [BiomeId.FAIRY_CAVE]: {
     [BiomePoolTier.COMMON]: [ TrainerType.BEAUTY, TrainerType.FAIRY_TALE_GIRL ],
     [BiomePoolTier.UNCOMMON]: [ TrainerType.ACE_TRAINER, TrainerType.BREEDER ],
-    [BiomePoolTier.RARE]: [ TrainerType.MYSTERIOUS_SISTERS ],
+    [BiomePoolTier.RARE]: [],
     [BiomePoolTier.SUPER_RARE]: [],
     [BiomePoolTier.ULTRA_RARE]: [],
     [BiomePoolTier.BOSS]: [ TrainerType.VALERIE, TrainerType.OPAL, TrainerType.BEDE ]
@@ -1810,7 +1810,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
   },
   [BiomeId.SLUM]: {
     [BiomePoolTier.COMMON]: [ TrainerType.BIKER, TrainerType.OFFICER, TrainerType.ROUGHNECK ],
-    [BiomePoolTier.UNCOMMON]: [ TrainerType.BAKER, TrainerType.HOOLIGANS ],
+    [BiomePoolTier.UNCOMMON]: [ TrainerType.BAKER ],
     [BiomePoolTier.RARE]: [],
     [BiomePoolTier.SUPER_RARE]: [],
     [BiomePoolTier.ULTRA_RARE]: [],
@@ -1819,7 +1819,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
   [BiomeId.SNOWY_FOREST]: {
     [BiomePoolTier.COMMON]: [ TrainerType.SNOW_WORKER ],
     [BiomePoolTier.UNCOMMON]: [ TrainerType.SNOW_ACE_TRAINER ],
-    [BiomePoolTier.RARE]: [ TrainerType.YOUNG_COUPLE ],
+    [BiomePoolTier.RARE]: [],
     [BiomePoolTier.SUPER_RARE]: [],
     [BiomePoolTier.ULTRA_RARE]: [],
     [BiomePoolTier.BOSS]: [ TrainerType.CANDICE, TrainerType.MELONY ]
@@ -1827,7 +1827,7 @@ export const biomeTrainerPools: BiomeTrainerPools = {
   [BiomeId.ISLAND]: {
     [BiomePoolTier.COMMON]: [ TrainerType.RICH_KID ],
     [BiomePoolTier.UNCOMMON]: [ TrainerType.RICH ],
-    [BiomePoolTier.RARE]: [ TrainerType.YOUNG_COUPLE ],
+    [BiomePoolTier.RARE]: [],
     [BiomePoolTier.SUPER_RARE]: [],
     [BiomePoolTier.ULTRA_RARE]: [],
     [BiomePoolTier.BOSS]: [ TrainerType.NESSA ]

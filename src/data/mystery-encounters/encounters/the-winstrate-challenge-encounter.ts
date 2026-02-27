@@ -45,7 +45,7 @@ export const TheWinstrateChallengeEncounter: MysteryEncounter = MysteryEncounter
 )
   .withEncounterTier(MysteryEncounterTier.ROGUE)
   .withSceneWaveRangeRequirement(100, CLASSIC_MODE_MYSTERY_ENCOUNTER_WAVES[1])
-  .withScenePartySizeRequirement(3, 6)
+  .withScenePartySizeRequirement(1, 6)
   .withMaxAllowedEncounters(1)
   .withIntroSpriteConfigs([
     {

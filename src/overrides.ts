@@ -298,7 +298,7 @@ class DefaultOverrides {
   readonly ENEMY_MODIFIER_OVERRIDE: ModifierOverride[] = [];
 
   /** Override array of {@linkcode ModifierOverride}s used to provide held items to first party member when starting a new game. */
-  readonly STARTING_HELD_ITEMS_OVERRIDE: ModifierOverride[] = [];
+  readonly STARTING_HELD_ITEMS_OVERRIDE: ModifierOverride[] = []; //{name: "RARE_FORM_CHANGE_ITEM", type: FormChangeItem.MAX_MUSHROOMS}
   /** Override array of {@linkcode ModifierOverride}s used to provide held items to enemies on spawn. */
   readonly ENEMY_HELD_ITEMS_OVERRIDE: ModifierOverride[] = [];
 

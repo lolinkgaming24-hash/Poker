@@ -63,9 +63,10 @@ function initWildModifierPool() {
  */
 function initCommonModifierPool() {
   modifierPool[ModifierTier.COMMON] = [
-    new WeightedModifierType(modifierTypes.POKEBALL, () => (hasMaximumBalls(PokeballType.POKEBALL) ? 0 : 6), 6),
-    new WeightedModifierType(modifierTypes.RARE_CANDY, 2),
-    new WeightedModifierType(
+    new WeightedModifierType(modifierTypes.RARE_FORM_CHANGE_ITEM, 0),
+    //new WeightedModifierType(modifierTypes.POKEBALL, () => (hasMaximumBalls(PokeballType.POKEBALL) ? 0 : 6), 6),
+    //new WeightedModifierType(modifierTypes.RARE_CANDY, 2),
+    /*new WeightedModifierType(
       modifierTypes.POTION,
       (party: Pokemon[]) => {
         const thresholdPartyMemberCount = Math.min(
@@ -124,11 +125,11 @@ function initCommonModifierPool() {
         return thresholdPartyMemberCount;
       },
       3,
-    ),
-    new WeightedModifierType(modifierTypes.LURE, lureWeightFunc(10, 2)),
+    ),*/
+    //new WeightedModifierType(modifierTypes.LURE, lureWeightFunc(10, 2)),
     new WeightedModifierType(modifierTypes.TEMP_STAT_STAGE_BOOSTER, 4),
     new WeightedModifierType(modifierTypes.BERRY, 2),
-    new WeightedModifierType(modifierTypes.TM_COMMON, 2),
+    //new WeightedModifierType(modifierTypes.TM_COMMON, 2),
   ].map(m => {
     m.setTier(ModifierTier.COMMON);
     return m;
@@ -140,9 +141,9 @@ function initCommonModifierPool() {
  */
 function initGreatModifierPool() {
   modifierPool[ModifierTier.GREAT] = [
-    new WeightedModifierType(modifierTypes.GREAT_BALL, () => (hasMaximumBalls(PokeballType.GREAT_BALL) ? 0 : 6), 6),
+    //new WeightedModifierType(modifierTypes.GREAT_BALL, () => (hasMaximumBalls(PokeballType.GREAT_BALL) ? 0 : 6), 6),
     new WeightedModifierType(modifierTypes.PP_UP, 2),
-    new WeightedModifierType(
+    /*new WeightedModifierType(
       modifierTypes.FULL_HEAL,
       (party: Pokemon[]) => {
         const statusEffectPartyMemberCount = Math.min(
@@ -271,9 +272,9 @@ function initGreatModifierPool() {
         return thresholdPartyMemberCount;
       },
       3,
-    ),
+    ),*/
     new WeightedModifierType(modifierTypes.DIRE_HIT, 4),
-    new WeightedModifierType(modifierTypes.SUPER_LURE, lureWeightFunc(15, 4)),
+    //new WeightedModifierType(modifierTypes.SUPER_LURE, lureWeightFunc(15, 4)),
     new WeightedModifierType(modifierTypes.NUGGET, skipInLastClassicWaveOrDefault(5)),
     new WeightedModifierType(modifierTypes.SPECIES_STAT_BOOSTER, 2),
     new WeightedModifierType(
@@ -283,13 +284,13 @@ function initGreatModifierPool() {
       },
       8,
     ),
-    new WeightedModifierType(
+    /*new WeightedModifierType(
       modifierTypes.MAP,
       () => (globalScene.gameMode.isClassic && globalScene.currentBattle.waveIndex < 180 ? 2 : 0),
       2,
-    ),
-    new WeightedModifierType(modifierTypes.SOOTHE_BELL, 2),
-    new WeightedModifierType(modifierTypes.TM_GREAT, 3),
+    ),*/
+    //new WeightedModifierType(modifierTypes.SOOTHE_BELL, 2),
+    //new WeightedModifierType(modifierTypes.TM_GREAT, 3),
     new WeightedModifierType(
       modifierTypes.MEMORY_MUSHROOM,
       (party: Pokemon[]) => {
@@ -312,7 +313,7 @@ function initGreatModifierPool() {
         ? 1
         : 0,
     ),
-    new WeightedModifierType(
+    /*new WeightedModifierType(
       modifierTypes.DNA_SPLICERS,
       (party: readonly Pokemon[]) => {
         if (party.filter(p => !p.fusionSpecies).length > 1) {
@@ -332,7 +333,7 @@ function initGreatModifierPool() {
       (_party: readonly Pokemon[], rerollCount: number) =>
         globalScene.gameMode.isDaily ? 0 : Math.max(1 - rerollCount, 0),
       1,
-    ),
+    ),*/
   ].map(m => {
     m.setTier(ModifierTier.GREAT);
     return m;
@@ -344,11 +345,11 @@ function initGreatModifierPool() {
  */
 function initUltraModifierPool() {
   modifierPool[ModifierTier.ULTRA] = [
-    new WeightedModifierType(modifierTypes.ULTRA_BALL, () => (hasMaximumBalls(PokeballType.ULTRA_BALL) ? 0 : 15), 15),
-    new WeightedModifierType(modifierTypes.MAX_LURE, lureWeightFunc(30, 4)),
+    //new WeightedModifierType(modifierTypes.ULTRA_BALL, () => (hasMaximumBalls(PokeballType.ULTRA_BALL) ? 0 : 15), 15),
+    //new WeightedModifierType(modifierTypes.MAX_LURE, lureWeightFunc(30, 4)),
     new WeightedModifierType(modifierTypes.BIG_NUGGET, skipInLastClassicWaveOrDefault(12)),
-    new WeightedModifierType(modifierTypes.PP_MAX, 3),
-    new WeightedModifierType(modifierTypes.MINT, 4),
+    new WeightedModifierType(modifierTypes.PP_MAX, 15),
+    //new WeightedModifierType(modifierTypes.MINT, 4),
     new WeightedModifierType(
       modifierTypes.RARE_EVOLUTION_ITEM,
       () => Math.min(Math.ceil(globalScene.currentBattle.waveIndex / 15) * 4, 32),
@@ -421,9 +422,9 @@ function initUltraModifierPool() {
             if (canSetStatus) {
               // Abilities that take advantage of obtaining the actual status effect, separated based on specificity to the orb
               const hasGeneralAbility = [
-                AbilityId.QUICK_FEET,
-                AbilityId.GUTS,
-                AbilityId.MARVEL_SCALE,
+                //AbilityId.QUICK_FEET,
+                //AbilityId.GUTS,
+                //AbilityId.MARVEL_SCALE,
                 AbilityId.MAGIC_GUARD,
               ].some(a => p.hasAbility(a, false, true));
               const hasSpecificAbility = [AbilityId.TOXIC_BOOST, AbilityId.POISON_HEAL].some(a =>
@@ -470,7 +471,7 @@ function initUltraModifierPool() {
                 AbilityId.QUICK_FEET,
                 AbilityId.GUTS,
                 AbilityId.MARVEL_SCALE,
-                AbilityId.MAGIC_GUARD,
+                //AbilityId.MAGIC_GUARD,
               ].some(a => p.hasAbility(a, false, true));
               const hasSpecificAbility = [AbilityId.FLARE_BOOST].some(a => p.hasAbility(a, false, true));
               const hasOppositeAbility = [AbilityId.TOXIC_BOOST, AbilityId.POISON_HEAL].some(a =>
@@ -542,14 +543,14 @@ function initUltraModifierPool() {
       10,
     ),
     new WeightedModifierType(modifierTypes.REVIVER_SEED, 4),
-    new WeightedModifierType(modifierTypes.CANDY_JAR, skipInLastClassicWaveOrDefault(5)),
+    //new WeightedModifierType(modifierTypes.CANDY_JAR, skipInLastClassicWaveOrDefault(5)),
     new WeightedModifierType(modifierTypes.ATTACK_TYPE_BOOSTER, 9),
-    new WeightedModifierType(modifierTypes.TM_ULTRA, 11),
-    new WeightedModifierType(modifierTypes.RARER_CANDY, 4),
+    //new WeightedModifierType(modifierTypes.TM_ULTRA, 11),
+    //new WeightedModifierType(modifierTypes.RARER_CANDY, 4),
     new WeightedModifierType(modifierTypes.GOLDEN_PUNCH, skipInLastClassicWaveOrDefault(2)),
-    new WeightedModifierType(modifierTypes.IV_SCANNER, skipInLastClassicWaveOrDefault(4)),
-    new WeightedModifierType(modifierTypes.EXP_CHARM, skipInLastClassicWaveOrDefault(8)),
-    new WeightedModifierType(modifierTypes.EXP_SHARE, skipInLastClassicWaveOrDefault(10)),
+    //new WeightedModifierType(modifierTypes.IV_SCANNER, skipInLastClassicWaveOrDefault(4)),
+    //new WeightedModifierType(modifierTypes.EXP_CHARM, skipInLastClassicWaveOrDefault(8)),
+    //new WeightedModifierType(modifierTypes.EXP_SHARE, skipInLastClassicWaveOrDefault(10)),
     new WeightedModifierType(
       modifierTypes.TERA_ORB,
       () =>
@@ -568,22 +569,22 @@ function initUltraModifierPool() {
 
 function initRogueModifierPool() {
   modifierPool[ModifierTier.ROGUE] = [
-    new WeightedModifierType(modifierTypes.ROGUE_BALL, () => (hasMaximumBalls(PokeballType.ROGUE_BALL) ? 0 : 16), 16),
+    //new WeightedModifierType(modifierTypes.ROGUE_BALL, () => (hasMaximumBalls(PokeballType.ROGUE_BALL) ? 0 : 16), 16),
     new WeightedModifierType(modifierTypes.RELIC_GOLD, skipInLastClassicWaveOrDefault(2)),
     new WeightedModifierType(modifierTypes.LEFTOVERS, 3),
     new WeightedModifierType(modifierTypes.SHELL_BELL, 3),
     new WeightedModifierType(modifierTypes.BERRY_POUCH, 4),
     new WeightedModifierType(modifierTypes.GRIP_CLAW, 5),
     new WeightedModifierType(modifierTypes.SCOPE_LENS, 4),
-    new WeightedModifierType(modifierTypes.BATON, 2),
+    //new WeightedModifierType(modifierTypes.BATON, 2),
     new WeightedModifierType(modifierTypes.SOUL_DEW, 7),
-    new WeightedModifierType(modifierTypes.CATCHING_CHARM, () => (globalScene.gameMode.isClassic ? 0 : 4), 4),
-    new WeightedModifierType(modifierTypes.ABILITY_CHARM, skipInClassicAfterWave(189, 6)),
+    //new WeightedModifierType(modifierTypes.CATCHING_CHARM, () => (globalScene.gameMode.isClassic ? 0 : 4), 4),
+    //new WeightedModifierType(modifierTypes.ABILITY_CHARM, skipInClassicAfterWave(189, 6)),
     new WeightedModifierType(modifierTypes.FOCUS_BAND, 5),
     new WeightedModifierType(modifierTypes.KINGS_ROCK, 3),
     new WeightedModifierType(modifierTypes.LOCK_CAPSULE, () => (globalScene.gameMode.isClassic ? 0 : 3)),
-    new WeightedModifierType(modifierTypes.SUPER_EXP_CHARM, skipInLastClassicWaveOrDefault(8)),
-    new WeightedModifierType(
+    //new WeightedModifierType(modifierTypes.SUPER_EXP_CHARM, skipInLastClassicWaveOrDefault(8)),
+    /*new WeightedModifierType(
       modifierTypes.RARE_FORM_CHANGE_ITEM,
       () => Math.min(Math.ceil(globalScene.currentBattle.waveIndex / 50), 4) * 6,
       24,
@@ -602,7 +603,7 @@ function initRogueModifierPool() {
       modifierTypes.VOUCHER_PLUS,
       (_party: Pokemon[], rerollCount: number) => (globalScene.gameMode.isDaily ? 0 : Math.max(3 - rerollCount * 1, 0)),
       3,
-    ),
+    ),*/
   ].map(m => {
     m.setTier(ModifierTier.ROGUE);
     return m;
@@ -614,11 +615,11 @@ function initRogueModifierPool() {
  */
 function initMasterModifierPool() {
   modifierPool[ModifierTier.MASTER] = [
-    new WeightedModifierType(modifierTypes.MASTER_BALL, () => (hasMaximumBalls(PokeballType.MASTER_BALL) ? 0 : 24), 24),
-    new WeightedModifierType(modifierTypes.SHINY_CHARM, 14),
+    //new WeightedModifierType(modifierTypes.MASTER_BALL, () => (hasMaximumBalls(PokeballType.MASTER_BALL) ? 0 : 24), 24),
+    //new WeightedModifierType(modifierTypes.SHINY_CHARM, 14),
     new WeightedModifierType(modifierTypes.HEALING_CHARM, 18),
     new WeightedModifierType(modifierTypes.MULTI_LENS, 18),
-    new WeightedModifierType(
+    /*new WeightedModifierType(
       modifierTypes.VOUCHER_PREMIUM,
       (_party: Pokemon[], rerollCount: number) =>
         !globalScene.gameMode.isDaily && !globalScene.gameMode.isEndless && !globalScene.gameMode.isSplicedOnly
@@ -635,7 +636,7 @@ function initMasterModifierPool() {
           ? 24
           : 0,
       24,
-    ),
+    ),*/
     new WeightedModifierType(
       modifierTypes.MINI_BLACK_HOLE,
       () =>

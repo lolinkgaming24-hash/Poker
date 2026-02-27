@@ -277,21 +277,21 @@ function handleNextTurn() {
     const healthRatio = wobbuffet.hp / wobbuffet.getMaxHp();
     let resultMessageKey: string;
     let isHealPhase = false;
-    if (healthRatio < 0.03) {
+    if (healthRatio < 0.10) {
       // Grand prize
       setEncounterRewards({
         guaranteedModifierTypeFuncs: [modifierTypes.MULTI_LENS],
         fillRemaining: false,
       });
       resultMessageKey = `${namespace}:bestResult`;
-    } else if (healthRatio < 0.15) {
+    } else if (healthRatio < 0.25) {
       // 2nd prize
       setEncounterRewards({
         guaranteedModifierTypeFuncs: [modifierTypes.SCOPE_LENS],
         fillRemaining: false,
       });
       resultMessageKey = `${namespace}:greatResult`;
-    } else if (healthRatio < 0.33) {
+    } else if (healthRatio < 0.50) {
       // 3rd prize
       setEncounterRewards({
         guaranteedModifierTypeFuncs: [modifierTypes.WIDE_LENS],

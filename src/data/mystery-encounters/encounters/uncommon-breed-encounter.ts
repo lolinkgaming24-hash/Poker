@@ -46,6 +46,7 @@ export const UncommonBreedEncounter: MysteryEncounter = MysteryEncounterBuilder.
   MysteryEncounterType.UNCOMMON_BREED,
 )
   .withEncounterTier(MysteryEncounterTier.COMMON)
+  .withScenePartySizeRequirement(2, 6, true)
   .withSceneWaveRangeRequirement(...CLASSIC_MODE_MYSTERY_ENCOUNTER_WAVES)
   .withCatchAllowed(true)
   .withHideWildIntroMessage(true)

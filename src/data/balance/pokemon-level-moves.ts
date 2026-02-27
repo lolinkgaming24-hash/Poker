@@ -921,6 +921,9 @@ export const pokemonSpeciesLevelMoves = {
     [ 39, MoveId.WONDER_ROOM ],
   ],
   [SpeciesId.GOLDUCK]: [
+    [ RELEARN_MOVE, MoveId.SURF ],
+    [ RELEARN_MOVE, MoveId.ICE_BEAM ],
+    [ RELEARN_MOVE, MoveId.CALM_MIND ],
     [ 1, MoveId.SCRATCH ],
     [ 1, MoveId.TAIL_WHIP ],
     [ 1, MoveId.WATER_GUN ],
@@ -1055,6 +1058,10 @@ export const pokemonSpeciesLevelMoves = {
     [ RELEARN_MOVE, MoveId.MUD_SHOT ],
     [ RELEARN_MOVE, MoveId.EARTH_POWER ],
     [ RELEARN_MOVE, MoveId.CIRCLE_THROW ],
+    [RELEARN_MOVE, MoveId.POWER_UP_PUNCH], // TM
+    [RELEARN_MOVE, MoveId.ROCK_SLIDE], // TM
+    [RELEARN_MOVE, MoveId.EARTHQUAKE], // TM
+    [RELEARN_MOVE, MoveId.DARKEST_LARIAT], // TM
     [ 1, MoveId.BUBBLE_BEAM ],
     [ 1, MoveId.BODY_SLAM ],
     [ 1, MoveId.HYPNOSIS ],
@@ -1081,6 +1088,7 @@ export const pokemonSpeciesLevelMoves = {
     [ 50, MoveId.CALM_MIND ],
   ],
   [SpeciesId.ALAKAZAM]: [
+    [RELEARN_MOVE, MoveId.CHARGE_BEAM], // TM
     [ 1, MoveId.DISABLE ],
     [ 1, MoveId.CONFUSION ],
     [ 1, MoveId.TELEPORT ],
@@ -1132,6 +1140,9 @@ export const pokemonSpeciesLevelMoves = {
     [ 66, MoveId.DOUBLE_EDGE ],
   ],
   [SpeciesId.MACHAMP]: [
+    [RELEARN_MOVE, MoveId.EARTHQUAKE], // TM
+    [RELEARN_MOVE, MoveId.DARKEST_LARIAT], // TM
+    [RELEARN_MOVE, MoveId.FACADE], // TM
     [ 1, MoveId.LEER ],
     [ 1, MoveId.LOW_KICK ],
     [ 1, MoveId.FOCUS_ENERGY ],
@@ -1220,6 +1231,7 @@ export const pokemonSpeciesLevelMoves = {
     [ 48, MoveId.HYDRO_PUMP ],
   ],
   [SpeciesId.TENTACRUEL]: [
+    [RELEARN_MOVE, MoveId.ICE_BEAM], // TM
     [ 1, MoveId.WRAP ],
     [ 1, MoveId.POISON_STING ],
     [ 1, MoveId.ACID ],
@@ -3244,6 +3256,7 @@ export const pokemonSpeciesLevelMoves = {
     [ RELEARN_MOVE, MoveId.HYPER_VOICE ],
     [ RELEARN_MOVE, MoveId.MUD_SHOT ],
     [ RELEARN_MOVE, MoveId.EARTH_POWER ],
+    [ RELEARN_MOVE, MoveId.BLIZZARD ], // TM
     [ 1, MoveId.RAIN_DANCE ],
     [ 1, MoveId.HYDRO_PUMP ],
     [ 1, MoveId.BELLY_DRUM ],
@@ -15002,6 +15015,7 @@ export const pokemonSpeciesLevelMoves = {
   ],
   [SpeciesId.PERRSERKER]: [
     [ EVOLVE_MOVE, MoveId.IRON_HEAD ],
+    [ RELEARN_MOVE, MoveId.SWORDS_DANCE ],
     [ 1, MoveId.SCRATCH ],
     [ 1, MoveId.GROWL ],
     [ 1, MoveId.FAKE_OUT ],
@@ -19112,6 +19126,24 @@ export const pokemonFormLevelMoves = {
       [ 42, MoveId.SPLISHY_SPLASH ], // Custom
       [ 44, MoveId.THUNDER ],
       [ 48, MoveId.PIKA_PAPOW ],
+    ],
+  },
+  [SpeciesId.MEOWTH]: {
+    1: [
+    [ RELEARN_MOVE, MoveId.COVET ], // TM Move
+    [ 1, MoveId.GROWL ],
+    [ 1, MoveId.FAKE_OUT ],
+    [ 4, MoveId.FEINT ],
+    [ 8, MoveId.SCRATCH ],
+    [ 12, MoveId.PAY_DAY ],
+    [ 16, MoveId.BITE ],
+    [ 20, MoveId.TAUNT ],
+    [ 24, MoveId.ASSURANCE ],
+    [ 29, MoveId.FURY_SWIPES ],
+    [ 32, MoveId.SCREECH ],
+    [ 36, MoveId.SLASH ],
+    [ 40, MoveId.NASTY_PLOT ],
+    [ 44, MoveId.PLAY_ROUGH ],
     ],
   },
   [SpeciesId.EEVEE]: { // Custom

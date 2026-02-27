@@ -174,7 +174,7 @@ export const BugTypeSuperfanEncounter: MysteryEncounter = MysteryEncounterBuilde
   )
   .withMaxAllowedEncounters(1)
   .withSceneWaveRangeRequirement(...CLASSIC_MODE_MYSTERY_ENCOUNTER_WAVES)
-  .withScenePartySizeRequirement(3, 6)
+  .withScenePartySizeRequirement(1, 6) //
   .withMaxAllowedEncounters(1)
   .withIntroSpriteConfigs([
     {
@@ -262,7 +262,10 @@ export const BugTypeSuperfanEncounter: MysteryEncounter = MysteryEncounterBuilde
       // Assigns callback that teaches move before continuing to rewards
       encounter.onRewards = doBugTypeMoveTutor;
 
-      setEncounterRewards({ fillRemaining: true });
+      setEncounterRewards({
+        guaranteedModifierTiers: [ModifierTier.ROGUE],
+        fillRemaining: true
+      });
       await transitionMysteryEncounterIntroVisuals(true, true);
       await initBattleWithEnemyConfig(config);
     },
@@ -286,7 +289,7 @@ export const BugTypeSuperfanEncounter: MysteryEncounter = MysteryEncounterBuilde
         });
         encounter.setDialogueToken("numBugTypes", numBugTypesText);
 
-        if (numBugTypes < 2) {
+        /*if (numBugTypes < 2) {
           setEncounterRewards({
             guaranteedModifierTypeFuncs: [modifierTypes.SUPER_LURE, modifierTypes.GREAT_BALL],
             fillRemaining: false,
@@ -350,11 +353,11 @@ export const BugTypeSuperfanEncounter: MysteryEncounter = MysteryEncounterBuilde
           if (specialOptions.length > 0) {
             // TODO: should this use `randSeedItem`?
             modifierOptions.push(specialOptions[randSeedInt(specialOptions.length)]);
-          }
+          }*/
 
           setEncounterRewards({
-            guaranteedModifierTypeOptions: modifierOptions,
-            fillRemaining: false,
+            guaranteedModifierTiers: [ModifierTier.MASTER, ModifierTier.ROGUE, ModifierTier.ULTRA],
+            fillRemaining: true,
           });
           encounter.selectedOption!.dialogue!.selected = [
             {
@@ -363,7 +366,7 @@ export const BugTypeSuperfanEncounter: MysteryEncounter = MysteryEncounterBuilde
             },
           ];
         }
-      })
+      )
       .withOptionPhase(async () => {
         // Player shows off their bug types
         leaveEncounterWithoutBattle();
@@ -484,33 +487,38 @@ function getTrainerConfigForWave(waveIndex: number) {
   if (waveIndex < WAVE_LEVEL_BREAKPOINTS[0]) {
     // Use default template (2 AVG)
     config
-      .setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true));
+      .setSpecialtyType(PokemonType.BUG)
+      //.setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true));
   } else if (waveIndex < WAVE_LEVEL_BREAKPOINTS[1]) {
     config
       .setPartyTemplates(new TrainerPartyTemplate(3, PartyMemberStrength.AVERAGE))
-      .setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(2, getRandomPartyMemberFunc(POOL_1_POKEMON, TrainerSlot.TRAINER, true));
+      .setSpecialtyType(PokemonType.BUG)
+      //.setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(2, getRandomPartyMemberFunc(POOL_1_POKEMON, TrainerSlot.TRAINER, true));
   } else if (waveIndex < WAVE_LEVEL_BREAKPOINTS[2]) {
     config
       .setPartyTemplates(new TrainerPartyTemplate(4, PartyMemberStrength.AVERAGE))
-      .setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(2, getRandomPartyMemberFunc(POOL_1_POKEMON, TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(3, getRandomPartyMemberFunc(POOL_2_POKEMON, TrainerSlot.TRAINER, true));
+      .setSpecialtyType(PokemonType.BUG)
+      //.setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(2, getRandomPartyMemberFunc(POOL_1_POKEMON, TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(3, getRandomPartyMemberFunc(POOL_2_POKEMON, TrainerSlot.TRAINER, true));
   } else if (waveIndex < WAVE_LEVEL_BREAKPOINTS[3]) {
     config
       .setPartyTemplates(new TrainerPartyTemplate(5, PartyMemberStrength.AVERAGE))
-      .setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(2, getRandomPartyMemberFunc(POOL_1_POKEMON, TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(3, getRandomPartyMemberFunc(POOL_2_POKEMON, TrainerSlot.TRAINER, true))
-      .setPartyMemberFunc(4, getRandomPartyMemberFunc(POOL_2_POKEMON, TrainerSlot.TRAINER, true));
+      .setSpecialtyType(PokemonType.BUG)
+      //.setPartyMemberFunc(0, getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(1, getRandomPartyMemberFunc([SpeciesId.BUTTERFREE], TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(2, getRandomPartyMemberFunc(POOL_1_POKEMON, TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(3, getRandomPartyMemberFunc(POOL_2_POKEMON, TrainerSlot.TRAINER, true))
+      //.setPartyMemberFunc(4, getRandomPartyMemberFunc(POOL_2_POKEMON, TrainerSlot.TRAINER, true));
   } else if (waveIndex < WAVE_LEVEL_BREAKPOINTS[4]) {
     config
       .setPartyTemplates(new TrainerPartyTemplate(5, PartyMemberStrength.AVERAGE))
-      .setPartyMemberFunc(
+      .setSpecialtyType(PokemonType.BUG)
+      /*.setPartyMemberFunc(
         0,
         getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true, p => {
           p.formIndex = 1;
@@ -537,12 +545,13 @@ function getTrainerConfigForWave(waveIndex: number) {
             p.generateName();
           }
         }),
-      );
+      );*/
   } else if (waveIndex < WAVE_LEVEL_BREAKPOINTS[5]) {
     const pool3Mon2 = pool3Copy.pop()!;
     config
       .setPartyTemplates(new TrainerPartyTemplate(5, PartyMemberStrength.AVERAGE))
-      .setPartyMemberFunc(
+      .setSpecialtyType(PokemonType.BUG)
+      /*.setPartyMemberFunc(
         0,
         getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true, p => {
           p.formIndex = 1;
@@ -578,7 +587,7 @@ function getTrainerConfigForWave(waveIndex: number) {
             p.generateName();
           }
         }),
-      );
+      );*/
   } else if (waveIndex < WAVE_LEVEL_BREAKPOINTS[6]) {
     config
       .setPartyTemplates(
@@ -587,7 +596,8 @@ function getTrainerConfigForWave(waveIndex: number) {
           new TrainerPartyTemplate(1, PartyMemberStrength.STRONG),
         ),
       )
-      .setPartyMemberFunc(
+      .setSpecialtyType(PokemonType.BUG)
+      /*.setPartyMemberFunc(
         0,
         getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true, p => {
           p.formIndex = 1;
@@ -614,7 +624,7 @@ function getTrainerConfigForWave(waveIndex: number) {
           }
         }),
       )
-      .setPartyMemberFunc(4, getRandomPartyMemberFunc(POOL_4_POKEMON, TrainerSlot.TRAINER, true));
+      .setPartyMemberFunc(4, getRandomPartyMemberFunc(POOL_4_POKEMON, TrainerSlot.TRAINER, true));*/
   } else {
     const pool3Mon2 = pool3Copy.pop()!;
     config
@@ -624,7 +634,8 @@ function getTrainerConfigForWave(waveIndex: number) {
           new TrainerPartyTemplate(1, PartyMemberStrength.STRONG),
         ),
       )
-      .setPartyMemberFunc(
+      .setSpecialtyType(PokemonType.BUG)
+      /*.setPartyMemberFunc(
         0,
         getRandomPartyMemberFunc([SpeciesId.BEEDRILL], TrainerSlot.TRAINER, true, p => {
           p.setBoss(true, 2);
@@ -662,7 +673,7 @@ function getTrainerConfigForWave(waveIndex: number) {
           }
         }),
       )
-      .setPartyMemberFunc(4, getRandomPartyMemberFunc(POOL_4_POKEMON, TrainerSlot.TRAINER, true));
+      .setPartyMemberFunc(4, getRandomPartyMemberFunc(POOL_4_POKEMON, TrainerSlot.TRAINER, true));*/
   }
 
   return config;

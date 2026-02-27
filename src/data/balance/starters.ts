@@ -1,7 +1,7 @@
 import { IS_TEST } from "#constants/app-constants";
 import { SpeciesId } from "#enums/species-id";
 
-export const POKERUS_STARTER_COUNT = 5;
+export const POKERUS_STARTER_COUNT = 570;
 
 // #region Friendship constants
 /** The multiplier applied to candy friendship gain in classic mode. */
