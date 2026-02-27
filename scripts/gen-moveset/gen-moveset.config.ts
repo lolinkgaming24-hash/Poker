@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CustomDefaultReporter } from "#test/reporters/custom-default-reporter";
 import type { UserConfig } from "vite";
 import { defineConfig } from "vitest/config";
 import { sharedConfig } from "../../vite.config";
@@ -19,7 +20,7 @@ export default defineConfig(async config => {
       env: {
         TZ: "UTC",
       },
-      reporters: ["./test/test-utils/reporters/custom-default-reporter.ts"],
+      reporters: [new CustomDefaultReporter()],
       setupFiles: ["./test/setup/font-face.setup.ts", "./test/setup/vitest.setup.ts"],
       includeTaskLocation: true,
       environment: "jsdom",
