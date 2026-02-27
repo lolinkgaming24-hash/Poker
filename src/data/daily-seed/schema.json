@@ -58,6 +58,10 @@
         },
         "passive": {
           "$ref": "#/$defs/passive"
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 1
         }
       },
       "required": ["speciesId"],
