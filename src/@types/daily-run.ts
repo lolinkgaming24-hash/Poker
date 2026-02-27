@@ -100,7 +100,7 @@ export interface CustomDailyRunConfig {
   startingMoney?: number;
   forcedWaves?: DailyForcedWave[];
   trainerManipulations?: DailyTrainerManipulation[];
-  challenges?: DailyEventCHallenge[];
+  challenges?: DailyEventChallenge[];
   /** The actual seed used for the daily run. */
   seed: string;
 }
@@ -113,5 +113,6 @@ export interface SerializedDailyRunConfig {
   luck?: number | undefined;
   forcedWaves?: DailyForcedWave[] | undefined;
   trainerManipulations?: DailyTrainerManipulation[] | undefined;
+  challenges?: DailyEventChallenge[] | undefined;
   seed: string;
 }
