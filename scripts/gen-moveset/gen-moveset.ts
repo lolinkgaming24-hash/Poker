@@ -152,8 +152,7 @@ describe("gen-moveset", () => {
         }
       });
     }
-    const params = payload;
-    if (payload.formIndex && getPokemonSpecies(params.speciesId).forms[payload.formIndex] == null) {
+    if (payload.formIndex && getPokemonSpecies(payload.speciesId).forms[payload.formIndex] == null) {
       payload.formIndex = undefined;
     }
     pokemon = createTestablePokemon(payload.speciesId, payload);
