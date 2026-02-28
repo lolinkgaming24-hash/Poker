@@ -249,6 +249,12 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.VENOMOTH]: MoveId.SLUDGE_BOMB,
 };
 export const FORCED_RIVAL_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]>> = {
-  [SpeciesId.SWELLOW]: MoveId.BOOMBURST,
-  [SpeciesId.STARAPTOR]: MoveId.BRAVE_BIRD,
+  // Force certain moves on Rival's Birds to keep them relative in power due to lacking learnsets / to utilize their Boss passives.
+  [SpeciesId.PIDGEOT]: MoveId.BOOMBURST, // Rare Egg Move, only generates at Wave 195
+  [SpeciesId.NOCTOWL]: MoveId.ESPER_WING, // Egg Move
+  [SpeciesId.SWELLOW]: MoveId.BOOMBURST, // Egg Move
+  [SpeciesId.STARAPTOR]: MoveId.BRAVE_BIRD, // Recoil Immunity
+  [SpeciesId.UNFEZANT]: MoveId.SLASH, // Egg Move
+  [SpeciesId.TALONFLAME]: MoveId.FLARE_BLITZ, // Recoil Immunity
+  [SpeciesId.CORVIKNIGHT]: [MoveId.BODY_PRESS, MoveId.ROOST], // Generally more defensive
 };
