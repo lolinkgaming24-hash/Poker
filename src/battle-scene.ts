@@ -1357,16 +1357,22 @@ export class BattleScene extends SceneBase {
     const mysteryEncounterType = sessionMEType !== -1 ? sessionMEType : undefined;
 
     let fixedDouble: boolean;
+    // defensive programming - don't force double battles on trainers that can't be doubles due to enum shifting
+    if (
+      trainerData?.variant === TrainerVariant.DOUBLE
+      && !trainerConfigs[trainerData.trainerType].hasDouble
+      && !trainerConfigs[trainerData.trainerType].doubleOnly
+    ) {
+      trainerData.variant = TrainerVariant.DEFAULT;
+      fixedDouble = false;
+    }
+
     switch (battleType) {
       case BattleType.WILD:
         fixedDouble = fromSession.enemyParty.length > 1;
         break;
       case BattleType.TRAINER: {
         const config = trainerConfigs[trainerData.trainerType];
-        // failsafe for corrupt saves (such as due to enum shifting) - don't force a double battle if the trainer type
-        // cannot appear as one.
-        // The code inside `handleSavedBattle` will override the trainer's variant if this results in incompatibilities,
-        // since this is only a problem for parsed save data (and is ignored for fixed battles)
         fixedDouble = config.doubleOnly || (config.hasDouble && trainerData.variant === TrainerVariant.DOUBLE);
         break;
       }
@@ -1417,12 +1423,6 @@ export class BattleScene extends SceneBase {
   private handleSavedBattle(resolved: NewBattleInitialProps, props: NewBattleSavedProps): void {
     resolved.battleType = props.battleType;
     resolved.double = props.double;
-    if (!resolved.double && props.trainerData?.variant === TrainerVariant.DOUBLE) {
-      console.warn(
-        "Save data indicates a double battle but this trainer has no doubles variant!\nForcing battle to default variant to avoid crashes.",
-      );
-      props.trainerData.variant = TrainerVariant.DEFAULT;
-    }
     resolved.trainer = props.trainerData?.toTrainer();
     if (resolved.trainer) {
       this.field.add(resolved.trainer);
@@ -1500,7 +1500,7 @@ export class BattleScene extends SceneBase {
    */
   private checkIsDouble({ double: forcedDouble, battleType, waveIndex, trainer }: NewBattleConstructedProps): boolean {
     // Disallow using double battle overrides on trainer waves (need `RANDOM_TRAINER_OVERRIDE` instead)
-    // TODO: Rework logic later on to make sense - if wave 1 doubles cause crashes then why don't we check it before everything else?
+    // TODO: Print a warning here if this results in the override being ignored
     const doubleBattleOverride = this.doCheckDoubleOverride(waveIndex);
     if (doubleBattleOverride === true || (battleType !== BattleType.TRAINER && doubleBattleOverride === false)) {
       return doubleBattleOverride;
