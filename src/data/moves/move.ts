@@ -1330,9 +1330,11 @@ export abstract class Move implements Localizable {
       return false;
     }
 
-    const { targets, multiple } = getMoveTargets(user, this.id);
-    if (restrictSpread && multiple && targets.length > 1) {
-      return false;
+    if (restrictSpread) {
+      const { targets, multiple } = getMoveTargets(user, this.id);
+      if (multiple && targets.length > 1) {
+        return false;
+      }
     }
 
     if (

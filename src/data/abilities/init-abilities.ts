@@ -1244,6 +1244,11 @@ export function initAbilities() {
           && user.turnData.hitsLeft === 1 // move is on its final strike
           && move.canBeMultiStrikeEnhanced(user, true, target),
       )
+      .attr(AiMovegenMoveStatsAbAttr, ({ pokemon, move, powerMult }) => {
+        if (move.canBeMultiStrikeEnhanced(pokemon, false, null)) {
+          powerMult.value *= 1.25;
+        }
+      })
       .build(),
     new AbBuilder(AbilityId.DARK_AURA, 6) //
       .attr(PostSummonMessageAbAttr, (pokemon: Pokemon) =>
