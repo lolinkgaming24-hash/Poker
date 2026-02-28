@@ -156,6 +156,7 @@ const SLOT_1_FINAL = [
  *
  * @param pokemon - The rival bird pokemon to force an ability for
  * @param bars - (default `0`) The number of boss bar segments to set. If `zero`, the pokemon will not be a boss
+ * @param useRivalSignature - (default `false`) Whether to use the rival signature move when generating the moveset.
  */
 
 function forceRivalBirdAbility(pokemon: EnemyPokemon, bars = 0, useRivalSignature = false): void {
