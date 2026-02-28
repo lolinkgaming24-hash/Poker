@@ -10,6 +10,7 @@ import { globalScene } from "#app/global-scene";
 import { getPokemonNameWithAffix } from "#app/messages";
 import Overrides from "#app/overrides";
 import { speciesEggMoves } from "#balance/moves/egg-moves";
+import type { FORCED_RIVAL_SIGNATURE_MOVES } from "#balance/moves/signature-moves";
 import type { SpeciesFormEvolution } from "#balance/pokemon-evolutions";
 import {
   FusionSpeciesFormEvolution,
@@ -3218,7 +3219,11 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
     this.calculateStats();
   }
 
-  /** Generate a semi-random moveset for this Pokémon */
+  /**
+   * Generate a semi-random moveset for this Pokémon
+   *
+   * @param forRival - (default `false`) Sets moveset gen to use rival mode behavior (used for {@linkcode FORCED_RIVAL_SIGNATURE_MOVES})
+   */
   public generateAndPopulateMoveset(forRival = false): void {
     generateMoveset(this, forRival);
 
