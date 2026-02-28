@@ -1079,10 +1079,10 @@ function debugMoveWeights(pokemon: Pokemon, pool: Map<MoveId, number>, note: str
 /**
  * Generate a moveset for a given Pokémon based on its level, types, stats, and whether it is wild or a trainer's Pokémon.
  * @param pokemon - The Pokémon to generate a moveset for
- * @param forRival - Whether the moveset is being generated for the rival's Pokémon
+ * @param forceRivalSignatures - (default `false`) Whether to use {@linkcode FORCED_RIVAL_SIGNATURE_MOVES} when attempting to force a signature move.
  * @returns A reference to the Pokémon's moveset array
  */
-export function generateMoveset(pokemon: Pokemon, forRival = false): void {
+export function generateMoveset(pokemon: Pokemon, forceRivalSignatures = false): void {
   globalScene.movesetGenInProgress = true;
   pokemon.moveset = [];
   const isBoss = pokemon.isBoss();
@@ -1142,8 +1142,8 @@ export function generateMoveset(pokemon: Pokemon, forRival = false): void {
     baseWeights.set(moveId, Math.ceil(Math.pow(weight, weightMultiplier) * 100));
   }
 
-  const tmCount = new NumberHolder(0);
-  const eggMoveCount = new NumberHolder(0);
+  const tmCount = new ValueHolder(0);
+  const eggMoveCount = new ValueHolder(0);
 
   debugMoveWeights(pokemon, baseWeights, "Pre STAB Move");
 
@@ -1155,7 +1155,7 @@ export function generateMoveset(pokemon: Pokemon, forRival = false): void {
     eggMovePool,
     tmCount,
     eggMoveCount,
-    forRival,
+    forceRivalSignatures,
   );
 
   // Step 5: Force a STAB move if no signature was generated or was not a damaging STAB move

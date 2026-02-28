@@ -3222,10 +3222,10 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
   /**
    * Generate a semi-random moveset for this Pokémon
    *
-   * @param forRival - (default `false`) Sets moveset gen to use rival mode behavior (used for {@linkcode FORCED_RIVAL_SIGNATURE_MOVES})
+   * @param useRivalSignatures - (default `false`) Sets moveset gen to use rival signature pool ({@linkcode FORCED_RIVAL_SIGNATURE_MOVES})
    */
-  public generateAndPopulateMoveset(forRival = false): void {
-    generateMoveset(this, forRival);
+  public generateAndPopulateMoveset(useRivalSignatures = false): void {
+    generateMoveset(this, useRivalSignatures);
 
     // Trigger FormChange, except for enemy Pokemon during Mystery Encounters, to avoid crashes
     if (
@@ -6612,7 +6612,7 @@ export class EnemyPokemon extends Pokemon {
     }
   }
 
-  override generateAndPopulateMoveset(forRival = false, formIndex?: number): void {
+  override generateAndPopulateMoveset(useRivalSignatures = false, formIndex?: number): void {
     switch (true) {
       case this.species.speciesId === SpeciesId.SMEARGLE:
         this.moveset = [
@@ -6641,7 +6641,7 @@ export class EnemyPokemon extends Pokemon {
         }
         break;
       default:
-        super.generateAndPopulateMoveset(forRival);
+        super.generateAndPopulateMoveset(useRivalSignatures);
         break;
     }
   }
