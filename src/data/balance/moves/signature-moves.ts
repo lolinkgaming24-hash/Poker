@@ -249,7 +249,6 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.VENOMOTH]: MoveId.SLUDGE_BOMB,
 };
 export const FORCED_RIVAL_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]>> = {
-  [SpeciesId.UNFEZANT]: MoveId.SLASH,
   [SpeciesId.SWELLOW]: MoveId.BOOMBURST,
   [SpeciesId.STARAPTOR]: MoveId.BRAVE_BIRD,
 };

@@ -160,6 +160,10 @@ const SLOT_1_FINAL = [
 
 function forceRivalBirdAbility(pokemon: EnemyPokemon, bars = 0, useRivalSignature = false): void {
   switch (pokemon.species.speciesId) {
+    // Keen Eye for Pidgey line
+    case SpeciesId.PIDGEY:
+    case SpeciesId.PIDGEOTTO:
+    case SpeciesId.PIDGEOT:
     // Guts for Tailow line
     case SpeciesId.TAILLOW:
     case SpeciesId.SWELLOW:
@@ -170,10 +174,6 @@ function forceRivalBirdAbility(pokemon: EnemyPokemon, bars = 0, useRivalSignatur
       pokemon.abilityIndex = 0;
       break;
     }
-    // Tangled Feet for Pidgey line
-    case SpeciesId.PIDGEY:
-    case SpeciesId.PIDGEOTTO:
-    case SpeciesId.PIDGEOT:
     // Super Luck for pidove line
     case SpeciesId.PIDOVE:
     case SpeciesId.TRANQUILL:

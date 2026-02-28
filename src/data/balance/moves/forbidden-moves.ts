@@ -89,7 +89,6 @@ export const LEVEL_BASED_DENYLIST: ReadonlySet<MoveId> = new Set([
   MoveId.GUST,
   MoveId.HARDEN,
   MoveId.IMPRISON,
-  MoveId.INFESTATION,
   MoveId.KINESIS,
   MoveId.LEAFAGE,
   MoveId.LEER,
@@ -131,6 +130,8 @@ export const LEVEL_BASED_DENYLIST: ReadonlySet<MoveId> = new Set([
   MoveId.WITHDRAW,
   MoveId.WRAP,
   MoveId.TAKE_DOWN,
+  MoveId.STOMP,
+  MoveId.QUICK_ATTACK,
   // Really bad moves
   MoveId.RAZOR_WIND,
   MoveId.SLAM,
