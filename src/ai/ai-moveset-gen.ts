@@ -27,6 +27,7 @@ import {
   getMaxEggMoveCount,
   getMaxTmCount,
   LEVEL_BASED_DENYLIST_THRESHOLD,
+  MOVE_POWER_CEILING,
   RARE_EGG_MOVE_LEVEL_REQUIREMENT,
   RELEARN_MOVE_WEIGHT,
   STAB_BLACKLIST,
@@ -424,8 +425,8 @@ function adjustDamageMoveWeights(pool: Map<MoveId, number>, pokemon: Pokemon, wi
     const power = move.calculateEffectivePower(pokemon);
     movePowers[moveId] = power;
     maxPower = Math.max(maxPower, power);
-    if (maxPower >= 90) {
-      maxPower = 90;
+    if (maxPower >= MOVE_POWER_CEILING) {
+      maxPower = MOVE_POWER_CEILING;
       break;
     }
   }

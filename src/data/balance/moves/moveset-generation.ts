@@ -151,6 +151,13 @@ export const BASE_WEIGHT_MULTIPLIER = 1.6;
 export const BOSS_EXTRA_WEIGHT_MULTIPLIER = 0.4;
 
 /**
+ * The power cap on effective power calculations. Moves that end up higher than this value will be capped to this.
+ * The purpose is to stop extremely high power moves from causing all other moves to have very low weights
+ * (which would cause status moves to be chosen more frequently as their weights aren't adjusted based on power).
+ */
+export const MOVE_POWER_CEILING = 120;
+
+/**
  * Set of moves that should be excluded from the forced STAB during moveset generation
  *
  * @remarks
