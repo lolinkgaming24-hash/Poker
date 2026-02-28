@@ -728,6 +728,7 @@ function removeSelfStatBoost(pokemon: Pokemon, attr: StatStageChangeAttr | undef
     default:
       return false;
   }
+  // If any damging move matches the category, boost is not wasted.
   for (const pokemonMove of pokemon.moveset) {
     const move = pokemonMove.getMove();
     if (
@@ -737,10 +738,10 @@ function removeSelfStatBoost(pokemon: Pokemon, attr: StatStageChangeAttr | undef
       && !move.hasAttr("PhotonGeyserCategoryAttr") // Photon Geyser benefits from either offesive boost
       && !move.hasAttr("ShellSideArmCategoryAttr") // Shell Side Arm benefits from either offensive boost
     ) {
-      return true;
+      return false;
     }
   }
-  return false;
+  return true;
 }
 
 /**
