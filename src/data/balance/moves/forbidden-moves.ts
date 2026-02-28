@@ -53,6 +53,7 @@ export const FORBIDDEN_TM_MOVES: ReadonlySet<MoveId> = new Set([
   MoveId.TAKE_DOWN,
   MoveId.UPPER_HAND,
   MoveId.VENOM_DRENCH,
+  MoveId.STEEL_BEAM, // Potentially revisit after further adjustments to move weighting system, as it stands now this move bloats Steel-type pools too harshly for little benefit.
 ]);
 
 /**
@@ -106,11 +107,13 @@ export const LEVEL_BASED_DENYLIST: ReadonlySet<MoveId> = new Set([
   MoveId.POISON_STING,
   MoveId.POUND,
   MoveId.POWDER_SNOW,
+  MoveId.PSYWAVE,
   MoveId.RAGE,
   MoveId.ROLLING_KICK,
   MoveId.ROTOTILLER,
   MoveId.SCRATCH,
   MoveId.SMOG,
+  MoveId.SONIC_BOOM,
   MoveId.SPARK,
   MoveId.SPIKE_CANNON,
   MoveId.SPIT_UP,
@@ -132,6 +135,7 @@ export const LEVEL_BASED_DENYLIST: ReadonlySet<MoveId> = new Set([
   MoveId.TAKE_DOWN,
   MoveId.STOMP,
   MoveId.QUICK_ATTACK,
+  MoveId.SYNCHRONOISE,
   // Really bad moves
   MoveId.RAZOR_WIND,
   MoveId.SLAM,
