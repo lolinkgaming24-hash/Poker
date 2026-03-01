@@ -27,7 +27,7 @@ describe("Abilities - Stall", () => {
       .moveset([MoveId.QUICK_ATTACK, MoveId.TACKLE]);
   });
 
-  /**
+  /*
    * References:
    * https://bulbapedia.bulbagarden.net/wiki/Stall_(Ability)
    * https://bulbapedia.bulbagarden.net/wiki/Priority
