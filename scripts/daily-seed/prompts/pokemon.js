@@ -131,8 +131,6 @@ export async function promptMoveset() {
  * Prompt the user to enter an ability.
  * @param {boolean} [passive=false] (Default `false`) Whether to prompt for a passive ability.
  * @returns {Promise<number>} A Promise that resolves with the chosen ability.
- * @remarks
- * This is boss only for now, since the option for setting any ability is not yet implemented.
  */
 export async function promptAbility(passive = false) {
   const abilityName = await search({
@@ -147,19 +145,4 @@ export async function promptAbility(passive = false) {
   });
   const abilityId = ABILITIES[/** @type {keyof typeof ABILITIES} */ (toUpperSnakeCase(abilityName))];
   return abilityId;
-}
-
-/**
- * Prompt the user to enter an ability index.
- * @returns {Promise<number>} A Promise that resolves with the chosen ability index.
- * @remarks This is starter only for now.
- */
-// TODO: Validate the ability index & list the actual ability names based on main repo data
-export async function promptAbilityIndex() {
-  return await number({
-    message: `Please enter the starter's ability index.`,
-    min: 0,
-    max: 2,
-    required: true,
-  });
 }

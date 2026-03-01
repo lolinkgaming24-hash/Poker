@@ -58,7 +58,8 @@ export const STARTER_OPTIONS = /** @type {const} */ ([
   "variant",
   "moveset",
   "nature",
-  "abilityIndex",
+  "ability",
+  "passive",
   "finish",
 ]);
 
