@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { select } from "@inquirer/prompts";
+import { confirm, select } from "@inquirer/prompts";
 import chalk from "chalk";
 import { toCamelCase, toTitleCase } from "../../helpers/casing.js";
 import { BOSS_OPTIONS } from "../constants.js";
@@ -31,6 +31,7 @@ import {
  *   ability?: number,
  *   passive?: number,
  *   segments?: number,
+ *   catchable?: boolean,
  * }} BossConfig - The config for a single boss pokemon.
  *
  */
@@ -48,6 +49,7 @@ let bossConfig = {
   ability: undefined,
   passive: undefined,
   segments: undefined,
+  catchable: undefined,
 };
 
 /**
@@ -104,6 +106,12 @@ async function promptBossOptions() {
       break;
     case "segments":
       bossConfig.segments = await promptSegments();
+      break;
+    case "catchable":
+      bossConfig.catchable = await confirm({
+        message: "Should the boss be catchable?",
+        default: false,
+      });
       break;
     case "finish":
       return bossConfig;

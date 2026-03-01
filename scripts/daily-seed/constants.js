@@ -52,6 +52,7 @@ export const BOSS_OPTIONS = /** @type {const} */ ([
   "ability",
   "passive",
   "segments",
+  "catchable",
   "finish",
 ]);
 
