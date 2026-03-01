@@ -14,13 +14,10 @@ interface PlayTweenConfig
  * @returns A Promise that resolves once the Tween has been played.
  */
 export async function playTween(config: PlayTweenConfig, scene: SceneBase = globalScene): Promise<void> {
-  await new Promise<void>(resolve =>
+  await new Promise(resolve =>
     scene.tweens.add({
       ...config,
-      onComplete: (...args) => {
-        config.onComplete(...args);
-        resolve();
-      },
+      onComplete: resolve,
     }),
   );
 }
