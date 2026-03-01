@@ -87,7 +87,7 @@ class DefaultOverrides {
    *
    * If `"odd-doubles"`, follow the `"double"` rule on odd wave numbers, and follow the `"single"` rule on even wave numbers.
    */
-  readonly BATTLE_STYLE_OVERRIDE: BattleStyle | null = null;
+  readonly BATTLE_STYLE_OVERRIDE: BattleStyleOverride | null = null;
   readonly STARTING_WAVE_OVERRIDE: number = 0;
   readonly STARTING_BIOME_OVERRIDE: BiomeId | null = null;
   /**
@@ -328,12 +328,9 @@ class DefaultOverrides {
 
 export const defaultOverrides = new DefaultOverrides();
 
-export default {
-  ...defaultOverrides,
-  ...overrides,
-} satisfies InstanceType<typeof DefaultOverrides>;
+export const activeOverrides = { ...defaultOverrides, ...overrides } satisfies InstanceType<OverridesType>;
 
-export type BattleStyle = "double" | "single" | "even-doubles" | "odd-doubles";
+export type BattleStyleOverride = "double" | "single" | "even-doubles" | "odd-doubles";
 
 export type RandomTrainerOverride = {
   /** The Type of trainer to force */
@@ -347,4 +344,4 @@ export type RandomTrainerOverride = {
 };
 
 /** The type of the {@linkcode DefaultOverrides} class */
-export type OverridesType = typeof DefaultOverrides;
+type OverridesType = typeof DefaultOverrides;

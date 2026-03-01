@@ -1,6 +1,6 @@
 import { applyAbAttrs } from "#abilities/apply-ab-attrs";
 import { globalScene } from "#app/global-scene";
-import Overrides from "#app/overrides";
+import { activeOverrides } from "#app/overrides";
 import { biomePokemonPools, biomeTrainerPools } from "#balance/biomes";
 import type { ArenaTag, ArenaTagTypeMap } from "#data/arena-tag";
 import { EntryHazardTag, getArenaTag } from "#data/arena-tag";
@@ -137,7 +137,7 @@ export class Arena {
    * Sets weather to the override specified in `overrides.ts`
    */
   private overrideWeather(): void {
-    const weather = Overrides.WEATHER_OVERRIDE;
+    const weather = activeOverrides.WEATHER_OVERRIDE;
     this.weather = new Weather(weather, 0);
     globalScene.phaseManager.unshiftNew("CommonAnimPhase", undefined, undefined, CommonAnim.SUNNY + (weather - 1));
     globalScene.phaseManager.queueMessage(getWeatherStartMessage(weather)!); // TODO: is this bang correct?
@@ -150,7 +150,7 @@ export class Arena {
    * @returns true if new weather set, false if no weather provided or attempting to set the same weather as currently in use
    */
   public trySetWeather(weather: WeatherType, user?: Pokemon): boolean {
-    if (Overrides.WEATHER_OVERRIDE) {
+    if (activeOverrides.WEATHER_OVERRIDE) {
       this.overrideWeather();
       return true;
     }
@@ -303,9 +303,9 @@ export class Arena {
     return true;
   }
 
-  /** Attempt to override the terrain to the value set inside {@linkcode Overrides.STARTING_TERRAIN_OVERRIDE}. */
+  /** Attempt to override the terrain to the value set inside {@linkcode activeOverrides.STARTING_TERRAIN_OVERRIDE}. */
   public tryOverrideTerrain(): void {
-    const terrain = Overrides.STARTING_TERRAIN_OVERRIDE;
+    const terrain = activeOverrides.STARTING_TERRAIN_OVERRIDE;
     if (terrain === TerrainType.NONE) {
       return;
     }
@@ -807,8 +807,8 @@ export class Arena {
         return TimeOfDay.NIGHT;
     }
 
-    if (Overrides.TIME_OF_DAY_OVERRIDE !== null) {
-      return Overrides.TIME_OF_DAY_OVERRIDE;
+    if (activeOverrides.TIME_OF_DAY_OVERRIDE !== null) {
+      return activeOverrides.TIME_OF_DAY_OVERRIDE;
     }
 
     const waveCycle = ((globalScene.currentBattle?.waveIndex ?? 0) + globalScene.waveCycleOffset) % 40;

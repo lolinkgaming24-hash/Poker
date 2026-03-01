@@ -1,3 +1,3 @@
-import Overrides from "#app/overrides";
+import { activeOverrides } from "#app/overrides";
 
-export const startingWave = Overrides.STARTING_WAVE_OVERRIDE || 1;
+export const startingWave = activeOverrides.STARTING_WAVE_OVERRIDE || 1;
