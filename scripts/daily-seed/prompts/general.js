@@ -26,6 +26,13 @@ import { promptSpeciesId } from "./pokemon.js";
  * }} ForcedWaveConfig
  */
 
+/**
+ * @typedef {{
+ *   waveIndex: number,
+ *   isTrainer: boolean,
+ * }} DailyTrainerManipulation
+ */
+
 const ajv = new Ajv({
   allErrors: true,
 });
@@ -195,4 +202,45 @@ export async function promptForcedWaves() {
     return;
   }
   return forcedWaves;
+}
+
+/**
+ * Prompt the user to enter a list of trainer manipulations.
+ * @returns {Promise<DailyTrainerManipulation[] | undefined>} A Promise that resolves with the list of trainer manipulations.
+ */
+export async function promptTrainerManipulation() {
+  /** @type {DailyTrainerManipulation[]} */
+  const trainerManipulations = [];
+
+  async function addTrainerManipulation() {
+    const waveIndex = await number({
+      message: "Please enter the wave to manipulate.\nPressing ENTER will end the prompt early.",
+      min: 1,
+      max: 49,
+      validate: value => {
+        if (trainerManipulations.some(wave => wave.waveIndex === value)) {
+          return chalk.red.bold("Wave already manipulated!");
+        }
+        return true;
+      },
+    });
+    if (!waveIndex) {
+      return;
+    }
+
+    const isTrainer = await confirm({
+      message: "Should the wave be a trainer?",
+      default: false,
+    });
+
+    trainerManipulations.push({ waveIndex, isTrainer });
+
+    await addTrainerManipulation();
+  }
+
+  await addTrainerManipulation();
+  if (trainerManipulations.length === 0) {
+    return;
+  }
+  return trainerManipulations;
 }

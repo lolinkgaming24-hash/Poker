@@ -34,6 +34,7 @@ export const EDIT_OPTIONS = /** @type {const} */ ([
   "biome",
   "luck",
   "forced waves",
+  "trainer manipulation",
   "starting money",
   "seed",
   "edit",
