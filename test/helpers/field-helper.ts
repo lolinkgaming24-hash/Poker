@@ -65,20 +65,18 @@ export class FieldHelper extends GameManagerHelper {
 
   /**
    * Helper function to return all on-field {@linkcode Pokemon} in speed order (fastest first).
-   * @param indices - Whether to only return {@linkcode BattlerIndex}es instead of full Pokemon objects
-   * (such as for comparison with other speed order-related mechanisms); default `false`
-   * @param ignoreOverride - Whether to ignore preset turn orders and speed-reversing effects (like Trick Room);
-   * default `true`
-   * @returns An array containing all on-field {@linkcode Pokemon} in order of **descending** Speed.
+   * @param indices - (Default `false`) Whether to only return {@linkcode BattlerIndex}es instead of full Pokemon objects
+   *   (such as for comparison with other speed order-related mechanisms)
+   * @param ignoreOverride - (Default `true`) Whether to ignore preset turn orders and speed-reversing effects (like Trick Room)
+   * @returns An array containing all on-field `Pokemon` in order of **descending** speed.
    */
   public getSpeedOrder(indices?: false, ignoreOverride?: boolean): Pokemon[];
   /**
    * Helper function to return all on-field {@linkcode Pokemon} in speed order (fastest first).
-   * @param indices - Whether to only return {@linkcode BattlerIndex}es instead of full Pokemon objects
-   * (such as for comparison with other speed order-related mechanisms); default `false`
-   * @param ignoreOverride - Whether to ignore preset turn orders and speed-reversing effects (like Trick Room);
-   * default `true`
-   * @returns An array containing the {@linkcode BattlerIndex}es of all on-field `Pokemon` in order of **descending** Speed. \
+   * @param indices - (Default `false`) Whether to only return {@linkcode BattlerIndex}es instead of full Pokemon objects
+   *   (such as for comparison with other speed order-related mechanisms)
+   * @param ignoreOverride - (Default `true`) Whether to ignore preset turn orders and speed-reversing effects (like Trick Room)
+   * @returns An array containing the `BattlerIndex`es of all on-field `Pokemon` in order of **descending** speed.
    */
   public getSpeedOrder(indices: true, ignoreOverride?: boolean): BattlerIndex[];
   public getSpeedOrder(indices = false, ignoreOverride = true): BattlerIndex[] | Pokemon[] {
