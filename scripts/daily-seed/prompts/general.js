@@ -10,6 +10,7 @@ import { Ajv } from "ajv";
 import chalk from "chalk";
 import customDailyRunSchema from "../../../src/data/daily-seed/schema.json" with { type: "json" };
 import { BIOMES } from "../../enums/biomes.js";
+import { CHALLENGES } from "../../enums/challenges.js";
 import { toTitleCase, toUpperSnakeCase } from "../../helpers/casing.js";
 import { BIOME_POOL_TIERS } from "../constants.js";
 import { promptSpeciesId } from "./pokemon.js";
@@ -31,6 +32,13 @@ import { promptSpeciesId } from "./pokemon.js";
  *   waveIndex: number,
  *   isTrainer: boolean,
  * }} DailyTrainerManipulation
+ */
+
+/**
+ * @typedef {{
+ *   id: number,
+ *   value: number,
+ * }} DailyEventChallenge
  */
 
 const ajv = new Ajv({
@@ -243,4 +251,47 @@ export async function promptTrainerManipulation() {
     return;
   }
   return trainerManipulations;
+}
+
+/**
+ * Prompt the user to enter a list of challenges.
+ * @returns {Promise<DailyEventChallenge[] | undefined>} A Promise that resolves with the list of challenges.
+ */
+export async function promptChallenges() {
+  /** @type {DailyEventChallenge[]} */
+  const challenges = [];
+  const challengeNames = Object.keys(CHALLENGES).map(toTitleCase);
+  challengeNames.unshift("Finish");
+
+  async function addChallenge() {
+    const challenge = await search({
+      message: "Please enter the challenge to add.\nPressing ENTER will end the prompt early.",
+      source: term => {
+        if (!term) {
+          return challengeNames;
+        }
+        return challengeNames.filter(id => id.toLowerCase().includes(term.toLowerCase()));
+      },
+    });
+    if (challenge === "Finish") {
+      return;
+    }
+
+    const value = await number({
+      message: `Please enter the value for ${challenge}. This is NOT validted atm.`,
+      min: 0,
+      required: true,
+    });
+
+    const challengeId = CHALLENGES[/** @type {keyof typeof CHALLENGES} */ (toUpperSnakeCase(challenge))];
+    challenges.push({ id: challengeId, value });
+    challengeNames.splice(challengeNames.indexOf(challenge), 1);
+    await addChallenge();
+  }
+  await addChallenge();
+
+  if (challenges.length === 0) {
+    return;
+  }
+  return challenges;
 }

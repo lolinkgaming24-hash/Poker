@@ -36,6 +36,7 @@ export const EDIT_OPTIONS = /** @type {const} */ ([
   "forced waves",
   "trainer manipulation",
   "starting money",
+  "challenges",
   "seed",
   "edit",
   "finish",

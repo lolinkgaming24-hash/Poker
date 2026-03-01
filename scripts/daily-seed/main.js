@@ -21,6 +21,7 @@ import { EDIT_OPTIONS } from "./constants.js";
 import { promptBoss } from "./prompts/boss.js";
 import {
   promptBiome,
+  promptChallenges,
   promptEdit,
   promptForcedWaves,
   promptLuck,
@@ -41,7 +42,7 @@ const rootDir = join(import.meta.dirname, "..", "..");
 /**
  * @import {BossConfig} from "./prompts/boss.js"
  * @import {StarterConfig} from "./prompts/starter.js"
- * @import {ForcedWaveConfig, DailyTrainerManipulation} from "./prompts/general.js"
+ * @import {ForcedWaveConfig, DailyTrainerManipulation, DailyEventChallenge} from "./prompts/general.js"
  */
 
 /**
@@ -57,6 +58,7 @@ const rootDir = join(import.meta.dirname, "..", "..");
  *   luck?: number,
  *   forcedWaves?: ForcedWaveConfig[],
  *   trainerManipulations?: DailyTrainerManipulation[],
+ *   challenges?: DailyEventChallenge[],
  *   startingMoney?: number,
  *   seed: string
  * }}
@@ -68,6 +70,7 @@ const customSeedConfig = {
   luck: undefined,
   forcedWaves: undefined,
   trainerManipulations: undefined,
+  challenges: undefined,
   startingMoney: undefined,
   seed: "",
 };
@@ -149,6 +152,9 @@ async function handleAnswer(answer) {
       break;
     case "trainer manipulation":
       customSeedConfig.trainerManipulations = await promptTrainerManipulation();
+      break;
+    case "challenges":
+      customSeedConfig.challenges = await promptChallenges();
       break;
     case "starting money":
       customSeedConfig.startingMoney = await promptMoney();
