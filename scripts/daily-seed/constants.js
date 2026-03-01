@@ -49,6 +49,7 @@ export const BOSS_OPTIONS = /** @type {const} */ ([
   "nature",
   "ability",
   "passive",
+  "segments",
   "finish",
 ]);
 

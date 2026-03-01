@@ -18,7 +18,6 @@ import { toTitleCase, toUpperSnakeCase } from "../../helpers/casing.js";
 
 /**
  * Prompt the user to enter a speciesId.
- * @see {@linkcode SPECIES_IDS} for a list of valid `SpeciesId`s.
  * @returns {Promise<number>} A Promise that resolves with the chosen `SpeciesId`.
  */
 export async function promptSpeciesId() {
@@ -145,4 +144,17 @@ export async function promptAbility(passive = false) {
   });
   const abilityId = ABILITIES[/** @type {keyof typeof ABILITIES} */ (toUpperSnakeCase(abilityName))];
   return abilityId;
+}
+
+/**
+ * Prompt the user to enter the number of segments for the boss fight.
+ * @returns {Promise<number>} A Promise that resolves with the chosen number of segments.
+ */
+export async function promptSegments() {
+  return await number({
+    message: "Please enter the number of segments for the boss fight.",
+    min: 1,
+    default: 5,
+    required: true,
+  });
 }

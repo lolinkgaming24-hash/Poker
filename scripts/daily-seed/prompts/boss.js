@@ -14,6 +14,7 @@ import {
   promptFormIndex,
   promptMoveset,
   promptNature,
+  promptSegments,
   promptSpeciesId,
   promptVariant,
 } from "./pokemon.js";
@@ -28,7 +29,8 @@ import {
  *   moveset?: number[],
  *   nature?: number,
  *   ability?: number,
- *   passive?: number
+ *   passive?: number,
+ *   segments?: number,
  * }} BossConfig - The config for a single boss pokemon.
  *
  */
@@ -45,6 +47,7 @@ let bossConfig = {
   nature: undefined,
   ability: undefined,
   passive: undefined,
+  segments: undefined,
 };
 
 /**
@@ -98,6 +101,9 @@ async function promptBossOptions() {
       break;
     case "passive":
       bossConfig.passive = await promptAbility(true);
+      break;
+    case "segments":
+      bossConfig.segments = await promptSegments();
       break;
     case "finish":
       return bossConfig;
