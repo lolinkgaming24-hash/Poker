@@ -83,6 +83,11 @@ declare global {
   interface Number {
     toString<T extends number>(this: T, radix?: 10): Stringify<T>;
   }
+
+  // Override for `Array.isArray` to not remove `readonly`-ness from arrays known to be readonly
+  interface ArrayConstructor {
+    isArray<T>(arg: readonly T[]): arg is readonly T[];
+  }
 }
 
 // Global augments for `typedoc` to prevent TS from erroring when editing the config JS file
