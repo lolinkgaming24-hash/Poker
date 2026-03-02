@@ -91,9 +91,6 @@ export function getDailyStartingBiome(): BiomeId {
   const biomeThresholds: number[] = [];
   for (const biome of biomes) {
     const weight = dailyBiomeWeights[biome];
-    if (weight === 0) {
-      continue;
-    }
 
     // Keep track of the total weight & each biome's cumulative weight
     totalWeight += weight;

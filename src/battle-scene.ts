@@ -23,6 +23,7 @@ import { InvertPostFX } from "#app/pipelines/invert";
 import { SpritePipeline } from "#app/pipelines/sprite";
 import { SceneBase } from "#app/scene-base";
 import { startingWave } from "#app/starting-wave";
+import { TurnCommandManager } from "#app/turn-command-manager";
 import { UiInputs } from "#app/ui-inputs";
 import { pokemonPrevolutions } from "#balance/pokemon-evolutions";
 import { FRIENDSHIP_GAIN_FROM_BATTLE } from "#balance/starters";
@@ -148,6 +149,7 @@ import {
 } from "#utils/common";
 import { deepMergeSpriteData } from "#utils/data";
 import { getEnumValues } from "#utils/enums";
+import { cachedFetch } from "#utils/fetch-utils";
 import { getModifierPoolForType, getModifierType } from "#utils/modifier-utils";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import i18next from "i18next";
@@ -250,6 +252,8 @@ export class BattleScene extends SceneBase {
 
   /** Manager for the phases active in the battle scene */
   public readonly phaseManager: PhaseManager;
+  /** A manager for the commands and moves used in the current battle. */
+  public readonly turnCommandManager: TurnCommandManager = new TurnCommandManager();
   public field: Phaser.GameObjects.Container;
   public fieldUI: Phaser.GameObjects.Container;
   public charSprite: CharSprite;
@@ -666,7 +670,7 @@ export class BattleScene extends SceneBase {
     if (expSpriteKeys.size > 0) {
       return;
     }
-    const res = await this.cachedFetch("./exp-sprites.json");
+    const res = await cachedFetch("./exp-sprites.json");
     const keys = await res.json();
     if (!Array.isArray(keys)) {
       throw new Error("EXP Sprites were not array when fetched!");
@@ -684,24 +688,15 @@ export class BattleScene extends SceneBase {
    */
   async initVariantData(): Promise<void> {
     clearVariantData();
-    const otherVariantData = await this.cachedFetch("./images/pokemon/variant/_masterlist.json").then(r => r.json());
+    const otherVariantData = await cachedFetch("./images/pokemon/variant/_masterlist.json").then(r => r.json());
     for (const k of Object.keys(otherVariantData)) {
       variantData[k] = otherVariantData[k];
     }
     if (!this.experimentalSprites) {
       return;
     }
-    const expVariantData = await this.cachedFetch("./images/pokemon/variant/_exp_masterlist.json").then(r => r.json());
+    const expVariantData = await cachedFetch("./images/pokemon/variant/_exp_masterlist.json").then(r => r.json());
     deepMergeSpriteData(variantData, expVariantData);
-  }
-
-  cachedFetch(url: string, init?: RequestInit): Promise<Response> {
-    const { manifest } = this.game;
-    const timestamp = manifest?.[`/${url.replace("./", "")}`];
-    if (timestamp) {
-      url += `?t=${timestamp}`;
-    }
-    return fetch(url, init);
   }
 
   async initStarterColors(): Promise<void> {
@@ -709,7 +704,7 @@ export class BattleScene extends SceneBase {
       // already initialized
       return;
     }
-    const sc = await this.cachedFetch("./starter-colors.json").then(res => res.json());
+    const sc = await cachedFetch("./starter-colors.json").then(res => res.json());
     for (const key of Object.keys(sc)) {
       starterColors[key] = sc[key];
     }
@@ -833,11 +828,11 @@ export class BattleScene extends SceneBase {
    * @returns The `Pokemon` associated with the given ID,
    * or `undefined` if none is found in either team's party.
    * @see {@linkcode Pokemon.id}
-   * @todo `pokemonId` should not allow `undefined`
    */
+  // TODO: Remove `undefined` from signature
   public getPokemonById(pokemonId: number | undefined): Pokemon | undefined {
     if (pokemonId == null) {
-      // biome-ignore lint/nursery/noUselessUndefined: More explicit
+      // biome-ignore lint/complexity/noUselessUndefined: More explicit
       return undefined;
     }
 
@@ -1119,6 +1114,7 @@ export class BattleScene extends SceneBase {
       this.gameData = new GameData();
     }
 
+    this.turnCommandManager.resetTurnOrder();
     this.gameMode = getGameMode(GameModes.CLASSIC);
 
     this.disableMenu = false;
@@ -1268,7 +1264,11 @@ export class BattleScene extends SceneBase {
     mysteryEncounterType?: MysteryEncounterType,
   ): Battle {
     // failsafe for corrupt saves (such as due to enum shifting)
-    if (trainerData?.variant === TrainerVariant.DOUBLE && !trainerConfigs[trainerData.trainerType].hasDouble) {
+    if (
+      trainerData?.variant === TrainerVariant.DOUBLE
+      && !trainerConfigs[trainerData.trainerType].hasDouble
+      && !trainerConfigs[trainerData.trainerType].doubleOnly
+    ) {
       trainerData.variant = TrainerVariant.DEFAULT;
       double = false;
     }
