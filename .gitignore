@@ -18,7 +18,7 @@ dist-ssr
 build
 .pnpm-store
 
-# Editor directories and files (excluding `extensions.json` for devcontainer)
+# Editor/OS directories and files (excluding `extensions.json` for devcontainer)
 *.code-workspace
 .vscode/*
 .zed
@@ -26,6 +26,7 @@ build
 !.vscode/spdx.code-snippets
 .idea
 .DS_Store
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
