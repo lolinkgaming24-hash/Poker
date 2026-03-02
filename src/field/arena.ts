@@ -13,10 +13,10 @@ import type { PositionalTag } from "#data/positional-tags/positional-tag";
 import { PositionalTagManager } from "#data/positional-tags/positional-tag-manager";
 import { getTerrainClearMessage, getTerrainStartMessage, Terrain, TerrainType } from "#data/terrain";
 import {
-    getLegendaryWeatherContinuesMessage,
-    getWeatherClearMessage,
-    getWeatherStartMessage,
-    Weather,
+  getLegendaryWeatherContinuesMessage,
+  getWeatherClearMessage,
+  getWeatherStartMessage,
+  Weather,
 } from "#data/weather";
 import { AbilityId } from "#enums/ability-id";
 import { ArenaTagSide } from "#enums/arena-tag-side";
@@ -499,6 +499,7 @@ export class Arena {
     if (timeOfDay === this.lastTimeOfDay) {
       return;
     }
+
     const currBiome = allBiomes.get(this.biomeId);
     this.pokemonPool = Object.entries(currBiome.pokemonPool).reduce(
       (acc, [tier, pool]) => {

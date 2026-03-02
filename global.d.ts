@@ -1,5 +1,5 @@
 import type { Stringable, Stringify, Unstringify } from "#types/strings";
-import type { ObjectValues, PreventHoverExpansion } from "#types/type-helpers";
+import type { PreventHoverExpansion } from "#types/type-helpers";
 import type { SetupServerApi } from "msw/node";
 
 // #region Object-related types
@@ -23,9 +23,7 @@ type ObjectEntries<O extends Partial<Record<StringableKey, unknown>>> = PreventH
  * Internal helper for {@linkcode ObjectEntries}.
  * @internal
  */
-type ObjectEntry<O extends Record<StringableKey, unknown>> = ObjectValues<{
-  [K in Extract<keyof O, StringableKey>]: readonly [Stringify<K>, O[K]];
-}>;
+type ObjectEntry<O extends Record<StringableKey, unknown>> = readonly [Stringify<keyof O>, O[keyof O]];
 
 /**
  * Augmented type of {@linkcode Object.fromEntries}.
