@@ -20,7 +20,7 @@ import i18next from "i18next";
 import Phaser from "phaser";
 import { beforeAll, beforeEach, describe, expect, it, type MockInstance, vi } from "vitest";
 
-describe("Moves - Move-calling Moves", () => {
+describe("Moves - Move-Calling Moves", () => {
   let phaserGame: Phaser.Game;
   let game: GameManager;
 
@@ -59,10 +59,15 @@ describe("Moves - Move-calling Moves", () => {
       );
     });
 
+    // TODO: Remove type assertions after `Object.keys` branch is merged
+    const cases = (Object.keys(BiomeId) as `${BiomeId}`[]).map<[BiomeId, MoveId]>(biome => [
+      Number(biome) as BiomeId,
+      getMoveId(TerrainType.NONE, Number(biome) as BiomeId),
+    ]);
     it.each(
-      getEnumValues(BiomeId).map(biome => ({
-        move: getMoveId(TerrainType.NONE, biome),
-        moveName: toTitleCase(MoveId[getMoveId(TerrainType.NONE, biome)]),
+      cases.map(([biome, move]) => ({
+        move,
+        moveName: toTitleCase(MoveId[move]),
         biome,
         biomeName: BiomeId[biome],
       })),

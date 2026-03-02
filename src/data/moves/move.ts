@@ -7621,7 +7621,7 @@ export abstract class CallMoveAttr extends OverrideMoveEffectAttr {
    * @remarks
    * Should never be `true` if the move is set to target the user!
    */
-  protected targetEnemy: boolean;
+  protected preserveTargeting: boolean;
 
   constructor(
     /**
@@ -7635,16 +7635,18 @@ export abstract class CallMoveAttr extends OverrideMoveEffectAttr {
     // NB: We probably won't care about this after move-calling-move refactor, but
     // this (for now) makes Mirror Move bypass substitute i guess?
     super(false);
-    this.targetEnemy = targetEnemy;
+    this.preserveTargeting = targetEnemy;
   }
 
   /**
-   * Abstract function yielding the move to be used.
-   * Called automatically during attribute application by default,
-   * but can also be called in advance when evaluating move conditions.
-   * @param user - The `Pokemon` using the move
-   * @param target - The `Pokemon` being targeted by the move
-   * @returns The `MoveId` that will be called and used.
+   * Determine the move that should be called by this move-calling move.
+   * @param user - The {@linkcode Pokemon} using the move
+   * @param target - The {@linkcode Pokemon} being targeted by the move
+   * @returns The {@linkcode MoveId} that will be called and used.
+   * @privateRemarks
+   * By default, this is only called once during attribute application,
+   * though subclasses may optionally invoke it during move condition evaluation
+   * (in which case the return value must be consistent between said calls).
    */
   protected abstract getMove(user: Pokemon, target: Pokemon): MoveId;
 
@@ -7667,7 +7669,7 @@ export abstract class CallMoveAttr extends OverrideMoveEffectAttr {
       moveTargets.multiple || moveTargets.targets.length === 1
         ? moveTargets.targets
         : [
-            this.targetEnemy
+            this.preserveTargeting
               ? target.getBattlerIndex()
               : moveTargets.targets[user.randBattleSeedInt(moveTargets.targets.length)],
           ];
@@ -7687,7 +7689,8 @@ export abstract class CallMoveAttr extends OverrideMoveEffectAttr {
 
 /**
  * Attribute to call a different move based on the current terrain and biome.
- * Used by {@linkcode MoveId.NATURE_POWER}.
+ *
+ * Used by {@link https://bulbapedia.bulbagarden.net/Nature_Power_(Move) | Nature Power}..
  */
 export class NaturePowerAttr extends CallMoveAttr {
   constructor() {
@@ -7695,7 +7698,8 @@ export class NaturePowerAttr extends CallMoveAttr {
   }
 
   protected override getMove(user: Pokemon): MoveId {
-    const moveId = this.getMoveId(globalScene.arena.terrainType, globalScene.arena.biomeId);
+    const { terrainType, biomeId } = globalScene.arena;
+    const moveId = this.getMoveId(terrainType, biomeId);
     globalScene.phaseManager.queueMessage(
       i18next.t("moveTriggers:naturePowerUse", {
         pokemonName: getPokemonNameWithAffix(user),
@@ -7709,7 +7713,7 @@ export class NaturePowerAttr extends CallMoveAttr {
   /**
    * Helper function to retrieve the correct move for the current terrain and biome.
    *
-   * Made into a separate function for both brevity and to allow for easier unit testing.
+   * Made into a separate function for brevity and to allow for easier unit testing.
    * @param terrain - The arena's current {@linkcode TerrainType}
    * @param biome - The arena's current {@linkcode BiomeId}
    * @returns The {@linkcode MoveId} that will be called and used.
@@ -7800,11 +7804,8 @@ export class NaturePowerAttr extends CallMoveAttr {
       case BiomeId.END:
         return MoveId.ETERNABEAM;
     }
+
     biome satisfies never;
-    console.warn(
-      `NaturePowerAttr lacks defined move to use for current biome ${toTitleCase(BiomeId[biome])}!\nConsider adding an appropriate move to the attribute's selection table.`,
-    );
-    return MoveId.TRI_ATTACK;
   }
 }
 
@@ -7821,8 +7822,9 @@ export class NaturePowerAttr extends CallMoveAttr {
  */
 abstract class CallMoveAttrWithBanlist extends CallMoveAttr {
   /**
-   * A {@linkcode ReadonlySet} containing all {@linkcode MoveId | moves} that this attribute cannot copy,
-   * in addition to unimplemented/challenge-restricted moves and `MoveId.NONE`.
+   * A {@linkcode ReadonlySet} containing all {@linkcode MoveId | moves} that this attribute cannot copy.
+   * @remarks
+   * Is  addition to unimplemented/challenge-restricted moves and `MoveId.NONE`.
    */
   private readonly invalidMoves: ReadonlySet<MoveId>;
 
@@ -7871,7 +7873,7 @@ export class CopyMoveAttr extends CallMoveAttrWithBanlist {
   protected override getMove(_user: Pokemon, target: Pokemon): MoveId {
     // If `targetEnemy` is `true`, select the last move executed by the target.
     // Otherwise, return the last successful move used by anyone on-field.
-    const calledMove = this.targetEnemy
+    const calledMove = this.preserveTargeting
       ? (target.getLastNonVirtualMove(false, false)?.move ?? MoveId.NONE)
       : globalScene.currentBattle.lastMove;
 
