@@ -32,6 +32,7 @@ desktop.ini
 *.njsproj
 *.sln
 *.sw?
+/vs
 
 assets/images/trainer/convert/*
 assets/images/battle_anims/input/*.png
@@ -44,13 +45,10 @@ src/data/battle-anim-raw-data*.ts
 src/data/battle-anim-data.ts
 
 coverage
-/.vs
 
 # Local Documentation
 /typedoc
-
 /dependency-graph.svg
-/.vs
 
 # Script outputs
-./*.csv
+*.csv
