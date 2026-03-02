@@ -1,4 +1,7 @@
+import type { BattleScene } from "#app/battle-scene";
 import type { PokemonSummonData } from "#data/pokemon-data";
+import type { Arena } from "#field/arena";
+import type { Pokemon } from "#field/pokemon";
 import type { PokemonMove } from "#moves/pokemon-move";
 
 /** Enum comprising all {@linkcode BattleScene} events that can be emitted. */
@@ -72,10 +75,10 @@ export class CandyUpgradeNotificationChangedEvent extends BattleSceneEvent<Battl
  * Emitted whenever the moveset of any {@linkcode Pokemon} is changed, or a move's PP is increased or decreased.
  */
 export class MovesetChangedEvent extends BattleSceneEvent<BattleSceneEventType.MOVESET_CHANGED> {
-  /** The {@linkcode Pokemon.ID | ID} of the {@linkcode Pokemon} whose moveset has changed. */
+  /** The {@linkcode Pokemon.id | ID} of the {@linkcode Pokemon} whose moveset has changed. */
   public readonly pokemonId: number;
   /**
-   * The {@linkcode PokemonMove} having been changed.
+   * The {@linkcode PokemonMove} having been changed. \
    * Will override the corresponding slot of the moveset flyout for that Pokemon.
    */
   public readonly move: PokemonMove;

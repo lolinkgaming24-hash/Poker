@@ -320,9 +320,7 @@ export class BattleScene extends SceneBase {
   public inputMethod: string;
   private readonly infoToggles: InfoToggle[] = [];
 
-  /**
-   * Allows subscribers to listen for events.
-   */
+  /** Allows subscribers to listen for events. */
   public readonly eventTarget = new EventTarget() as TypedEventTarget<keyof BattleSceneEventMap, BattleSceneEventMap>;
 
   /** A helper class containing several animation-related functions. */

@@ -7,6 +7,7 @@ import type { MovesetChangedEvent, SummonDataResetEvent } from "#events/battle-s
 import { BattleSceneEventType } from "#events/battle-scene";
 import type { Pokemon } from "#field/pokemon";
 import type { PokemonMove } from "#moves/pokemon-move";
+import type { Move } from "#types/move-types";
 import type { BattleInfo } from "#ui/battle-info";
 import { addTextObject } from "#ui/text";
 import { fixedInt } from "#utils/common";
@@ -21,7 +22,7 @@ interface MoveInfo {
 }
 
 /**
- * A 4-length tuple consisting of all moves that each {@linkcode Pokemon} has used in the given battle.
+ * A 4-length tuple consisting of all moves that each {@linkcode Pokemon} has used in the given battle. \
  * Entries that are `undefined` indicate moves which have not been used yet.
  */
 type MoveInfoTuple = Partial<TupleOf<4, MoveInfo>>;
@@ -29,42 +30,42 @@ type MoveInfoTuple = Partial<TupleOf<4, MoveInfo>>;
 /**
  * A Flyout Menu attached to each Pokemon's {@linkcode BattleInfo} object,
  * showing all revealed moves and their current PP counts.
- * @todo Stop tracking player move usages
  */
+// TODO: Stop tracking player move usages
 export class BattleFlyout extends Phaser.GameObjects.Container {
   /** Is this object linked to a player's Pokemon? */
-  private player: boolean;
+  private readonly isPlayer: boolean;
 
   /** The Pokemon this object is linked to. */
   private pokemon: Pokemon;
 
   /** The restricted width of the flyout which should be drawn to */
-  private flyoutWidth = 118;
+  private readonly flyoutWidth = 118;
   /** The restricted height of the flyout which should be drawn to */
-  private flyoutHeight = 23;
+  private readonly flyoutHeight = 23;
 
   /** The amount of translation animation on the x-axis */
-  private translationX: number;
+  private readonly translationX: number;
   /** The x-axis point where the flyout should sit when activated */
-  private anchorX: number;
+  private readonly anchorX: number;
   /** The y-axis point where the flyout should sit when activated */
-  private anchorY: number;
+  private readonly anchorY: number;
 
   /** The initial container which defines where the flyout should be attached */
-  private flyoutParent: Phaser.GameObjects.Container;
+  private readonly flyoutParent: Phaser.GameObjects.Container;
   /** The background {@linkcode Phaser.GameObjects.Sprite;} for the flyout */
-  private flyoutBackground: Phaser.GameObjects.Sprite;
+  private readonly flyoutBackground: Phaser.GameObjects.Sprite;
 
   /** The container which defines the drawable dimensions of the flyout */
-  private flyoutContainer: Phaser.GameObjects.Container;
+  private readonly flyoutContainer: Phaser.GameObjects.Container;
 
   /** The array of {@linkcode Phaser.GameObjects.Text} objects which are drawn on the flyout */
-  private flyoutText: Phaser.GameObjects.Text[] = new Array(4);
+  private readonly flyoutText: Phaser.GameObjects.Text[] = new Array(4);
   /** An array of {@linkcode MoveInfo}s used to track moves for the {@linkcode Pokemon} linked to the flyout. */
-  private moveInfo: MoveInfoTuple = [];
+  private readonly moveInfo: MoveInfoTuple = [];
   /**
    * An array of {@linkcode MoveInfo}s used to track move slots
-   * temporarily overridden by {@linkcode MoveId.TRANSFORM} or {@linkcode MoveId.MIMIC}.
+   * temporarily overridden by Transform or Mimic.
    *
    * Reset once {@linkcode pokemon} switches out via a {@linkcode SummonDataResetEvent}.
    */
@@ -77,15 +78,15 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
   private readonly onMovesetChangedEvent = (event: MovesetChangedEvent) => this.onMovesetChanged(event);
   private readonly onSummonDataResetEvent = (event: SummonDataResetEvent) => this.onSummonDataReset(event);
 
-  constructor(player: boolean) {
+  constructor(isPlayer: boolean) {
     super(globalScene, 0, 0);
 
     // Note that all player based flyouts are disabled. This is included in case of future development
-    this.player = player;
+    this.isPlayer = isPlayer;
 
-    this.translationX = this.player ? -this.flyoutWidth : this.flyoutWidth;
-    this.anchorX = this.player ? -130 : -40;
-    this.anchorY = -2.5 + (this.player ? -18.5 : -13);
+    this.translationX = this.isPlayer ? -this.flyoutWidth : this.flyoutWidth;
+    this.anchorX = this.isPlayer ? -130 : -40;
+    this.anchorY = -2.5 + (this.isPlayer ? -18.5 : -13);
 
     this.flyoutParent = globalScene.add.container(this.anchorX - this.translationX, this.anchorY);
     this.flyoutParent.setAlpha(0);
@@ -97,7 +98,7 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
 
     this.flyoutParent.add(this.flyoutBackground);
 
-    this.flyoutContainer = globalScene.add.container(44 + (this.player ? -this.flyoutWidth : 0), 2);
+    this.flyoutContainer = globalScene.add.container(44 + (this.isPlayer ? -this.flyoutWidth : 0), 2);
     this.flyoutParent.add(this.flyoutContainer);
 
     // Loops through and sets the position of each text object according to the width and height of the flyout
@@ -139,7 +140,7 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
   }
 
   /**
-   * Link the given {@linkcode Pokemon} to this flyout and subscribe to the {@linkcode BattleSceneEventType.MOVESET_CHANGED} event.
+   * Link the given `Pokemon` to this flyout and subscribe to the {@linkcode BattleSceneEventType.MOVESET_CHANGED} event.
    * @param pokemon - The {@linkcode Pokemon} to link to this flyout
    */
   public initInfo(pokemon: Pokemon): void {
