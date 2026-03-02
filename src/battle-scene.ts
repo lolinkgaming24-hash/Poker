@@ -1132,7 +1132,12 @@ export class BattleScene extends SceneBase {
     if (Overrides.POKEBALL_OVERRIDE.active) {
       this.pokeballCounts = Overrides.POKEBALL_OVERRIDE.pokeballs;
     } else {
-      this.pokeballCounts = Object.fromEntries(getEnumValues(PokeballType).map(t => [t, 0] as const));
+      // TODO: Remove unused luxury balls and remove the `filter`
+      this.pokeballCounts = Object.fromEntries(
+        getEnumValues(PokeballType)
+          .filter(pt => pt !== PokeballType.LUXURY_BALL)
+          .map(t => [t, 0]),
+      );
       this.pokeballCounts[PokeballType.POKEBALL] = 5;
     }
 

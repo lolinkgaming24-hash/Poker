@@ -40,6 +40,8 @@ type FromEntries<E extends Iterable<readonly [StringableKey, unknown]>> =
 
 // #endregion Object-related code
 
+// #region Declaration merges
+
 declare global {
   /**
    * An MSW HTTP server, used to load i18n locale files during normal tests and serve mock
@@ -56,32 +58,27 @@ declare global {
   interface ObjectConstructor {
     keys<K extends StringableKey>(o: Partial<Record<K, unknown>>): readonly Stringify<K>[];
     entries<O extends Partial<Record<StringableKey, unknown>>>(o: O): ObjectEntries<O>;
-    fromEntries<Entry extends readonly [StringableKey, unknown], E extends Iterable<Entry> = Iterable<Entry>>(
-      entries: E,
-    ): FromEntries<E>;
+    fromEntries<E extends Iterable<readonly [StringableKey, unknown]>>(entries: E): FromEntries<E>;
   }
 
-  // Coerce numeric strings inside `Number()/etc.` casts, and vice versa for base-10 `toString` calls.
-  // Since TS requires the number in question to be round-trippable, this is always safe when it works.
+  // Coerce numeric strings inside `Number()` casts to their numeric equivalents, and vice versa for base-10 stringification.
+  // Since TS requires numeric strings to be round-trippable to be assignable to `${number}` (`String(Number(myStr)) === myStr`),
+  // this is always safe when the overload matches.
   interface NumberConstructor {
     // NB: I would make this produce NaN if an invalid string is passed, but that just becomes `number`...
     new <N extends number>(value: Stringify<N>): N;
     <N extends number>(value: Stringify<N>): N;
     parseInt<N extends number>(string: Stringify<N>, radix?: 10): N;
-
-    /*
-     * Propagates number types, e.g.:
-     * ```
-     * const thing: Stat = Stat.HP;
-     * const other = Number(thing); // type is `Stat`
-     * ```
-     */
-    new <N extends number>(value: N): N;
-    <N extends number>(value: N): N;
   }
-
   interface Number {
     toString<T extends number>(this: T, radix?: 10): Stringify<T>;
+  }
+
+  // Propagate number types from coercing things that are already known to be numbers (and avoid widening the type)
+  // TODO: Calling `Number()` on an already-numeric value is pointless and we should arguably produce type errors instead
+  interface NumberConstructor {
+    new <N extends number>(value: N): N;
+    <N extends number>(value: N): N;
   }
 
   // Override for `Array.isArray` to not remove `readonly`-ness from arrays known to be readonly
@@ -107,6 +104,8 @@ declare module "typedoc" {
     includeDocCommentReferences: boolean;
   }
 }
+
+// #endregion Declaration merges
 
 // biome-ignore lint/complexity/noUselessEmptyExport: Prevents exporting helper types
 export {};
