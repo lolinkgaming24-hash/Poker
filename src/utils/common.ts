@@ -3,6 +3,7 @@ import { bypassLogin, isDev } from "#constants/app-constants";
 import { BiomeId } from "#enums/biome-id";
 import { MoneyFormat } from "#enums/money-format";
 import type { Variant } from "#sprites/variant";
+import { enumValueToKey } from "#utils/enums";
 import { toCamelCase } from "#utils/strings";
 import i18next from "i18next";
 
@@ -401,6 +402,7 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "zh-Hant":
     case "pt-BR":
     case "ro":
+    case "th":
     case "tr":
     case "ko":
     case "ja":
@@ -517,6 +519,6 @@ export function getBiomeName(biome: BiomeId | -1) {
     case BiomeId.END:
       return i18next.t("biome:end");
     default:
-      return i18next.t(`biome:${toCamelCase(BiomeId[biome])}`);
+      return i18next.t(`biome:${toCamelCase(enumValueToKey(BiomeId, biome))}`);
   }
 }

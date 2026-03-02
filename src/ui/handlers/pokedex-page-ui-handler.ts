@@ -42,7 +42,7 @@ import { UiMode } from "#enums/ui-mode";
 import type { Variant } from "#sprites/variant";
 import { getVariantIcon, getVariantTint } from "#sprites/variant";
 import { SettingKeyboard } from "#system/settings-keyboard";
-import type { BiomeTierTod } from "#types/biomes";
+import type { BiomeTierTimeOfDay } from "#types/biomes";
 import type { DexEntry } from "#types/dex-data";
 import type { LevelMoves } from "#types/pokemon-level-moves";
 import type { StarterAttributes } from "#types/save-data";
@@ -62,7 +62,7 @@ import {
 } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
 import { BooleanHolder, getLocalizedSpriteKey, padInt, rgbHexToRgba } from "#utils/common";
-import { getEnumValues } from "#utils/enums";
+import { enumValueToKey, getEnumValues } from "#utils/enums";
 import { getDexNumber, getPokemonSpecies, getPokemonSpeciesForm } from "#utils/pokemon-utils";
 import { toCamelCase, toTitleCase } from "#utils/strings";
 import { argbFromRgba } from "@material/material-color-utilities";
@@ -79,101 +79,114 @@ interface LanguageSetting {
 const languageSettings: { [key: string]: LanguageSetting } = {
   en: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   de: {
     starterInfoTextSize: "54px",
-    instructionTextSize: "35px",
+    instructionTextSize: "25px",
     starterInfoXPos: 35,
   },
   "es-ES": {
     starterInfoTextSize: "50px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 38,
   },
   "es-419": {
     starterInfoTextSize: "50px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 38,
   },
   fr: {
     starterInfoTextSize: "54px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   it: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   "pt-BR": {
     starterInfoTextSize: "48px",
-    instructionTextSize: "42px",
+    instructionTextSize: "32px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 33,
   },
   zh: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "36px",
+    instructionTextSize: "26px",
     starterInfoXPos: 26,
   },
   ko: {
     starterInfoTextSize: "60px",
-    instructionTextSize: "38px",
+    instructionTextSize: "26px",
     starterInfoYOffset: -0.5,
     starterInfoXPos: 30,
   },
   ja: {
     starterInfoTextSize: "48px",
-    instructionTextSize: "40px",
+    instructionTextSize: "32px",
     starterInfoYOffset: 1,
     starterInfoXPos: 32,
   },
   ca: {
     starterInfoTextSize: "48px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 29,
   },
   da: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+  },
+  th: {
+    starterInfoTextSize: "50px",
+    instructionTextSize: "30px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 40,
   },
   tr: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+    starterInfoXPos: 34,
   },
   ro: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   ru: {
     starterInfoTextSize: "46px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 26,
   },
   uk: {
     starterInfoTextSize: "46px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
     starterInfoYOffset: 0.5,
     starterInfoXPos: 26,
   },
   id: {
-    starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    starterInfoTextSize: "48px",
+    instructionTextSize: "32px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 37,
   },
   hi: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
+  },
+  tl: {
+    starterInfoTextSize: "56px",
+    instructionTextSize: "28px",
   },
   "nb-NO": {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
   sv: {
     starterInfoTextSize: "56px",
-    instructionTextSize: "38px",
+    instructionTextSize: "28px",
   },
 };
 
@@ -269,8 +282,8 @@ export class PokedexPageUiHandler extends MessageUiHandler {
   private passive: AbilityId;
   private hasPassive: boolean;
   private hasAbilities: number[];
-  private biomes: readonly BiomeTierTod[];
-  private preBiomes: readonly BiomeTierTod[];
+  private biomes: readonly BiomeTierTimeOfDay[];
+  private preBiomes: readonly BiomeTierTimeOfDay[];
   private baseStats: number[];
   private baseTotal: number;
   private evolutions: SpeciesFormEvolution[];
@@ -401,7 +414,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
     const starterBoxContainer = globalScene.add.container(speciesContainerX + 6, 9); //115
 
     for (const species of allSpecies) {
-      if (!speciesStarterCosts.hasOwnProperty(species.speciesId) || !species.isObtainable()) {
+      if (!Object.hasOwn(speciesStarterCosts, species.speciesId)) {
         continue;
       }
 
@@ -897,6 +910,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
 
     this.hasAbilities = [hasAbility1, hasAbility2, hasHiddenAbility];
 
+    // TODO: this is jank, relying on extremely jank data structures that have been removed; refactor
     const allBiomes = catchableSpecies[species.speciesId] ?? [];
     this.preBiomes = this.sanitizeBiomes(
       (catchableSpecies[this.starterId] ?? []).filter(
@@ -934,7 +948,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
   }
 
   // Function to ensure that forms appear in the appropriate biome and tod
-  sanitizeBiomes(biomes: readonly BiomeTierTod[], speciesId: number): readonly BiomeTierTod[] {
+  sanitizeBiomes(biomes: readonly BiomeTierTimeOfDay[], speciesId: number): readonly BiomeTierTimeOfDay[] {
     if (speciesId === SpeciesId.BURMY || speciesId === SpeciesId.WORMADAM) {
       return biomes.filter(b => {
         const formIndex = (() => {
@@ -974,7 +988,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
     if (speciesId === SpeciesId.LYCANROC) {
       return biomes.filter(b => {
         const formIndex = (() => {
-          switch (b.tod[0]) {
+          switch (b.timesOfDay[0]) {
             case TimeOfDay.DAY:
             case TimeOfDay.DAWN:
               return 0;
@@ -1553,16 +1567,16 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                 const options: any[] = [];
 
                 ui.showText(i18next.t("pokedexUiHandler:showBiomes"), null, () => {
-                  this.biomes.map(b => {
+                  this.biomes.forEach(b => {
                     options.push({
                       label:
-                        i18next.t(`biome:${toCamelCase(BiomeId[b.biome])}`)
+                        i18next.t(`biome:${toCamelCase(enumValueToKey(BiomeId, b.biome))}`)
                         + " - "
                         + i18next.t(`biome:${toCamelCase(BiomePoolTier[b.tier])}`)
-                        + (b.tod.length === 1 && b.tod[0] === -1
+                        + (b.timesOfDay.length === 1 && b.timesOfDay[0] === -1
                           ? ""
                           : " ("
-                            + b.tod.map(tod => i18next.t(`biome:${toCamelCase(TimeOfDay[tod])}`)).join(", ")
+                            + b.timesOfDay.map(tod => i18next.t(`biome:${toCamelCase(TimeOfDay[tod])}`)).join(", ")
                             + ")"),
                       handler: () => false,
                     });
@@ -1574,16 +1588,16 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                       skip: true,
                       handler: () => false,
                     });
-                    this.preBiomes.map(b => {
+                    this.preBiomes.forEach(b => {
                       options.push({
                         label:
-                          i18next.t(`biome:${toCamelCase(BiomeId[b.biome])}`)
+                          i18next.t(`biome:${toCamelCase(enumValueToKey(BiomeId, b.biome))}`)
                           + " - "
                           + i18next.t(`biome:${toCamelCase(BiomePoolTier[b.tier])}`)
-                          + (b.tod.length === 1 && b.tod[0] === -1
+                          + (b.timesOfDay.length === 1 && b.timesOfDay[0] === -1
                             ? ""
                             : " ("
-                              + b.tod.map(tod => i18next.t(`biome:${toCamelCase(TimeOfDay[tod])}`)).join(", ")
+                              + b.timesOfDay.map(tod => i18next.t(`biome:${toCamelCase(TimeOfDay[tod])}`)).join(", ")
                               + ")"),
                         handler: () => false,
                       });
@@ -2224,7 +2238,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
   }
 
   updateButtonIcon(iconSetting, gamepadType, iconElement, controlLabel): void {
-    // biome-ignore lint/suspicious/noImplicitAnyLet: TODO
+    // biome-ignore lint/suspicious/noEvolvingTypes: TODO
     let iconPath;
     // touch controls cannot be rebound as is, and are just emulating a keyboard event.
     // Additionally, since keyboard controls can be rebound (and will be displayed when they are), we need to have special handling for the touch controls
