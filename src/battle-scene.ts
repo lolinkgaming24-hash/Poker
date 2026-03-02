@@ -68,7 +68,7 @@ import { TrainerType } from "#enums/trainer-type";
 import { TrainerVariant } from "#enums/trainer-variant";
 import { UiTheme } from "#enums/ui-theme";
 import { NewArenaEvent } from "#events/battle-scene";
-import { Arena, getArenaBgmLoopPoint, getBgTerrainColorRatioForBiome } from "#field/arena";
+import { Arena } from "#field/arena";
 import { ArenaBase } from "#field/arena-base";
 import { DamageNumberHandler } from "#field/damage-number-handler";
 import type { Pokemon } from "#field/pokemon";
@@ -144,10 +144,12 @@ import {
   NumberHolder,
   randomString,
   randSeedInt,
+  randSeedItem,
   shiftCharCodes,
 } from "#utils/common";
 import { deepMergeSpriteData } from "#utils/data";
 import { getEnumValues } from "#utils/enums";
+import { cachedFetch } from "#utils/fetch-utils";
 import { getModifierPoolForType, getModifierType } from "#utils/modifier-utils";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import i18next from "i18next";
@@ -666,7 +668,7 @@ export class BattleScene extends SceneBase {
     if (expSpriteKeys.size > 0) {
       return;
     }
-    const res = await this.cachedFetch("./exp-sprites.json");
+    const res = await cachedFetch("./exp-sprites.json");
     const keys = await res.json();
     if (!Array.isArray(keys)) {
       throw new Error("EXP Sprites were not array when fetched!");
@@ -684,24 +686,15 @@ export class BattleScene extends SceneBase {
    */
   async initVariantData(): Promise<void> {
     clearVariantData();
-    const otherVariantData = await this.cachedFetch("./images/pokemon/variant/_masterlist.json").then(r => r.json());
+    const otherVariantData = await cachedFetch("./images/pokemon/variant/_masterlist.json").then(r => r.json());
     for (const k of Object.keys(otherVariantData)) {
       variantData[k] = otherVariantData[k];
     }
     if (!this.experimentalSprites) {
       return;
     }
-    const expVariantData = await this.cachedFetch("./images/pokemon/variant/_exp_masterlist.json").then(r => r.json());
+    const expVariantData = await cachedFetch("./images/pokemon/variant/_exp_masterlist.json").then(r => r.json());
     deepMergeSpriteData(variantData, expVariantData);
-  }
-
-  cachedFetch(url: string, init?: RequestInit): Promise<Response> {
-    const { manifest } = this.game;
-    const timestamp = manifest?.[`/${url.replace("./", "")}`];
-    if (timestamp) {
-      url += `?t=${timestamp}`;
-    }
-    return fetch(url, init);
   }
 
   async initStarterColors(): Promise<void> {
@@ -709,7 +702,7 @@ export class BattleScene extends SceneBase {
       // already initialized
       return;
     }
-    const sc = await this.cachedFetch("./starter-colors.json").then(res => res.json());
+    const sc = await cachedFetch("./starter-colors.json").then(res => res.json());
     for (const key of Object.keys(sc)) {
       starterColors[key] = sc[key];
     }
@@ -833,11 +826,11 @@ export class BattleScene extends SceneBase {
    * @returns The `Pokemon` associated with the given ID,
    * or `undefined` if none is found in either team's party.
    * @see {@linkcode Pokemon.id}
-   * @todo `pokemonId` should not allow `undefined`
    */
+  // TODO: Remove `undefined` from signature
   public getPokemonById(pokemonId: number | undefined): Pokemon | undefined {
     if (pokemonId == null) {
-      // biome-ignore lint/nursery/noUselessUndefined: More explicit
+      // biome-ignore lint/complexity/noUselessUndefined: More explicit
       return undefined;
     }
 
@@ -1271,7 +1264,11 @@ export class BattleScene extends SceneBase {
     mysteryEncounterType?: MysteryEncounterType,
   ): Battle {
     // failsafe for corrupt saves (such as due to enum shifting)
-    if (trainerData?.variant === TrainerVariant.DOUBLE && !trainerConfigs[trainerData.trainerType].hasDouble) {
+    if (
+      trainerData?.variant === TrainerVariant.DOUBLE
+      && !trainerConfigs[trainerData.trainerType].hasDouble
+      && !trainerConfigs[trainerData.trainerType].doubleOnly
+    ) {
       trainerData.variant = TrainerVariant.DEFAULT;
       double = false;
     }
@@ -1309,7 +1306,7 @@ export class BattleScene extends SceneBase {
         newBattleType =
           Overrides.BATTLE_TYPE_OVERRIDE
           ?? battleType
-          ?? (this.gameMode.isWaveTrainer(newWaveIndex, this.arena) ? BattleType.TRAINER : BattleType.WILD);
+          ?? (this.gameMode.isWaveTrainer(newWaveIndex) ? BattleType.TRAINER : BattleType.WILD);
       }
 
       if (newBattleType === BattleType.TRAINER) {
@@ -1503,7 +1500,7 @@ export class BattleScene extends SceneBase {
     this.eventTarget.dispatchEvent(new NewArenaEvent());
 
     this.arenaBg.pipelineData = {
-      terrainColorRatio: getBgTerrainColorRatioForBiome(this.arena.biomeId),
+      terrainColorRatio: this.arena.bgTerrainColorRatioForBiome,
     };
 
     return this.arena;
@@ -1549,6 +1546,7 @@ export class BattleScene extends SceneBase {
     });
   }
 
+  // TODO: break this up
   public getSpeciesFormIndex(species: PokemonSpecies, gender?: Gender, nature?: Nature, ignoreArena = false): number {
     if (species.forms == null) {
       console.warn(`Form data missing for ${species.name}!\n`, species);
@@ -2124,22 +2122,23 @@ export class BattleScene extends SceneBase {
   randomSpecies(
     waveIndex: number,
     level: number,
-    fromArenaPool?: boolean,
+    fromArenaPool = false,
     speciesFilter?: PokemonSpeciesFilter,
-    filterAllEvolutions?: boolean,
+    filterAllEvolutions = false,
   ): PokemonSpecies {
     if (fromArenaPool) {
-      return this.arena.randomSpecies(waveIndex, level, undefined, getPartyLuckValue(this.party));
+      return this.arena.randomSpecies(waveIndex, level, 0, getPartyLuckValue(this.party));
     }
+
+    // TODO: simplify this?
     const filteredSpecies = speciesFilter
       ? [
           ...new Set(
             allSpecies
-              .filter(s => s.isCatchable())
-              .filter(speciesFilter)
+              .filter(s => s.isCatchable() && speciesFilter(s))
               .map(s => {
                 if (!filterAllEvolutions) {
-                  while (pokemonPrevolutions.hasOwnProperty(s.speciesId)) {
+                  while (Object.hasOwn(pokemonPrevolutions, s.speciesId)) {
                     s = getPokemonSpecies(pokemonPrevolutions[s.speciesId]);
                   }
                 }
@@ -2148,13 +2147,12 @@ export class BattleScene extends SceneBase {
           ),
         ]
       : allSpecies.filter(s => s.isCatchable());
-    // TODO: should this use `randSeedItem`?
-    return filteredSpecies[randSeedInt(filteredSpecies.length)];
+    return randSeedItem(filteredSpecies);
   }
 
   generateRandomBiome(waveIndex: number): BiomeId {
     const relWave = waveIndex % 250;
-    const biomes = getEnumValues(BiomeId).filter(b => b !== BiomeId.TOWN && b !== BiomeId.END);
+    const biomes = Object.values(BiomeId).filter(b => b !== BiomeId.TOWN && b !== BiomeId.END);
     const maxDepth = biomeDepths[BiomeId.END][0] - 2;
     const depthWeights = new Array(maxDepth + 1)
       .fill(null)
@@ -2174,8 +2172,7 @@ export class BattleScene extends SceneBase {
       }
     }
 
-    // TODO: should this use `randSeedItem`?
-    return biomes[randSeedInt(biomes.length)];
+    return randSeedItem(biomes);
   }
 
   isBgmPlaying(): boolean {
@@ -2203,7 +2200,7 @@ export class BattleScene extends SceneBase {
     this.bgmCache.add(bgmName);
     this.loadBgm(bgmName);
     let loopPoint = 0;
-    loopPoint = bgmName === this.arena.bgm ? getArenaBgmLoopPoint(this.arena.biomeId) : this.getBgmLoopPoint(bgmName);
+    loopPoint = bgmName === this.arena.bgm ? this.arena.bgmLoopPoint : this.getBgmLoopPoint(bgmName);
     let loaded = false;
     const playNewBgm = () => {
       this.ui.bgmBar.setBgmToBgmBar(bgmName);
