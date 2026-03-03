@@ -23,13 +23,17 @@ vi.mock(import("#app/overrides"), async importOriginal => {
   } satisfies typeof import("#app/overrides");
 });
 
-/**
- * This is a hacky way to mock the i18n backend requests (with the help of {@link https://mswjs.io/ | msw}).
+/*
+ * This is a hacky way to mock the i18n backend requests (with the help of msw, cf https://mswjs.io/).
  * The reason to put it inside of a mock is to elevate it.
  * This is necessary because how our code is structured.
  * Do NOT try to put any of this code into external functions, it won't work as it's elevated during runtime.
  */
 vi.mock(import("i18next"), async importOriginal => {
+  if (globalThis.localesMockActive) {
+    return await importOriginal();
+  }
+  globalThis.localesMockActive = true;
   // NB: We have to use raw ANSI escapes here since chalk isn't initialized yet.
   // (For those wondering, this corresponds to the same rgb(223, 184, 216) color used in the chalk calls below, just in RGB)
   console.log("\x1b[38;2;223;184;216mMocking i18next...\x1b[0m");
