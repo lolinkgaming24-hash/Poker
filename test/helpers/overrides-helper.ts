@@ -26,6 +26,7 @@ import { getEnumStr, stringifyEnumArray } from "#test/utils/string-utils";
 import { TrainerItemConfiguration } from "#types/trainer-item-data-types";
 import { coerceArray } from "#utils/array";
 import { shiftCharCodes } from "#utils/common";
+import { enumValueToKey } from "#utils/enums";
 import chalk from "chalk";
 import { vi } from "vitest";
 
@@ -63,7 +64,7 @@ export class OverridesHelper extends GameManagerHelper {
    */
   public startingBiome(biome: BiomeId): this {
     this.game.scene.newArena(biome);
-    this.log(`Starting biome set to ${BiomeId[biome]} (=${biome})!`);
+    this.log(`Starting biome set to ${enumValueToKey(BiomeId, biome)} (=${biome})!`);
     return this;
   }
 
@@ -533,7 +534,7 @@ export class OverridesHelper extends GameManagerHelper {
    * @returns `this`
    * @remarks
    * Does nothing if {@linkcode Overrides.ENEMY_FUSION_OVERRIDE} is not enabled
-   * {@see {@linkcode enableEnemyFusion}}
+   * @see {@linkcode enableEnemyFusion}
    */
   // TODO: Should we just bundle these 2 together?
   public enemyFusionSpecies(species: SpeciesId | null): this {

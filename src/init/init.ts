@@ -1,13 +1,14 @@
 import "#app/extensions"; // Setup Phaser extension methods/etc
 
 import { initAbilities } from "#abilities/init-abilities";
-import { initBiomes } from "#balance/init-biomes";
 import { initPokemonPrevolutions, initPokemonStarters } from "#balance/pokemon-evolutions";
 import { initSpecies } from "#balance/pokemon-species";
 import { initChallenges } from "#data/challenge";
 import { initTrainerTypeDialogue } from "#data/dialogue";
 import { initPokemonForms } from "#data/pokemon-forms";
-import "#items/all-held-items";
+import { initBiomeDepths } from "#init/init-biome-depths";
+import { initBiomes } from "#init/init-biomes";
+import { initCatchableSpecies } from "#init/init-catchable-species";
 import { initTrainerItems } from "#items/all-trainer-items";
 import { initHeldItemPools } from "#items/init-held-item-pools";
 import { initRewardPools } from "#items/init-reward-pools";
@@ -18,7 +19,6 @@ import { initAchievements } from "#system/achv";
 import { initVouchers } from "#system/voucher";
 import { initStatsKeys } from "#ui/game-stats-ui-handler";
 
-/** Initialize the game. */
 export function initializeGame() {
   initItems();
   initVouchers();
@@ -27,6 +27,8 @@ export function initializeGame() {
   initPokemonPrevolutions();
   initPokemonStarters();
   initBiomes();
+  initCatchableSpecies();
+  initBiomeDepths();
   initPokemonForms();
   initTrainerTypeDialogue();
   initSpecies();
