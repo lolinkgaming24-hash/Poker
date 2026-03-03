@@ -784,6 +784,7 @@ export abstract class EntryHazardTag extends SerializableArenaTag {
   /**
    * Check if the maximum number of layers for this tag has been reached.
    * @returns Whether this tag can have another layer added to it.
+   * @sealed
    */
   public canAdd(): boolean {
     return this.layers < this.maxLayers;
@@ -792,12 +793,12 @@ export abstract class EntryHazardTag extends SerializableArenaTag {
   /**
    * Add a new layer to this tag upon overlap, triggering the tag's normal {@linkcode onAdd} effects upon doing so.
    */
-  override onOverlap(): void {
+  public override onOverlap(): void {
     if (!this.canAdd()) {
       return;
     }
-    (this as Mutable<this>).layers++;
 
+    (this as Mutable<this>).layers++;
     this.onAdd();
     globalScene.arena.eventTarget.dispatchEvent(
       new ArenaTagAddedEvent(this.tagType, this.side, 0, [this.layers, this.maxLayers]),

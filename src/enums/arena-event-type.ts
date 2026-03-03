@@ -5,7 +5,8 @@ import type { ArenaEvent } from "#events/arena";
 import type { ObjectValues } from "#types/type-helpers";
 
 /**
- * Doc comment removal prevention block
+ * Doc comment removal block to avoid TS giving info diagnostics about these symbols being unused
+ * (since being listed inside a parameter's JSDoc apparently doesn't count)
  * {@linkcode WeatherType}
  * {@linkcode TerrainType}
  * {@linkcode ArenaTag}

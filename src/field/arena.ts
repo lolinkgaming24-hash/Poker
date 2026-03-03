@@ -16,7 +16,6 @@ import {
   Weather,
 } from "#data/weather";
 import { AbilityId } from "#enums/ability-id";
-import type { ArenaEventType } from "#enums/arena-event-type";
 import { ArenaTagSide } from "#enums/arena-tag-side";
 import type { ArenaTagType } from "#enums/arena-tag-type";
 import type { BattlerIndex } from "#enums/battler-index";
@@ -77,7 +76,7 @@ export class Arena {
    * Event dispatcher for various {@linkcode ArenaEvent}s.
    * Used primarily to update the arena flyout.
    */
-  public readonly eventTarget = new EventTarget() as TypedEventTarget<ArenaEventType, ArenaEventMap>;
+  public readonly eventTarget = new EventTarget() as TypedEventTarget<keyof ArenaEventMap, ArenaEventMap>;
 
   constructor(biome: BiomeId, playerFaints = 0) {
     this.biomeId = biome;
@@ -146,9 +145,13 @@ export class Arena {
   /**
    * Sets weather to the override specified in `overrides.ts`
    */
+  // TODO: make this apply at the start of a new biome like the terrain one - this would be a lot more useful for tests
   private overrideWeather(): void {
-    const weather = Overrides.WEATHER_OVERRIDE;
+    // TODO: The calling code ensures this invariant is met, but this should be refactored to remove the need
+    const weather = Overrides.WEATHER_OVERRIDE as Exclude<WeatherType, WeatherType.NONE>;
     this.weather = new Weather(weather, 0);
+
+    this.eventTarget.dispatchEvent(new WeatherChangedEvent(weather, 0));
     globalScene.phaseManager.unshiftNew("CommonAnimPhase", undefined, undefined, CommonAnim.SUNNY + (weather - 1));
     globalScene.phaseManager.queueMessage(getWeatherStartMessage(weather)!); // TODO: is this bang correct?
   }
@@ -192,16 +195,16 @@ export class Arena {
       globalScene.applyModifier(FieldEffectModifier, user.isPlayer(), user, weatherDuration);
     }
 
-    this.weather = weather ? new Weather(weather, weatherDuration.value, weatherDuration.value) : null;
-    this.eventTarget.dispatchEvent(
-      new WeatherChangedEvent(oldWeatherType, this.weather?.weatherType!, this.weather?.turnsLeft!),
-    ); // TODO: this `x?.y!` is dumb, fix this
+    if (weather === WeatherType.NONE) {
+      this.weather = null;
+      this.eventTarget.dispatchEvent(new WeatherChangedEvent(WeatherType.NONE));
+      globalScene.phaseManager.queueMessage(getWeatherClearMessage(oldWeatherType)!); // TODO: is this bang correct?
+    } else {
+      this.weather = new Weather(weather, weatherDuration.value, weatherDuration.value);
+      this.eventTarget.dispatchEvent(new WeatherChangedEvent(weather, weatherDuration.value));
 
-    if (this.weather) {
       globalScene.phaseManager.unshiftNew("CommonAnimPhase", undefined, undefined, CommonAnim.SUNNY + (weather - 1));
       globalScene.phaseManager.queueMessage(getWeatherStartMessage(weather)!); // TODO: is this bang correct?
-    } else {
-      globalScene.phaseManager.queueMessage(getWeatherClearMessage(oldWeatherType)!); // TODO: is this bang correct?
     }
 
     for (const pokemon of inSpeedOrder(ArenaTagSide.BOTH)) {
@@ -282,13 +285,14 @@ export class Arena {
       globalScene.applyModifier(FieldEffectModifier, user.isPlayer(), user, terrainDuration);
     }
 
-    this.terrain = terrain ? new Terrain(terrain, terrainDuration.value, terrainDuration.value) : null;
+    if (terrain === TerrainType.NONE) {
+      this.terrain = null;
+      this.eventTarget.dispatchEvent(new TerrainChangedEvent(TerrainType.NONE));
 
-    this.eventTarget.dispatchEvent(
-      new TerrainChangedEvent(oldTerrainType, this.terrain?.terrainType!, this.terrain?.turnsLeft!),
-    ); // TODO: are those bangs correct?
-
-    if (this.terrain) {
+      globalScene.phaseManager.queueMessage(getTerrainClearMessage(oldTerrainType));
+    } else {
+      this.terrain = new Terrain(terrain, terrainDuration.value, terrainDuration.value);
+      this.eventTarget.dispatchEvent(new TerrainChangedEvent(terrain, terrainDuration.value));
       if (!ignoreAnim) {
         globalScene.phaseManager.unshiftNew(
           "CommonAnimPhase",
@@ -298,8 +302,6 @@ export class Arena {
         );
       }
       globalScene.phaseManager.queueMessage(getTerrainStartMessage(terrain));
-    } else {
-      globalScene.phaseManager.queueMessage(getTerrainClearMessage(oldTerrainType));
     }
 
     for (const pokemon of inSpeedOrder(ArenaTagSide.BOTH)) {
@@ -322,9 +324,7 @@ export class Arena {
 
     // TODO: Add a flag for permanent terrains
     this.terrain = new Terrain(terrain, 0);
-    this.eventTarget.dispatchEvent(
-      new TerrainChangedEvent(TerrainType.NONE, this.terrain.terrainType, this.terrain.turnsLeft),
-    );
+    this.eventTarget.dispatchEvent(new TerrainChangedEvent(terrain, this.terrain.turnsLeft));
     globalScene.phaseManager.unshiftNew(
       "CommonAnimPhase",
       undefined,

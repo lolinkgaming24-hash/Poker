@@ -28,7 +28,7 @@ export type { ArenaEvent };
 export class WeatherChangedEvent extends ArenaEvent {
   declare type: typeof ArenaEventType.WEATHER_CHANGED;
 
-  /** The new {@linkcode WeatherType} being set. */
+  /** The new {@linkcode WeatherType} being set, or {@linkcode WeatherType.NONE} if the weather is being cleared. */
   public readonly weatherType: WeatherType;
   /**
    * The new weather's current duration.
@@ -41,7 +41,9 @@ export class WeatherChangedEvent extends ArenaEvent {
    */
   public readonly maxDuration: number;
 
-  constructor(weatherType: WeatherType, duration: number, maxDuration = duration) {
+  constructor(weatherType: WeatherType.NONE);
+  constructor(weatherType: Exclude<WeatherType, WeatherType.NONE>, duration: number, maxDuration?: number);
+  constructor(weatherType: WeatherType, duration = 0, maxDuration = duration) {
     super(ArenaEventType.WEATHER_CHANGED);
 
     this.weatherType = weatherType;
@@ -58,7 +60,7 @@ export class WeatherChangedEvent extends ArenaEvent {
 export class TerrainChangedEvent extends ArenaEvent {
   declare type: typeof ArenaEventType.TERRAIN_CHANGED;
 
-  /** The new {@linkcode TerrainType} being set. */
+  /** The new {@linkcode TerrainType} being set, or {@linkcode TerrainType.NONE} if the terrain is being cleared. */
   public readonly terrainType: TerrainType;
   /**
    * The new terrain's current duration.
@@ -71,7 +73,9 @@ export class TerrainChangedEvent extends ArenaEvent {
    */
   public readonly maxDuration: number;
 
-  constructor(terrainType: TerrainType, duration: number, maxDuration = duration) {
+  constructor(terrainType: TerrainType.NONE);
+  constructor(terrainType: Exclude<TerrainType, TerrainType.NONE>, duration: number, maxDuration?: number);
+  constructor(terrainType: TerrainType, duration = 0, maxDuration = duration) {
     super(ArenaEventType.TERRAIN_CHANGED);
 
     this.terrainType = terrainType;
@@ -89,9 +93,9 @@ export class TerrainChangedEvent extends ArenaEvent {
 export class ArenaTagAddedEvent extends ArenaEvent {
   declare type: typeof ArenaEventType.ARENA_TAG_ADDED;
 
-  /** The {@linkcode ArenaTagType} of the tag being added */
+  /** The {@linkcode ArenaTagType} of the tag being added. */
   public readonly tagType: ArenaTagType;
-  /** The {@linkcode ArenaTagSide} to which the tag is being added */
+  /** The {@linkcode ArenaTagSide} to which the tag is being added. */
   public readonly side: ArenaTagSide;
   /** The tag's initial duration. */
   public readonly duration: number;

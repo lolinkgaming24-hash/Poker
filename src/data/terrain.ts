@@ -21,11 +21,11 @@ export interface SerializedTerrain {
 }
 
 export class Terrain {
-  public terrainType: TerrainType;
+  public terrainType: Exclude<TerrainType, TerrainType.NONE>;
   public turnsLeft: number;
   public maxDuration: number;
 
-  constructor(terrainType: TerrainType, turnsLeft = 0, maxDuration: number = turnsLeft) {
+  constructor(terrainType: Exclude<TerrainType, TerrainType.NONE>, turnsLeft = 0, maxDuration: number = turnsLeft) {
     this.terrainType = terrainType;
     this.turnsLeft = turnsLeft;
     this.maxDuration = maxDuration;
