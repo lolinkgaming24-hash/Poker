@@ -221,15 +221,18 @@ const heldItems = Object.freeze({
     SpeciesId.GIMMIGHOUL,
     10,
   ),
-} satisfies Readonly<Record<HeldItemId, CosmeticHeldItem | HeldItem<any>>>); // any typeparam used to avoid errors about individual items not accepting `HeldItemEffect`
+} as const satisfies Readonly<Record<HeldItemId, CosmeticHeldItem | HeldItem<any>>>); // `any` typeparam used to avoid errors about individual items not accepting `HeldItemEffect`
 
 /**
  * Resolved type of {@linkcode allHeldItems}.
+ * @privateRemarks
  * Declared in a separate file to avoid circular imports.
  */
 export type AllHeldItems = typeof heldItems;
 
-Object.assign(allHeldItems, heldItems);
-Object.freeze(allHeldItems);
+export function initHeldItems(): void {
+  Object.assign(allHeldItems, heldItems);
+  Object.freeze(allHeldItems);
+}
 
 //#endregion Initialization

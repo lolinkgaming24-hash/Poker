@@ -9,6 +9,7 @@ import { initPokemonForms } from "#data/pokemon-forms";
 import { initBiomeDepths } from "#init/init-biome-depths";
 import { initBiomes } from "#init/init-biomes";
 import { initCatchableSpecies } from "#init/init-catchable-species";
+import { initHeldItems } from "#items/all-held-items";
 import { initTrainerItems } from "#items/all-trainer-items";
 import { initHeldItemPools } from "#items/init-held-item-pools";
 import { initRewardPools } from "#items/init-reward-pools";
@@ -42,6 +43,7 @@ export function initializeGame() {
  * Sub-method to initialize all the item-related code.
  */
 function initItems() {
+  initHeldItems();
   initHeldItemPools();
   initTrainerItems();
   initTrainerItemPools();
