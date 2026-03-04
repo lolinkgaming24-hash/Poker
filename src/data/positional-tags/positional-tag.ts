@@ -46,7 +46,7 @@ export abstract class PositionalTag implements PositionalTagBaseArgs {
   public turnCount: number;
   public readonly targetIndex: BattlerIndex;
 
-  constructor({ turnCount, targetIndex }: PositionalTagBaseArgs) {
+  protected constructor({ turnCount, targetIndex }: PositionalTagBaseArgs) {
     this.turnCount = turnCount;
     this.targetIndex = targetIndex;
   }
@@ -91,7 +91,7 @@ export class DelayedAttackTag extends PositionalTag implements DelayedAttackArgs
   public readonly sourceMove: MoveId;
   public readonly sourceId: number;
 
-  constructor({ sourceId, turnCount, targetIndex, sourceMove }: DelayedAttackArgs) {
+  public constructor({ sourceId, turnCount, targetIndex, sourceMove }: DelayedAttackArgs) {
     super({ turnCount, targetIndex });
     this.sourceId = sourceId;
     this.sourceMove = sourceMove;
