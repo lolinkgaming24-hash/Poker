@@ -1,4 +1,5 @@
 import type { SetupServerApi } from "msw/node";
+import { SetRequired } from "type-fest";
 
 declare global {
   /**
@@ -8,9 +9,18 @@ declare global {
    * ⚠️ Should not be used in production code, as it is only populated during test runs!
    */
   var server: SetupServerApi;
+
   // Override for `Array.isArray` to not remove `readonly`-ness from arrays known to be readonly
   interface ArrayConstructor {
     isArray<T>(arg: readonly T[]): arg is readonly T[];
+  }
+
+  // Override for `Object.hasOwn` to allow type guards on objects with known keys
+  interface ObjectConstructor {
+    hasOwn<K extends PropertyKey, O extends object>(
+      obj: O,
+      prop: K,
+    ): obj is K extends keyof O ? SetRequired<O, K> : O & Record<K, unknown>;
   }
 }
 
