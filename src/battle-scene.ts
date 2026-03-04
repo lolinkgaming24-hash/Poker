@@ -2009,10 +2009,7 @@ export class BattleScene extends SceneBase {
   }
 
   updateScoreText(): void {
-    // TODO: Localize this
-    this.scoreText //
-      .setText(`Score: ${this.score.toString()}`)
-      .setVisible(this.gameMode.isDaily);
+    this.scoreText.setText(i18next.t("battleScene:score", { score: this.score })).setVisible(this.gameMode.isDaily);
   }
 
   /**
