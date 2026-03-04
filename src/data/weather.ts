@@ -13,12 +13,12 @@ export interface SerializedWeather {
 }
 
 export class Weather {
-  public weatherType: Exclude<WeatherType, WeatherType.NONE>;
+  // TODO: Exclude `WeatherType.NONE` from this (which indicates a lack of weather)
+  public weatherType: WeatherType;
   public turnsLeft: number;
-  /** The weather's maximum duration, used to ensure correct UI flyout readings when loading saved data. */
   public maxDuration: number;
 
-  constructor(weatherType: Exclude<WeatherType, WeatherType.NONE>, turnsLeft = 0, maxDuration: number = turnsLeft) {
+  constructor(weatherType: WeatherType, turnsLeft = 0, maxDuration: number = turnsLeft) {
     this.weatherType = weatherType;
     this.turnsLeft = this.isImmutable() ? 0 : turnsLeft;
     this.maxDuration = this.isImmutable() ? 0 : maxDuration;

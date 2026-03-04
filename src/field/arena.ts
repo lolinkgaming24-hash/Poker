@@ -245,8 +245,7 @@ export class Arena {
    */
   // TODO: make this apply at the start of a new biome like the terrain one - this would be a lot more useful for tests
   private overrideWeather(): void {
-    // TODO: The calling code ensures this invariant is met, but this should be refactored to remove the need
-    const weather = Overrides.WEATHER_OVERRIDE as Exclude<WeatherType, WeatherType.NONE>;
+    const weather = Overrides.WEATHER_OVERRIDE;
     this.weather = new Weather(weather, 0);
 
     this.eventTarget.dispatchEvent(new WeatherChangedEvent(weather, 0));
@@ -448,9 +447,7 @@ export class Arena {
 
   /** Override the terrain to the value set inside {@linkcode Overrides.STARTING_TERRAIN_OVERRIDE}. */
   private overrideTerrain(): void {
-    // Type assertion is vetted by the calling code
-    // TODO: There should be a way to remove the need for this...
-    const terrain = Overrides.STARTING_TERRAIN_OVERRIDE as Exclude<TerrainType, TerrainType.NONE>;
+    const terrain = Overrides.STARTING_TERRAIN_OVERRIDE;
 
     // TODO: Add a flag for permanent terrains
     this.terrain = new Terrain(terrain, 0);

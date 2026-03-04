@@ -41,8 +41,9 @@ export class WeatherChangedEvent extends ArenaEvent {
    */
   public readonly maxDuration: number;
 
-  constructor(weatherType: WeatherType.NONE);
-  constructor(weatherType: Exclude<WeatherType, WeatherType.NONE>, duration: number, maxDuration?: number);
+  // TODO: Prevent passing useless duration parameters once `Weather#weatherType` is made to exclude `WeatherType.NONE`
+  // constructor(weatherType: WeatherType.NONE);
+  // constructor(weatherType: Exclude<WeatherType, WeatherType.NONE>, duration: number, maxDuration?: number);
   constructor(weatherType: WeatherType, duration = 0, maxDuration = duration) {
     super(ArenaEventType.WEATHER_CHANGED);
 
@@ -73,8 +74,9 @@ export class TerrainChangedEvent extends ArenaEvent {
    */
   public readonly maxDuration: number;
 
-  constructor(terrainType: TerrainType.NONE);
-  constructor(terrainType: Exclude<TerrainType, TerrainType.NONE>, duration: number, maxDuration?: number);
+  // TODO: Prevent passing useless duration parameters once `Terrain#terrainType` is made to exclude `TerrainType.NONE`
+  // constructor(terrainType: TerrainType.NONE);
+  // constructor(terrainType: Exclude<TerrainType, TerrainType.NONE>, duration: number, maxDuration?: number);
   constructor(terrainType: TerrainType, duration = 0, maxDuration = duration) {
     super(ArenaEventType.TERRAIN_CHANGED);
 
