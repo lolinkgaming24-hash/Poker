@@ -62,9 +62,6 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
    */
   private tempMoveInfo: MoveInfoTuple = [];
 
-  /** Current state of the flyout's visibility */
-  public flyoutVisible = false;
-
   constructor(isPlayer: boolean) {
     super(globalScene, 0, 0);
 
@@ -132,8 +129,8 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
     this.name = `Flyout ${getPokemonNameWithAffix(this.pokemon)}`;
     this.flyoutParent.name = `Flyout Parent ${getPokemonNameWithAffix(this.pokemon)}`;
 
-    globalScene.eventTarget.addEventListener(BattleSceneEventType.MOVESET_CHANGED, this.onMovesetChanged);
-    globalScene.eventTarget.addEventListener(BattleSceneEventType.SUMMON_DATA_RESET, this.onSummonDataReset);
+    globalScene.eventTarget.addEventListener(BattleSceneEventType.MOVESET_CHANGED, this.#onMovesetChanged);
+    globalScene.eventTarget.addEventListener(BattleSceneEventType.SUMMON_DATA_RESET, this.#onSummonDataReset);
   }
 
   /**
@@ -156,7 +153,7 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
    * Update the corresponding {@linkcode MoveInfo} object in the moveInfo array.
    * @param event - The {@linkcode MovesetChangedEvent} having been emitted
    */
-  private onMovesetChanged(this: BattleFlyout, event: MovesetChangedEvent): void {
+  #onMovesetChanged = (event: MovesetChangedEvent): void => {
     const { pokemonId, move: movesetMove } = event;
     if (pokemonId !== this.pokemon.id || movesetMove.moveId === MoveId.NONE || movesetMove.moveId === MoveId.STRUGGLE) {
       return;
@@ -179,27 +176,25 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
 
     infoArray[index] = movesetMove;
     this.updateText(index);
-  }
+  };
 
   /**
    * Reset the linked Pokemon's temporary moveset data when it is switched out.
    * @param event - The {@linkcode SummonDataResetEvent} having been emitted
    */
-  private onSummonDataReset(this: BattleFlyout, event: SummonDataResetEvent): void {
+  #onSummonDataReset = (event: SummonDataResetEvent) => {
     if (event.pokemonId !== this.pokemon.id) {
       return;
     }
 
     this.tempMoveInfo = [];
-  }
+  };
 
   /**
    * Animate the flyout to either show or hide the modal.
    * @param visible - Whether the flyout should be shown
    */
   public toggleFlyout(visible: boolean): void {
-    this.flyoutVisible = visible;
-
     globalScene.tweens.add({
       targets: this.flyoutParent,
       x: visible ? this.anchorX : this.anchorX - this.translationX,
@@ -211,8 +206,8 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
 
   /** Destroy this element and remove all associated listeners. */
   public destroy(fromScene?: boolean): void {
-    globalScene.eventTarget.removeEventListener(BattleSceneEventType.MOVESET_CHANGED, this.onMovesetChangedEvent);
-    globalScene.eventTarget.removeEventListener(BattleSceneEventType.SUMMON_DATA_RESET, this.onSummonDataResetEvent);
+    globalScene.eventTarget.removeEventListener(BattleSceneEventType.MOVESET_CHANGED, this.#onMovesetChanged);
+    globalScene.eventTarget.removeEventListener(BattleSceneEventType.SUMMON_DATA_RESET, this.#onSummonDataReset);
 
     super.destroy(fromScene);
   }

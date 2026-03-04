@@ -147,7 +147,7 @@ export class EnemyBattleInfo extends BattleInfo {
   updateEffectiveness(effectiveness?: string) {
     this.currentEffectiveness = effectiveness;
 
-    if (!globalScene.typeHints || effectiveness === undefined || this.flyoutMenu.flyoutVisible) {
+    if (!globalScene.typeHints || effectiveness === undefined || this.flyoutMenu.visible) {
       this.effectivenessContainer.setVisible(false);
       return;
     }
