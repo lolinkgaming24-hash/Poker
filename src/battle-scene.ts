@@ -1291,6 +1291,29 @@ export class BattleScene extends SceneBase {
       this.handleNonFixedBattle(resolved);
     }
 
+    if (resolved.battleType == null) {
+      throw new Error(
+        "BattleScene.newBattle lacked battle type information inside new battle config!\nData:\n"
+          + JSON.stringify(resolved),
+      );
+    }
+    resolved.double = this.checkIsDouble(resolved as NewBattleConstructedProps);
+
+    const lastBattle: Battle | null = this.currentBattle;
+    const maxExpLevel = this.getMaxExpLevel();
+
+    this.lastEnemyTrainer = lastBattle?.trainer ?? null;
+    this.lastMysteryEncounter = lastBattle?.mysteryEncounter;
+
+    // TODO: Is this even needed?
+    if (lastBattle?.double && !resolved.double) {
+      this.phaseManager.tryRemovePhase("SwitchPhase");
+      // TODO: We already do this later in the function
+      for (const p of this.getPlayerField()) {
+        p.lapseTag(BattlerTagType.COMMANDED);
+      }
+    }
+
     this.executeWithSeedOffset(
       () => {
         // NB: Type assertion is fine as resolved should always be populated at this point
