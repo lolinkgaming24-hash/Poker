@@ -44,8 +44,8 @@ import type { Move } from "#moves/move";
 import type { ArenaPokemonPools, TrainerPools } from "#types/biomes";
 import type { Constructor } from "#types/common";
 import type { RGBArray } from "#types/sprite-types";
-import type { TypedEventTarget } from "#types/typed-event-target";
 import type { AbstractConstructor, Mutable } from "#types/type-helpers";
+import type { TypedEventTarget } from "#types/typed-event-target";
 import { coerceArray } from "#utils/array";
 import { NumberHolder, randSeedInt, randSeedItem } from "#utils/common";
 import { enumValueToKey, getEnumValues } from "#utils/enums";
@@ -448,7 +448,10 @@ export class Arena {
 
   /** Override the terrain to the value set inside {@linkcode Overrides.STARTING_TERRAIN_OVERRIDE}. */
   private overrideTerrain(): void {
-    const terrain = Overrides.STARTING_TERRAIN_OVERRIDE;
+    // Type assertion is vetted by the calling code
+    // TODO: There should be a way to remove the need for this...
+    const terrain = Overrides.STARTING_TERRAIN_OVERRIDE as Exclude<TerrainType, TerrainType.NONE>;
+
     // TODO: Add a flag for permanent terrains
     this.terrain = new Terrain(terrain, 0);
     this.eventTarget.dispatchEvent(new TerrainChangedEvent(terrain, this.terrain.turnsLeft));
