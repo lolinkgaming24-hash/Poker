@@ -7,42 +7,33 @@ import type { MovesetChangedEvent, SummonDataResetEvent } from "#events/battle-s
 import { BattleSceneEventType } from "#events/battle-scene";
 import type { Pokemon } from "#field/pokemon";
 import type { PokemonMove } from "#moves/pokemon-move";
-import type { Move } from "#types/move-types";
 import type { BattleInfo } from "#ui/battle-info";
 import { addTextObject } from "#ui/text";
 import { fixedInt } from "#utils/common";
 import type { TupleOf } from "type-fest";
 
-/** Container for info about a given {@linkcode PokemonMove} having been used */
-interface MoveInfo {
-  /** The name of the {@linkcode Move} having been used. */
-  name: string;
-  /** The {@linkcode PokemonMove} having been used. */
-  move: PokemonMove;
-}
-
 /**
  * A 4-length tuple consisting of all moves that each {@linkcode Pokemon} has used in the given battle. \
  * Entries that are `undefined` indicate moves which have not been used yet.
  */
-type MoveInfoTuple = Partial<TupleOf<4, MoveInfo>>;
+type MoveInfoTuple = Partial<TupleOf<4, PokemonMove>>;
+
+/** The restricted width of the flyout which should be drawn to */
+const FLYOUT_WIDTH = 118;
+/** The restricted height of the flyout which should be drawn to */
+const FLYOUT_HEIGHT = 23;
 
 /**
  * A Flyout Menu attached to each Pokemon's {@linkcode BattleInfo} object,
  * showing all revealed moves and their current PP counts.
  */
-// TODO: Stop tracking player move usages
+// TODO: Stop tracking player move uses in this flyout
 export class BattleFlyout extends Phaser.GameObjects.Container {
   /** Is this object linked to a player's Pokemon? */
   private readonly isPlayer: boolean;
 
   /** The Pokemon this object is linked to. */
   private pokemon: Pokemon;
-
-  /** The restricted width of the flyout which should be drawn to */
-  private readonly flyoutWidth = 118;
-  /** The restricted height of the flyout which should be drawn to */
-  private readonly flyoutHeight = 23;
 
   /** The amount of translation animation on the x-axis */
   private readonly translationX: number;
@@ -53,7 +44,7 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
 
   /** The initial container which defines where the flyout should be attached */
   private readonly flyoutParent: Phaser.GameObjects.Container;
-  /** The background {@linkcode Phaser.GameObjects.Sprite;} for the flyout */
+  /** The background {@linkcode Phaser.GameObjects.Sprite} for the flyout */
   private readonly flyoutBackground: Phaser.GameObjects.Sprite;
 
   /** The container which defines the drawable dimensions of the flyout */
@@ -61,22 +52,18 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
 
   /** The array of {@linkcode Phaser.GameObjects.Text} objects which are drawn on the flyout */
   private readonly flyoutText: Phaser.GameObjects.Text[] = new Array(4);
-  /** An array of {@linkcode MoveInfo}s used to track moves for the {@linkcode Pokemon} linked to the flyout. */
+  /** An array of {@linkcode PokemonMove}s used to track moves used by the attached Pokemon. */
   private readonly moveInfo: MoveInfoTuple = [];
   /**
-   * An array of {@linkcode MoveInfo}s used to track move slots
+   * A sparse array of {@linkcode PokemonMove}s used to track move slots
    * temporarily overridden by Transform or Mimic.
    *
-   * Reset once {@linkcode pokemon} switches out via a {@linkcode SummonDataResetEvent}.
+   * Reset once `pokemon` switches out via a {@linkcode SummonDataResetEvent}.
    */
   private tempMoveInfo: MoveInfoTuple = [];
 
   /** Current state of the flyout's visibility */
   public flyoutVisible = false;
-
-  // Stores callbacks in a variable so they can be unsubscribed from when destroyed
-  private readonly onMovesetChangedEvent = (event: MovesetChangedEvent) => this.onMovesetChanged(event);
-  private readonly onSummonDataResetEvent = (event: SummonDataResetEvent) => this.onSummonDataReset(event);
 
   constructor(isPlayer: boolean) {
     super(globalScene, 0, 0);
@@ -84,58 +71,54 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
     // Note that all player based flyouts are disabled. This is included in case of future development
     this.isPlayer = isPlayer;
 
-    this.translationX = this.isPlayer ? -this.flyoutWidth : this.flyoutWidth;
+    this.translationX = this.isPlayer ? -FLYOUT_WIDTH : FLYOUT_WIDTH;
     this.anchorX = this.isPlayer ? -130 : -40;
     this.anchorY = -2.5 + (this.isPlayer ? -18.5 : -13);
 
-    this.flyoutParent = globalScene.add.container(this.anchorX - this.translationX, this.anchorY);
-    this.flyoutParent.setAlpha(0);
+    this.flyoutParent = globalScene.add
+      .container(this.anchorX - this.translationX, this.anchorY) //
+      .setAlpha(0);
     this.add(this.flyoutParent);
 
-    // Load the background image
-    this.flyoutBackground = globalScene.add.sprite(0, 0, "pbinfo_enemy_boss_stats");
-    this.flyoutBackground.setOrigin(0, 0);
+    this.flyoutBackground = globalScene.add
+      .sprite(0, 0, "pbinfo_enemy_boss_stats") //
+      .setOrigin(0, 0);
 
-    this.flyoutParent.add(this.flyoutBackground);
-
-    this.flyoutContainer = globalScene.add.container(44 + (this.isPlayer ? -this.flyoutWidth : 0), 2);
-    this.flyoutParent.add(this.flyoutContainer);
+    this.flyoutContainer = globalScene.add.container(44 + (this.isPlayer ? -FLYOUT_WIDTH : 0), 2);
+    this.flyoutParent.add([this.flyoutContainer, this.flyoutBackground]);
 
     // Loops through and sets the position of each text object according to the width and height of the flyout
     for (let i = 0; i < 4; i++) {
       this.flyoutText[i] = addTextObject(
-        this.flyoutWidth / 4 + (this.flyoutWidth / 2) * (i % 2),
-        this.flyoutHeight / 4 + (this.flyoutHeight / 2) * (i < 2 ? 0 : 1),
+        FLYOUT_WIDTH / 4 + (FLYOUT_WIDTH / 2) * (i % 2),
+        FLYOUT_HEIGHT / 4 + (FLYOUT_HEIGHT / 2) * (i < 2 ? 0 : 1),
         "???",
         TextStyle.BATTLE_INFO,
-      );
-      this.flyoutText[i].setFontSize(45);
-      this.flyoutText[i].setLineSpacing(-10);
-      this.flyoutText[i].setAlign("center");
-      this.flyoutText[i].setOrigin();
+      )
+        .setFontSize(45)
+        .setLineSpacing(-10)
+        .setAlign("center")
+        .setOrigin(0.5, 0.5);
     }
 
-    this.flyoutContainer.add(this.flyoutText);
-
+    // TODO: What are these rectangles for?
+    this.flyoutContainer
+      .add(this.flyoutText)
+      .add(
+        new Phaser.GameObjects.Rectangle(
+          globalScene,
+          FLYOUT_WIDTH / 2,
+          0,
+          1,
+          FLYOUT_HEIGHT + (globalScene.uiTheme === UiTheme.LEGACY ? 1 : 0),
+          0x212121,
+        ).setOrigin(0.5, 0),
+      );
     this.flyoutContainer.add(
-      new Phaser.GameObjects.Rectangle(
-        globalScene,
-        this.flyoutWidth / 2,
+      new Phaser.GameObjects.Rectangle(globalScene, 0, FLYOUT_HEIGHT / 2, FLYOUT_WIDTH + 6, 1, 0x212121).setOrigin(
         0,
-        1,
-        this.flyoutHeight + (globalScene.uiTheme === UiTheme.LEGACY ? 1 : 0),
-        0x212121,
-      ).setOrigin(0.5, 0),
-    );
-    this.flyoutContainer.add(
-      new Phaser.GameObjects.Rectangle(
-        globalScene,
-        0,
-        this.flyoutHeight / 2,
-        this.flyoutWidth + 6,
-        1,
-        0x212121,
-      ).setOrigin(0, 0.5),
+        0.5,
+      ),
     );
   }
 
@@ -149,8 +132,8 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
     this.name = `Flyout ${getPokemonNameWithAffix(this.pokemon)}`;
     this.flyoutParent.name = `Flyout Parent ${getPokemonNameWithAffix(this.pokemon)}`;
 
-    globalScene.eventTarget.addEventListener(BattleSceneEventType.MOVESET_CHANGED, this.onMovesetChangedEvent);
-    globalScene.eventTarget.addEventListener(BattleSceneEventType.SUMMON_DATA_RESET, this.onSummonDataResetEvent);
+    globalScene.eventTarget.addEventListener(BattleSceneEventType.MOVESET_CHANGED, this.onMovesetChanged);
+    globalScene.eventTarget.addEventListener(BattleSceneEventType.SUMMON_DATA_RESET, this.onSummonDataReset);
   }
 
   /**
@@ -158,61 +141,51 @@ export class BattleFlyout extends Phaser.GameObjects.Container {
    * @param index - The 0-indexed position of the flyout text object to update
    */
   private updateText(index: number): void {
-    const moveInfo = this.tempMoveInfo[index] ?? this.moveInfo[index];
-    if (moveInfo == null) {
+    const move = this.tempMoveInfo[index] ?? this.moveInfo[index];
+    if (move == null) {
       return;
     }
 
     const flyoutText = this.flyoutText[index];
-    const maxPp = moveInfo.move.getMovePp();
-    const currentPp = maxPp - moveInfo.move.ppUsed;
-    flyoutText.text = `${moveInfo.name}  ${currentPp}/${maxPp}`;
+    const maxPp = move.getMovePp();
+    const currentPp = maxPp - move.ppUsed;
+    flyoutText.text = `${move.getName()}  ${currentPp}/${maxPp}`;
   }
 
   /**
    * Update the corresponding {@linkcode MoveInfo} object in the moveInfo array.
    * @param event - The {@linkcode MovesetChangedEvent} having been emitted
    */
-  private onMovesetChanged(event: MovesetChangedEvent): void {
-    if (
-      event.pokemonId !== this.pokemon.id
-      || event.move.moveId === MoveId.NONE
-      || event.move.moveId === MoveId.STRUGGLE
-    ) {
+  private onMovesetChanged(this: BattleFlyout, event: MovesetChangedEvent): void {
+    const { pokemonId, move: movesetMove } = event;
+    if (pokemonId !== this.pokemon.id || movesetMove.moveId === MoveId.NONE || movesetMove.moveId === MoveId.STRUGGLE) {
       return;
     }
 
     // Push to either the temporary or permanent move arrays, depending on which array the move was found in.
-    const isPermanent = this.pokemon.getMoveset(true).includes(event.move);
+    const isPermanent = this.pokemon.getMoveset(true).includes(movesetMove);
     const infoArray = isPermanent ? this.moveInfo : this.tempMoveInfo;
 
-    const index = this.pokemon.getMoveset(isPermanent).indexOf(event.move);
+    const moveset = this.pokemon.getMoveset(isPermanent);
+    const index = moveset.indexOf(movesetMove);
     if (index === -1) {
       console.warn(
         "Updated move passed to move flyout was not found in moveset!",
-        event.move.getName(),
-        this.pokemon.getMoveset(isPermanent).map(p => p.getName()),
+        movesetMove.getName(),
+        moveset.map(p => p.getName()),
       );
       return;
     }
 
-    if (infoArray[index]) {
-      infoArray[index].move = event.move;
-    } else {
-      infoArray[index] = {
-        name: event.move.getMove().name,
-        move: event.move,
-      };
-    }
-
+    infoArray[index] = movesetMove;
     this.updateText(index);
   }
 
   /**
-   * Reset the linked Pokemon's temporary moveset override when it is switched out.
+   * Reset the linked Pokemon's temporary moveset data when it is switched out.
    * @param event - The {@linkcode SummonDataResetEvent} having been emitted
    */
-  private onSummonDataReset(event: SummonDataResetEvent): void {
+  private onSummonDataReset(this: BattleFlyout, event: SummonDataResetEvent): void {
     if (event.pokemonId !== this.pokemon.id) {
       return;
     }
