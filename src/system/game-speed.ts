@@ -26,8 +26,11 @@ export function initGameSpeed(this: BattleScene): void {
    * @param obj - The object to mutate
    * @param allowArray - (Default `false`) Whether to allow mutating arrays of tween configs at the top level.
    */
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This goes down to 13 complexity if moved outside of `initGameSpeed` (and is only here to access a single function)
-  const mutateProperties = (obj: object, allowArray = false): void => {
+  const mutateProperties: {
+    <O extends object>(obj: O, ...allowArray: O extends readonly any[] ? [true] : []): void;
+    (obj: object, allowArray?: boolean): void;
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This goes down from 20 to 13 if moved outside of `initGameSpeed` (and is only here to access a single function)
+  } = (obj: object, allowArray = false): void => {
     // We do not mutate Tweens or TweenChain objects directly
     if (obj instanceof Phaser.Tweens.Tween || obj instanceof Phaser.Tweens.TweenChain) {
       return;
@@ -52,7 +55,7 @@ export function initGameSpeed(this: BattleScene): void {
 
     // If the object has a 'tweens' property that is an array, then it is a tween chain
     // and we need to mutate its properties as well
-    if (Object.hasOwn(obj, "tweens") && Array.isArray(obj.tweens)) {
+    if ("tweens" in obj && Array.isArray(obj.tweens)) {
       mutateProperties(obj.tweens, true);
     }
   };
