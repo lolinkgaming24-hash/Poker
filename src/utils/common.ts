@@ -318,7 +318,7 @@ export class FixedInt {
   }
 }
 
-// TODO: Stop conflating this class with a number and instead override Phaser's duration-related types to accept `FixedInt`s
+// TODO: Stop lying about this class being a number and instead override Phaser's duration-related types to accept `FixedInt`s as well
 export function fixedInt(value: number): number {
   return new FixedInt(value) as unknown as number;
 }

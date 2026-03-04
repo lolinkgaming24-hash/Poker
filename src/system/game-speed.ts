@@ -7,6 +7,10 @@ const PROPERTIES = ["delay", "completeDelay", "loopDelay", "duration", "repeatDe
 
 /**
  * Override various Phaser methods to alter their time-related properties based on the current game speed.
+ * Any duration values passed that are {@linkcode FixedInt}s will be treated as fixed values and preserved.
+ * @privateRemarks
+ * While this may sound ominous, there is effectively no other way to do what we want to do within the constraints set by Phaser,
+ * as altering game speed would affect all time-related aspects of the game (including ones we want to keep fixed).
  */
 export function initGameSpeed(this: BattleScene): void {
   /** Mutate a duration value based on the current speed. */
