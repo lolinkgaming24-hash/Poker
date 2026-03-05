@@ -1436,7 +1436,7 @@ export class BattleScene extends SceneBase {
       !this.gameMode.hasTrainers || Overrides.DISABLE_STANDARD_TRAINERS_OVERRIDE
         ? BattleType.WILD
         : (Overrides.BATTLE_TYPE_OVERRIDE
-          ?? (this.gameMode.isWaveTrainer(waveIndex, this.arena) ? BattleType.TRAINER : BattleType.WILD));
+          ?? (this.gameMode.isWaveTrainer(waveIndex) ? BattleType.TRAINER : BattleType.WILD));
 
     // Check for mystery encounter
     // Can only occur in place of a standard (non-boss) wild battle, waves 10-180
