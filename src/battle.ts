@@ -120,9 +120,7 @@ export class Battle {
       battleType === BattleType.TRAINER
         ? trainer?.getPartyLevels(this.waveIndex)
         : // TODO: Remove array.fill.map
-          new Array(double ? 2 : 1)
-            .fill(null)
-            .map(() => this.getLevelForWave());
+          new Array(double ? 2 : 1).fill(null).map(() => this.getLevelForWave());
   }
 
   private initBattleSpec(): void {
