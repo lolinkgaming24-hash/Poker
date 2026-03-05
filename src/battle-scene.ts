@@ -1478,10 +1478,7 @@ export class BattleScene extends SceneBase {
     ) {
       doubleTrainer = false;
     } else {
-      // Forcing a double battle on wave 1 causes a bug where only one enemy is sent out,
-      // making it impossible to complete the fight without a reload
-      // TODO: We duplicate the "wave 1" check with `checkIsDouble`
-      doubleTrainer = waveIndex > 1 && randSeedInt(this.getDoubleBattleChance(waveIndex)) === 0;
+      doubleTrainer = randSeedInt(this.getDoubleBattleChance(waveIndex)) === 0;
     }
 
     const overrideVariant = doubleTrainer ? TrainerVariant.DOUBLE : Overrides.RANDOM_TRAINER_OVERRIDE?.trainerVariant;
