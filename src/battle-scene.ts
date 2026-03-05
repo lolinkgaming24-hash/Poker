@@ -1502,10 +1502,7 @@ export class BattleScene extends SceneBase {
 
     // Edge cases
     if (
-      // Wave 1 doubles cause crashes
-      // TODO: Investigate why this occurs and fix it for good - this is a constant PITA inside testing and local dev
-      waveIndex === 1
-      || this.gameMode.isWaveFinal(waveIndex) // Endless bosses and classic mode finales are never double battles
+      this.gameMode.isWaveFinal(waveIndex) // Endless bosses and classic mode finales are never double battles
       || this.gameMode.isEndlessBoss(waveIndex)
       || battleType === BattleType.MYSTERY_ENCOUNTER // MEs are never double battles
     ) {
