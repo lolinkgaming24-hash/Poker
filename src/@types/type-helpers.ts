@@ -1,15 +1,16 @@
-/*
- * A collection of custom utility types that aid in type checking and ensuring strict type conformity
+/**
+ * A collection of custom utility types that aid in type checking and ensuring strict type conformity.
+ * @module
  */
 
 import type { AbAttr } from "#abilities/ab-attrs";
-import type { IntClosedRange, NegativeInfinity, PositiveInfinity, RequiredKeysOf, TupleOf } from "type-fest";
+import type { IntClosedRange, NegativeInfinity, PositiveInfinity, RequireAtLeastOne, RequiredKeysOf, TupleOf } from "type-fest";
 
 // Re-export a bunch of stuff from type-fest
 // TODO: Once the modifier rework makes merge conflicts less of a priority, remove these re-exports and change callsites to import directly from `type-fest`
 export type { RequiredKeysOf as RequiredKeys };
 
-import type { ValueOf as ObjectValues } from "type-fest";
+  import type { ValueOf as ObjectValues } from "type-fest";
 export type { ObjectValues };
 export type { Writable as Mutable } from "type-fest";
 
@@ -92,7 +93,7 @@ export type CoerceNullPropertiesToUndefined<T extends object> = {
  * Distinct from {@linkcode Partial} as this requires at least 1 property to _not_ be undefined.
  * @typeParam T - The object type to render partial
  */
-export type AtLeastOne<T extends object> = Partial<T> & ObjectValues<{ [K in keyof T]: Pick<Required<T>, K> }>;
+export type AtLeastOne<T extends object> = RequireAtLeastOne<T, keyof T>;
 
 /**
  * Type helper that adds a brand to a type, used for nominal typing.

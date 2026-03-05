@@ -5,7 +5,6 @@ import { SpeciesId } from "#enums/species-id";
 import { UiMode } from "#enums/ui-mode";
 import { ExpBoosterModifier } from "#modifiers/modifier";
 import { GameManager } from "#test/framework/game-manager";
-import { ModifierSelectUiHandler } from "#ui/modifier-select-ui-handler";
 import Phaser from "phaser";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 

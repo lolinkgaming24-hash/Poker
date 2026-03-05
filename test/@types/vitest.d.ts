@@ -12,6 +12,7 @@ import type { AbilityId } from "#enums/ability-id";
 import type { ArenaTagSide } from "#enums/arena-tag-side";
 import type { ArenaTagType } from "#enums/arena-tag-type";
 import type { BattlerTagType } from "#enums/battler-tag-type";
+import type { HeldItemCategoryId, HeldItemId } from "#enums/held-item-id";
 import type { MoveId } from "#enums/move-id";
 import type { PokemonType } from "#enums/pokemon-type";
 import type { PositionalTagType } from "#enums/positional-tag-type";
@@ -22,6 +23,7 @@ import type { Arena } from "#field/arena";
 import type { Pokemon } from "#field/pokemon";
 import type { PokemonMove } from "#moves/pokemon-move";
 import type { OneOther } from "#test/@types/test-helpers";
+import type { ApplicableHeldItemId } from "#types/held-item-data-types";
 import type { GameManager } from "#test/framework/game-manager";
 import type { PartiallyFilledArenaTag } from "#test/matchers/to-have-arena-tag";
 import type { PartiallyFilledBattlerTag } from "#test/matchers/to-have-battler-tag";
@@ -36,7 +38,9 @@ import type { toDmgValue } from "#utils/common";
 import type { If, IntClosedRange, Integer, IsNumericLiteral, IsStringLiteral, NonNegativeInteger } from "type-fest";
 import type { expect } from "vitest";
 import type { GetMatchers, MatchersBase, RestrictMatcher } from "./matcher-helpers";
-
+import type { ExpectedHeldItemType } from "#test/matchers/to-have-held-item";
+import type { ToHaveAppliedItemOptions } from "#test/matchers/to-have-applied-item";
+import type { AllHeldItems } from "#items/all-held-items";
 // #region Helper Types
 
 /**
@@ -300,6 +304,19 @@ interface ArenaMatchersNegative {
 // #region Pokemon Matchers
 interface PokemonMatchers {
   /**
+   * Check whether a {@linkcode Pokemon} has applied the given {@linkcode HeldItem}.
+   * Used during unit tests to ensure effects were applied correctly.
+   * @param id - The {@linkcode HeldItemId} of the item being applied
+   * @param effect - One of `item`'s applicable {@linkcode HeldItemEffect} to check application of
+   * @param options - A partially-filled parameters object used to query the arguments `item` was called with
+   */
+  toHaveAppliedItem<T extends ApplicableHeldItemId, E extends AllHeldItems[T]["effects"][number]>(
+    id: T,
+    effect: E,
+    options?: ToHaveAppliedItemOptions<E>,
+  ): void;
+
+  /**
    * Check whether a {@linkcode Pokemon}'s current typing includes the given types.
    * @param expectedTypes - The expected {@linkcode PokemonType}s to check against; must have length `>0`
    * @param options - The {@linkcode ToHaveTypesOptions | options} passed to the matcher
@@ -427,6 +444,20 @@ interface PokemonMatchers {
    * or does not contain exactly one copy of `moveId`.
    */
   toHaveUsedPP<P extends number | "all">(moveId: MoveId, ppUsed: If<IsNumericLiteral<P>, Integer<P>, P>): void;
+
+  /**
+   * Check whether a {@linkcode Pokemon} has a given held item.
+   * @param received - The object to check. Should be a {@linkcode Pokemon}
+   * @param expectedId - The {@linkcode HeldItemId} or {@linkcode HeldItemCategoryId} to check
+   * @param count - (Default `1`) The number of items that should be present
+   */
+  toHaveHeldItem(expectedId: HeldItemId | HeldItemCategoryId, count?: number): void;
+  /**
+   * Check whether a {@linkcode Pokemon} has a given held item.
+   * @param received - The object to check. Should be a {@linkcode Pokemon}
+   * @param expectedSpecs - A partially-filled {@linkcode HeldItemSpecs} containing the desired values
+   */
+  toHaveHeldItem(expectedSpecs: ExpectedHeldItemType): void;
 }
 // #endregion Pokemon Matchers
 

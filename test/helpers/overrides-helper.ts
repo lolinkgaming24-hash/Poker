@@ -1,4 +1,4 @@
-import { OVERRIDES_COLOR } from "#app/constants/colors";
+import { PokeballCounts } from "#app/battle-scene";import { OVERRIDES_COLOR } from "#app/constants/colors";
 import { TerrainType } from "#app/data/terrain";
 import type { BattleStyle, RandomTrainerOverride } from "#app/overrides";
 import Overrides from "#app/overrides";
@@ -23,6 +23,7 @@ import type { FieldHelper } from "#test/helpers/field-helper";
 import { GameManagerHelper } from "#test/helpers/game-manager-helper";
 import type { MoveHelper } from "#test/helpers/move-helper";
 import { getEnumStr, stringifyEnumArray } from "#test/utils/string-utils";
+import { TrainerItemConfiguration } from "#types/trainer-item-data-types";
 import { coerceArray } from "#utils/array";
 import { shiftCharCodes } from "#utils/common";
 import { enumValueToKey } from "#utils/enums";
@@ -125,9 +126,31 @@ export class OverridesHelper extends GameManagerHelper {
    * @param items - The items to hold
    * @returns `this`
    */
-  public startingHeldItems(items: ModifierOverride[]): this {
-    vi.spyOn(Overrides, "STARTING_HELD_ITEMS_OVERRIDE", "get").mockReturnValue(items);
-    this.log("Player Pokemon starting held items set to:", items);
+  public startingHeldItems(itemConfiguration: HeldItemConfiguration): this {
+    vi.spyOn(Overrides, "STARTING_HELD_ITEMS_OVERRIDE", "get").mockReturnValue(itemConfiguration);
+    this.log("Player Pokemon starting held items set to:", itemConfiguration);
+    return this;
+  }
+
+  /**
+   * Override the player's starting trainer items
+   * @param items - The items to hold
+   * @returns `this`
+   */
+  public startingTrainerItems(itemConfiguration: TrainerItemConfiguration): this {
+    vi.spyOn(Overrides, "STARTING_TRAINER_ITEMS_OVERRIDE", "get").mockReturnValue(itemConfiguration);
+    this.log("Player starting trainer items set to:", itemConfiguration);
+    return this;
+  }
+
+  /**
+   * Override the player's starting pokeballs
+   * @param items - The items to hold
+   * @returns `this`
+   */
+  public startingPokeballs(pokeballs: PokeballCounts): this {
+    vi.spyOn(Overrides, "POKEBALL_OVERRIDE", "get").mockReturnValue({ active: true, pokeballs });
+    this.log("Player Pokemon starting held items set to:", { active: true, pokeballs });
     return this;
   }
 

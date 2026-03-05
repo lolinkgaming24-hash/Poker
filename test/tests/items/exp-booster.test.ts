@@ -1,8 +1,10 @@
 import { AbilityId } from "#enums/ability-id";
+import { HeldItemEffect } from "#enums/held-item-effect";
+import { HeldItemId } from "#enums/held-item-id";
 import { SpeciesId } from "#enums/species-id";
-import { PokemonExpBoosterModifier } from "#modifiers/modifier";
 import { GameManager } from "#test/framework/game-manager";
 import { NumberHolder } from "#utils/common";
+import { applyHeldItems } from "#utils/items";
 import Phaser from "phaser";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -23,13 +25,13 @@ describe("EXP Modifier Items", () => {
   });
 
   it("EXP booster items stack multiplicatively", async () => {
-    game.override.startingHeldItems([{ name: "LUCKY_EGG", count: 3 }, { name: "GOLDEN_EGG" }]);
+    game.override.startingHeldItems([{ entry: HeldItemId.LUCKY_EGG, count: 3 }, { entry: HeldItemId.GOLDEN_EGG }]);
     await game.classicMode.startBattle(SpeciesId.FEEBAS);
 
     const partyMember = game.field.getPlayerPokemon();
     partyMember.exp = 100;
     const expHolder = new NumberHolder(partyMember.exp);
-    game.scene.applyModifiers(PokemonExpBoosterModifier, true, partyMember, expHolder);
+    applyHeldItems(HeldItemEffect.EXP_BOOSTER, { pokemon: partyMember, expAmount: expHolder });
     expect(expHolder.value).toBe(440);
   });
 });

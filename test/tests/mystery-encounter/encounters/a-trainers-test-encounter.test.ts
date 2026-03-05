@@ -10,8 +10,11 @@ import * as EncounterPhaseUtils from "#mystery-encounters/encounter-phase-utils"
 import * as MysteryEncounters from "#mystery-encounters/mystery-encounters";
 import { HUMAN_TRANSITABLE_BIOMES } from "#mystery-encounters/mystery-encounters";
 import type { PartyHealPhase } from "#phases/party-heal-phase";
+import {
+    runMysteryEncounterToEnd,
+    skipBattleRunMysteryEncounterRewardsPhase,
+} from "#test/utils/encounter-test-utils";
 import { GameManager } from "#test/framework/game-manager";
-import { runMysteryEncounterToEnd, skipBattleRunMysteryEncounterRewardsPhase } from "#test/utils/encounter-test-utils";
 import { initSceneWithoutEncounterPhase } from "#test/utils/game-manager-utils";
 import i18next from "i18next";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -121,8 +124,8 @@ describe("A Trainer's Test - Mystery Encounter", () => {
 
       await runMysteryEncounterToEnd(game, 1, undefined, true);
       await skipBattleRunMysteryEncounterRewardsPhase(game);
-      await game.phaseInterceptor.to("SelectModifierPhase", false);
-      expect(game).toBeAtPhase("SelectModifierPhase");
+      await game.phaseInterceptor.to("SelectRewardPhase", false);
+      expect(game).toBeAtPhase("SelectRewardPhase");
 
       const eggsAfter = scene.gameData.eggs;
       expect(eggsAfter).toBeDefined();
@@ -169,8 +172,8 @@ describe("A Trainer's Test - Mystery Encounter", () => {
       const eggsBeforeLength = eggsBefore.length;
 
       await runMysteryEncounterToEnd(game, 2);
-      await game.phaseInterceptor.to("SelectModifierPhase", false);
-      expect(game).toBeAtPhase("SelectModifierPhase");
+      await game.phaseInterceptor.to("SelectRewardPhase", false);
+      expect(game).toBeAtPhase("SelectRewardPhase");
 
       const eggsAfter = scene.gameData.eggs;
       expect(eggsAfter).toBeDefined();

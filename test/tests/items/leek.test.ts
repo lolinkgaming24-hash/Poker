@@ -1,3 +1,4 @@
+import { HeldItemId } from "#enums/held-item-id";
 import { MoveId } from "#enums/move-id";
 import { SpeciesId } from "#enums/species-id";
 import { GameManager } from "#test/framework/game-manager";
@@ -21,7 +22,7 @@ describe("Items - Leek", () => {
     game.override
       .enemySpecies(SpeciesId.MAGIKARP)
       .enemyMoveset(MoveId.SPLASH)
-      .startingHeldItems([{ name: "LEEK" }])
+      .startingHeldItems([{ entry: HeldItemId.LEEK }])
       .moveset([MoveId.TACKLE])
       .battleStyle("single");
   });

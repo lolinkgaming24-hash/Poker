@@ -1,4 +1,5 @@
 import { AbilityId } from "#enums/ability-id";
+import { HeldItemId } from "#enums/held-item-id";
 import { MoveId } from "#enums/move-id";
 import { SpeciesId } from "#enums/species-id";
 import { StatusEffect } from "#enums/status-effect";
@@ -26,11 +27,7 @@ describe("Items - Toxic orb", () => {
       .enemyAbility(AbilityId.BALL_FETCH)
       .moveset(MoveId.SPLASH)
       .enemyMoveset(MoveId.SPLASH)
-      .startingHeldItems([
-        {
-          name: "TOXIC_ORB",
-        },
-      ]);
+      .startingHeldItems([{ entry: HeldItemId.TOXIC_ORB }]);
 
     vi.spyOn(i18next, "t");
   });
@@ -39,7 +36,7 @@ describe("Items - Toxic orb", () => {
     await game.classicMode.startBattle(SpeciesId.FEEBAS);
 
     const player = game.field.getPlayerPokemon();
-    expect(player.getHeldItems()[0].type.id).toBe("TOXIC_ORB");
+    expect(player.heldItemManager.hasItem(HeldItemId.TOXIC_ORB)).toBe(true);
 
     game.move.select(MoveId.SPLASH);
 

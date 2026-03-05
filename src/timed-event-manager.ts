@@ -5,8 +5,9 @@ import type { PokemonSpeciesFilter } from "#data/pokemon-species";
 import type { MysteryEncounterTier } from "#enums/mystery-encounter-tier";
 import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
-import type { ModifierTypeKeys } from "#modifiers/modifier-type";
+import type { TrainerItemId } from "#enums/trainer-item-id";
 import type { EventEncounter, EventMysteryEncounterTier, EventWeatherPools, TimedEvent } from "#types/events";
+import type { SilentReward } from "#types/rewards";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import { timedEvents } from "./data/balance/timed-events";
 
@@ -112,9 +113,9 @@ export class TimedEventManager {
 
   /**
    * For events where Delibirdy gives extra items
-   * @returns list of ids of {@linkcode ModifierType}s that Delibirdy hands out as a bonus
+   * @returns list of ids of {@linkcode Reward}s that Delibirdy hands out as a bonus
    */
-  getDelibirdyBuff(): string[] {
+  getDelibirdyBuff(): TrainerItemId[] {
     return [...(this.activeEvent()?.delibirdyBuff ?? [])];
   }
 
@@ -176,9 +177,9 @@ export class TimedEventManager {
    * Gets all the modifier types associated with a certain wave during an event
    * @see EventWaveReward
    * @param wave the wave to check for associated rewards
-   * @returns array of strings of the event modifier reward types
+   * @returns array of strings of the event reward types
    */
-  getFixedBattleEventRewards(wave: number): ModifierTypeKeys[] {
+  getFixedBattleEventRewards(wave: number): SilentReward[] {
     return (
       this.activeEvent()
         ?.classicWaveRewards?.filter(cwr => cwr.wave === wave)
@@ -213,7 +214,7 @@ export class TimedEventManager {
     }
   }
 
-  getEventDailyStartingItems(): readonly ModifierTypeKeys[] {
+  getEventDailyStartingItems(): readonly SilentReward[] {
     return this.activeEvent()?.dailyRunStartingItems ?? [];
   }
 

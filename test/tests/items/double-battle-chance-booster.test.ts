@@ -2,10 +2,10 @@ import { Button } from "#enums/buttons";
 import { MoveId } from "#enums/move-id";
 import { ShopCursorTarget } from "#enums/shop-cursor-target";
 import { SpeciesId } from "#enums/species-id";
+import { TrainerItemId } from "#enums/trainer-item-id";
 import { UiMode } from "#enums/ui-mode";
-import { DoubleBattleChanceBoosterModifier } from "#modifiers/modifier";
 import { GameManager } from "#test/framework/game-manager";
-import type { ModifierSelectUiHandler } from "#ui/modifier-select-ui-handler";
+import type { RewardSelectUiHandler } from "#ui/reward-select-ui-handler";
 import Phaser from "phaser";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -23,7 +23,9 @@ describe("Items - Double Battle Chance Boosters", () => {
   });
 
   it("should guarantee double battle with 2 unique tiers", async () => {
-    game.override.startingModifier([{ name: "LURE" }, { name: "SUPER_LURE" }]).startingWave(2);
+    game.override
+      .startingTrainerItems([{ entry: TrainerItemId.LURE }, { entry: TrainerItemId.SUPER_LURE }])
+      .startingWave(2);
 
     await game.classicMode.startBattle(SpeciesId.FEEBAS);
 
@@ -31,7 +33,13 @@ describe("Items - Double Battle Chance Boosters", () => {
   });
 
   it("should guarantee double boss battle with 3 unique tiers", async () => {
-    game.override.startingModifier([{ name: "LURE" }, { name: "SUPER_LURE" }, { name: "MAX_LURE" }]).startingWave(10);
+    game.override
+      .startingTrainerItems([
+        { entry: TrainerItemId.LURE },
+        { entry: TrainerItemId.SUPER_LURE },
+        { entry: TrainerItemId.MAX_LURE },
+      ])
+      .startingWave(10);
 
     await game.classicMode.startBattle(SpeciesId.FEEBAS);
 
@@ -44,7 +52,7 @@ describe("Items - Double Battle Chance Boosters", () => {
 
   it("should renew how many battles are left of existing booster when picking up new booster of same tier", async () => {
     game.override
-      .startingModifier([{ name: "LURE" }])
+      .startingTrainerItems([{ entry: TrainerItemId.LURE }])
       .itemRewards([{ name: "LURE" }])
       .moveset(MoveId.SPLASH)
       .startingLevel(200);
@@ -57,17 +65,15 @@ describe("Items - Double Battle Chance Boosters", () => {
 
     await game.phaseInterceptor.to("BattleEndPhase");
 
-    const modifier = game.scene.findModifier(
-      m => m instanceof DoubleBattleChanceBoosterModifier,
-    ) as DoubleBattleChanceBoosterModifier;
-    expect(modifier.getBattleCount()).toBe(9);
+    const stack = game.scene.trainerItems.getStack(TrainerItemId.LURE);
+    expect(stack).toBe(9);
 
     // Forced LURE to spawn in the first slot with override
     game.onNextPrompt(
-      "SelectModifierPhase",
-      UiMode.MODIFIER_SELECT,
+      "SelectRewardPhase",
+      UiMode.REWARD_SELECT,
       () => {
-        const handler = game.scene.ui.getHandler() as ModifierSelectUiHandler;
+        const handler = game.scene.ui.getHandler() as RewardSelectUiHandler;
         // Traverse to first modifier slot
         handler.setCursor(0);
         handler.setRowCursor(ShopCursorTarget.REWARDS);
@@ -80,14 +86,7 @@ describe("Items - Double Battle Chance Boosters", () => {
     await game.phaseInterceptor.to("TurnInitPhase");
 
     // Making sure only one booster is in the modifier list even after picking up another
-    let count = 0;
-    for (const m of game.scene.modifiers) {
-      if (m instanceof DoubleBattleChanceBoosterModifier) {
-        count++;
-        const modifierInstance = m as DoubleBattleChanceBoosterModifier;
-        expect(modifierInstance.getBattleCount()).toBe(modifierInstance.getMaxBattles());
-      }
-    }
-    expect(count).toBe(1);
+    const newStack = game.scene.trainerItems.getStack(TrainerItemId.LURE);
+    expect(newStack).toBe(10);
   });
 });

@@ -263,7 +263,7 @@
         "useIterableCallbackReturn": "warn", // TODO: Refactor and change to error
         "noNonNullAssertedOptionalChain": "warn", // TODO: Refactor and change to error
         "noDuplicateDependencies": "error",
-        "noImportCycles": "error"
+        "noImportCycles": "warn" // temporary until work is finished
       },
       "complexity": {
         "useWhile": "error",

@@ -8,7 +8,6 @@ import { SpeciesId } from "#enums/species-id";
 import { StatusEffect } from "#enums/status-effect";
 import { UiMode } from "#enums/ui-mode";
 import { GameManager } from "#test/framework/game-manager";
-import { ModifierSelectUiHandler } from "#ui/modifier-select-ui-handler";
 import Phaser from "phaser";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
