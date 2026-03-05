@@ -1496,7 +1496,7 @@ export class BattleScene extends SceneBase {
     // Disallow using double battle overrides on trainer waves (need `RANDOM_TRAINER_OVERRIDE` instead)
     // TODO: Print a warning here if this results in the override being ignored
     const doubleBattleOverride = this.doCheckDoubleOverride(waveIndex);
-    if (doubleBattleOverride === true || (battleType !== BattleType.TRAINER && doubleBattleOverride === false)) {
+    if (doubleBattleOverride != null) {
       return doubleBattleOverride;
     }
 
