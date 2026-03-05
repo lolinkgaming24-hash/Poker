@@ -74,6 +74,10 @@ export const languageOptions = [
     handler: () => changeLocaleHandler("zh-Hant"),
   },
   {
+    label: "ไทย",
+    handler: () => changeLocaleHandler("th"),
+  },
+  {
     label: "Català (Needs Help)",
     handler: () => changeLocaleHandler("ca"),
   },
@@ -84,6 +88,10 @@ export const languageOptions = [
   {
     label: "Русский (Needs Help)",
     handler: () => changeLocaleHandler("ru"),
+  },
+  {
+    label: "Українська (Needs Help)",
+    handler: () => changeLocaleHandler("uk"),
   },
   {
     label: "Bahasa Indonesia (Needs Help)",
@@ -100,6 +108,10 @@ export const languageOptions = [
   {
     label: "Norsk bokmål (Needs Help)",
     handler: () => changeLocaleHandler("nb-NO"),
+  },
+  {
+    label: "Svenska",
+    handler: () => changeLocaleHandler("sv"),
   },
   {
     label: "Română (Needs Help)",

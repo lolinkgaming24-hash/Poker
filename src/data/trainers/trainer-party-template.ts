@@ -194,14 +194,22 @@ export const trainerPartyTemplates = {
   ),
 
   ELITE_FOUR: new TrainerPartyCompoundTemplate(
-    new TrainerPartyTemplate(2, PartyMemberStrength.AVERAGE, undefined, undefined, EvoLevelThresholdKind.STRONG),
+    new TrainerPartyTemplate(1, PartyMemberStrength.AVERAGE, undefined, undefined, EvoLevelThresholdKind.STRONG),
     new TrainerPartyTemplate(3, PartyMemberStrength.STRONG, undefined, undefined, EvoLevelThresholdKind.STRONG),
     new TrainerPartyTemplate(1, PartyMemberStrength.STRONGER, undefined, undefined, EvoLevelThresholdKind.STRONG),
+    new TrainerPartyTemplate(1, PartyMemberStrength.AVERAGE, undefined, undefined, EvoLevelThresholdKind.STRONG), // Random Slot
   ),
 
   CHAMPION: new TrainerPartyCompoundTemplate(
     new TrainerPartyTemplate(4, PartyMemberStrength.STRONG, undefined, undefined, EvoLevelThresholdKind.STRONG),
     new TrainerPartyTemplate(2, PartyMemberStrength.STRONGER, false, true, EvoLevelThresholdKind.STRONG),
+  ),
+
+  EVIL_LEADER: new TrainerPartyCompoundTemplate(
+    new TrainerPartyTemplate(1, PartyMemberStrength.STRONG, undefined, undefined, EvoLevelThresholdKind.STRONG),
+    new TrainerPartyTemplate(2, PartyMemberStrength.AVERAGE, undefined, undefined, EvoLevelThresholdKind.STRONG),
+    new TrainerPartyTemplate(2, PartyMemberStrength.STRONG, undefined, undefined, EvoLevelThresholdKind.STRONG),
+    new TrainerPartyTemplate(1, PartyMemberStrength.STRONGER, undefined, undefined, EvoLevelThresholdKind.STRONG),
   ),
 
   RIVAL: new TrainerPartyCompoundTemplate(

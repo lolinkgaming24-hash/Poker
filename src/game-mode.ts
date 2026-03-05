@@ -3,7 +3,12 @@ import { CHALLENGE_MODE_MYSTERY_ENCOUNTER_WAVES, CLASSIC_MODE_MYSTERY_ENCOUNTER_
 import { globalScene } from "#app/global-scene";
 import Overrides from "#app/overrides";
 import { allChallenges, type Challenge, copyChallenge } from "#data/challenge";
-import { getDailyEventSeedBoss, getDailyStartingBiome, getDailyStartingMoney } from "#data/daily-seed/daily-run";
+import {
+  getDailyEventSeedBoss,
+  getDailyForcedWaveSpecies,
+  getDailyStartingBiome,
+  getDailyStartingMoney,
+} from "#data/daily-seed/daily-run";
 import { parseDailySeed } from "#data/daily-seed/daily-seed-utils";
 import { allSpecies } from "#data/data-lists";
 import type { PokemonSpecies } from "#data/pokemon-species";
@@ -12,7 +17,6 @@ import { ChallengeType } from "#enums/challenge-type";
 import { Challenges } from "#enums/challenges";
 import { GameModes } from "#enums/game-modes";
 import { SpeciesId } from "#enums/species-id";
-import type { Arena } from "#field/arena";
 import { classicFixedBattles, type FixedBattleConfigs } from "#trainers/fixed-battle-configs";
 import type { CustomDailyRunConfig } from "#types/daily-run";
 import { applyChallenges } from "#utils/challenge-utils";
@@ -39,7 +43,7 @@ export class GameMode implements GameModeConfig {
   public isClassic: boolean;
   public isEndless: boolean;
   public isDaily: boolean;
-  public dailyConfig?: CustomDailyRunConfig;
+  public dailyConfig?: CustomDailyRunConfig | undefined;
   public hasTrainers: boolean;
   public hasNoShop: boolean;
   public hasShortBiomes: boolean;
@@ -65,15 +69,24 @@ export class GameMode implements GameModeConfig {
 
   /**
    * Enables challenges if they are disabled and sets the specified challenge's value
-   * @param challenge The challenge to set
-   * @param value The value to give the challenge. Impact depends on the specific challenge
+   * @param challenge - The challenge to set
+   * @param value - The value to give the challenge. Impact depends on the specific challenge
+   * @param severity - If provided, will override the given severity amount. Unused if `challenge` does not use severity
+   * @todo Add severity support to daily mode challenge setting
    */
-  setChallengeValue(challenge: Challenges, value: number) {
+  setChallengeValue(challenge: Challenges, value: number, severity?: number) {
     if (!this.isChallenge) {
       this.isChallenge = true;
       this.challenges = allChallenges.map(c => copyChallenge(c));
     }
-    this.challenges.filter((chal: Challenge) => chal.id === challenge).map((chal: Challenge) => (chal.value = value));
+    this.challenges
+      .filter((chal: Challenge) => chal.id === challenge)
+      .forEach(chal => {
+        chal.value = value;
+        if (chal.hasSeverity()) {
+          chal.severity = severity ?? chal.severity;
+        }
+      });
   }
 
   /**
@@ -187,18 +200,17 @@ export class GameMode implements GameModeConfig {
 
   /**
    * Determines whether or not to generate a trainer
-   * @param waveIndex the current floor the player is on (trainer sprites fail to generate on X1 floors)
-   * @param arena the current {@linkcode Arena}
-   * @returns `true` if a trainer should be generated, `false` otherwise
+   * @param waveIndex - The current floor the player is on (trainer sprites fail to generate on X1 floors)
+   * @returns Whether a trainer should be generated
    */
-  isWaveTrainer(waveIndex: number, arena: Arena): boolean {
-    /**
-     * Daily spawns trainers on floors 5, 15, 20, 25, 30, 35, 40, and 45
-     */
+  public isWaveTrainer(waveIndex: number): boolean {
+    const { arena, offsetGym } = globalScene;
+
+    // Daily spawns trainers on floors 5, 15, 20, 25, 30, 35, 40, and 45
     if (this.isDaily) {
       return waveIndex % 10 === 5 || (!(waveIndex % 10) && waveIndex > 10 && !this.isWaveFinal(waveIndex));
     }
-    if (waveIndex % 30 === (globalScene.offsetGym ? 0 : 20) && !this.isWaveFinal(waveIndex)) {
+    if (waveIndex % 30 === (offsetGym ? 0 : 20) && !this.isWaveFinal(waveIndex)) {
       return true;
     }
     if (waveIndex % 10 !== 1 && waveIndex % 10) {
@@ -206,7 +218,7 @@ export class GameMode implements GameModeConfig {
        * Do not check X1 floors since there's a bug that stops trainer sprites from appearing
        * after a X0 full party heal, this also allows for a smoother biome transition for general gameplay feel
        */
-      const trainerChance = arena.getTrainerChance();
+      const trainerChance = arena.trainerChance;
       let allowTrainerBattle = true;
       if (trainerChance) {
         const waveBase = Math.floor(waveIndex / 10) * 10;
@@ -215,13 +227,13 @@ export class GameMode implements GameModeConfig {
           if (w === waveIndex) {
             continue;
           }
-          if (w % 30 === (globalScene.offsetGym ? 0 : 20) || this.isFixedBattle(w)) {
+          if (w % 30 === (offsetGym ? 0 : 20) || this.isFixedBattle(w)) {
             allowTrainerBattle = false;
             break;
           }
           if (w < waveIndex) {
             globalScene.executeWithSeedOffset(() => {
-              const waveTrainerChance = arena.getTrainerChance();
+              const waveTrainerChance = arena.trainerChance;
               if (!randSeedInt(waveTrainerChance)) {
                 allowTrainerBattle = false;
               }
@@ -267,7 +279,7 @@ export class GameMode implements GameModeConfig {
       return randSeedItem(allFinalBossSpecies);
     }
 
-    return null;
+    return getDailyForcedWaveSpecies(waveIndex);
   }
 
   /**

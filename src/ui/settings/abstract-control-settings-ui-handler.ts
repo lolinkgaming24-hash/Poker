@@ -1,10 +1,10 @@
 import { globalScene } from "#app/global-scene";
-import type { InterfaceConfig } from "#app/inputs-controller";
 import { Button } from "#enums/buttons";
 import type { Device } from "#enums/devices";
 import { TextStyle } from "#enums/text-style";
 import type { UiMode } from "#enums/ui-mode";
 import { getIconWithSettingName } from "#inputs/config-handler";
+import type { CustomInterfaceConfig, InterfaceConfig, MappingSettingName } from "#types/configs/inputs";
 import { NavigationManager, NavigationMenu } from "#ui/navigation-menu";
 import { ScrollBar } from "#ui/scroll-bar";
 import { addTextObject, getTextColor } from "#ui/text";
@@ -54,10 +54,10 @@ export abstract class AbstractControlSettingsUiHandler extends UiHandler {
   protected keys: string[];
 
   // Store the specific settings related to key bindings for the current gamepad configuration.
-  protected bindingSettings: string[];
+  protected bindingSettings: MappingSettingName[];
 
-  protected setting;
-  protected settingBlacklisted;
+  protected setting: Record<string, MappingSettingName>;
+  protected settingBlacklisted: string[];
   protected settingDeviceDefaults;
   protected settingDeviceOptions;
   protected configs;
@@ -206,18 +206,13 @@ export abstract class AbstractControlSettingsUiHandler extends UiHandler {
       settingFiltered.forEach((setting, s) => {
         // Convert the setting key from format 'Key_Name' to 'Key name' for display.
         // TODO: IDK if this can be followed by both an underscore and a space, so leaving it as a regex matching both for now
-        const i18nKey = toCamelCase(setting.replace(/Alt(_| )/, ""));
+        const i18nKey = toCamelCase(setting.replace(/ALT(_| )/, ""));
 
         // Create and add a text object for the setting name to the scene.
         const isLock = this.settingBlacklisted.includes(this.setting[setting]);
         const labelStyle = isLock ? TextStyle.SETTINGS_LOCKED : TextStyle.SETTINGS_LABEL;
-        const isAlt = setting.includes("Alt");
-        let labelText: string;
-        if (isAlt) {
-          labelText = `${i18next.t(`settings:${i18nKey}`)}${i18next.t("settings:alt")}`;
-        } else {
-          labelText = i18next.t(`settings:${i18nKey}`);
-        }
+        const isAlt = setting.includes("ALT");
+        const labelText = i18next.t(`settings:${i18nKey}`) + (isAlt ? i18next.t("settings:alt") : "");
         settingLabels[s] = addTextObject(8, 28 + s * 16, labelText, labelStyle);
         settingLabels[s].setOrigin(0, 0);
         optionsContainer.add(settingLabels[s]);
@@ -324,7 +319,7 @@ export abstract class AbstractControlSettingsUiHandler extends UiHandler {
    *
    * @returns The active configuration for current device
    */
-  getActiveConfig(): InterfaceConfig {
+  getActiveConfig(): CustomInterfaceConfig | null {
     return globalScene.inputController.getActiveConfig(this.device);
   }
 
@@ -338,7 +333,7 @@ export abstract class AbstractControlSettingsUiHandler extends UiHandler {
     const activeConfig = this.getActiveConfig();
 
     // Set the UI layout for the active configuration. If unsuccessful, exit the function early.
-    if (!this.setLayout(activeConfig)) {
+    if (activeConfig == null || !this.setLayout(activeConfig)) {
       return;
     }
 
@@ -388,12 +383,12 @@ export abstract class AbstractControlSettingsUiHandler extends UiHandler {
         this.navigationIcons[settingName].alpha = 1;
         continue;
       }
-      const icon = globalScene.inputController?.getIconForLatestInputRecorded(settingName);
-      if (icon) {
-        const type = globalScene.inputController?.getLastSourceType();
-        this.navigationIcons[settingName].setTexture(type);
-        this.navigationIcons[settingName].setFrame(icon);
-        this.navigationIcons[settingName].alpha = 1;
+      const inputController = globalScene.inputController;
+      // cast is fine here. If it doesn't match, it will just return undefined
+      const icon = inputController?.getIconForLatestInputRecorded(settingName as MappingSettingName);
+      const type = inputController?.getLastSourceType();
+      if (icon != null && type != null) {
+        this.navigationIcons[settingName].setTexture(type).setFrame(icon).setAlpha(1);
       } else {
         this.navigationIcons[settingName].alpha = 0;
       }

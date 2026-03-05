@@ -15,15 +15,18 @@ const dryRun = !!process.env.DRY_RUN?.match(/true/gi);
  * <!-- @satisfies {Partial<import("typedoc").TypeDocOptions>} -->
  */
 const config = {
-  entryPoints: ["./src", "./test/test-utils"],
+  entryPoints: ["./src", "./test/framework", "./test/helpers", "./test/matchers", "./test/utils"],
   entryPointStrategy: "expand",
   exclude: [
     "src/polyfills.ts",
     "src/extensions.ts",
     "src/vite.env.d.ts",
     "**/*+.test.ts",
-    "test/test-utils/setup",
-    "test/test-utils/reporters",
+    "**/*+.test-d.ts",
+    "test/setup",
+    "test/reporters",
+    "test/@types/matcher-helpers.ts",
+    "test/@types/vitest.d.ts",
   ],
   excludePrivate: false, // Private members are useful in the docs for contributors
   excludeReferences: true, // prevent documenting re-exports
@@ -52,7 +55,7 @@ const config = {
   out: process.env.CI ? "/tmp/docs" : "./typedoc",
   name: "PokéRogue",
   readme: "./README.md",
-  projectDocuments: ["docs/*.md, CONTRIBUTING.md"],
+  projectDocuments: ["docs/*.md", "CONTRIBUTING.md"],
   coverageLabel: "Documented",
   coverageSvgWidth: 120, // Increased from 104 baseline due to adding 2 extra letters
   favicon: "./favicon.ico",

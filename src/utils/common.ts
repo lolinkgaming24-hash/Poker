@@ -3,8 +3,14 @@ import { bypassLogin, isDev } from "#constants/app-constants";
 import { BiomeId } from "#enums/biome-id";
 import { MoneyFormat } from "#enums/money-format";
 import type { Variant } from "#sprites/variant";
+import { enumValueToKey } from "#utils/enums";
 import { toCamelCase } from "#utils/strings";
 import i18next from "i18next";
+
+// Re-export the value holder classes for compatibility with existing imports looking over here
+// TODO: Remove these re-exports and update associated imports
+// biome-ignore lint/performance/noBarrelFile: stopgap to avoid massive merge conflicts
+export { BooleanHolder, NumberHolder } from "#utils/value-holder";
 
 export const MissingTextureKey = "__MISSING";
 
@@ -147,8 +153,16 @@ export function randSeedShuffle<T>(items: T[]): T[] {
   return items;
 }
 
+const FPS = 60;
+const MILLISECONDS_PER_FRAME = 1000 / FPS;
+
+/**
+ * Convert a frame count into a millisecond duration for Phaser.
+ * @param frameCount - The desired number of frames
+ * @returns The duration of `frameCount` in milliseconds, assuming constant frame rate.
+ */
 export function getFrameMs(frameCount: number): number {
-  return Math.floor((1 / 60) * 1000 * frameCount);
+  return Math.floor(MILLISECONDS_PER_FRAME * frameCount);
 }
 
 export function getCurrentTime(): number {
@@ -286,26 +300,6 @@ export async function localPing(): Promise<void> {
   }
 }
 
-export class BooleanHolder {
-  public value: boolean;
-
-  constructor(value: boolean) {
-    this.value = value;
-  }
-}
-
-export class NumberHolder {
-  public value: number;
-
-  constructor(value: number) {
-    this.value = value;
-  }
-
-  valueOf(): number {
-    return this.value;
-  }
-}
-
 export class FixedInt {
   public readonly value: number;
 
@@ -408,6 +402,7 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "zh-Hant":
     case "pt-BR":
     case "ro":
+    case "th":
     case "tr":
     case "ko":
     case "ja":
@@ -417,6 +412,8 @@ export function hasAllLocalizedSprites(lang?: string): boolean {
     case "hi":
     case "tl":
     case "nb-NO":
+    case "sv":
+    case "uk":
       return true;
     default:
       return false;
@@ -522,6 +519,6 @@ export function getBiomeName(biome: BiomeId | -1) {
     case BiomeId.END:
       return i18next.t("biome:end");
     default:
-      return i18next.t(`biome:${toCamelCase(BiomeId[biome])}`);
+      return i18next.t(`biome:${toCamelCase(enumValueToKey(BiomeId, biome))}`);
   }
 }
