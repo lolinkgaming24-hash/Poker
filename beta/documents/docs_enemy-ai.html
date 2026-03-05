@@ -3,8 +3,11 @@ SPDX-FileCopyrightText: 2024-2025 Pagefault Games
 
 SPDX-License-Identifier: CC-BY-NC-SA-4.0
 -->
-<h1 id="enemycommandphase-how-enemy-pokémon-decide-what-to-do" class="tsd-anchor-link">EnemyCommandPhase: How Enemy Pokémon Decide What to Do<a href="#enemycommandphase-how-enemy-pokémon-decide-what-to-do" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h1><h2 id="step-1-should-the-enemy-pokémon-switch" class="tsd-anchor-link">Step 1: Should the Enemy Pokémon Switch?<a href="#step-1-should-the-enemy-pokémon-switch" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><p>When battling an enemy Trainer, the first decision the enemy needs to make is whether or not to switch an active Pokémon with another Pokémon in their party. This decision is primarily made by comparing <strong>matchup scores</strong> between each Pokémon in the enemy's party.</p>
-<h3 id="calculating-matchup-scores" class="tsd-anchor-link">Calculating Matchup Scores<a href="#calculating-matchup-scores" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>The core function for matchup score calculation can be found in <code>src/field/pokemon.ts</code>, within the <code>Pokemon</code> class:</p>
+<h1 id="enemycommandphase-how-enemy-pokémon-decide-what-to-do" class="tsd-anchor-link">EnemyCommandPhase: How Enemy Pokémon Decide What to Do<a href="#enemycommandphase-how-enemy-pokémon-decide-what-to-do" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<h2 id="step-1-should-the-enemy-pokémon-switch" class="tsd-anchor-link">Step 1: Should the Enemy Pokémon Switch?<a href="#step-1-should-the-enemy-pokémon-switch" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>When battling an enemy Trainer, the first decision the enemy needs to make is whether or not to switch an active Pokémon with another Pokémon in their party. This decision is primarily made by comparing <strong>matchup scores</strong> between each Pokémon in the enemy's party.</p>
+<h3 id="calculating-matchup-scores" class="tsd-anchor-link">Calculating Matchup Scores<a href="#calculating-matchup-scores" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>The core function for matchup score calculation can be found in <code>src/field/pokemon.ts</code>, within the <code>Pokemon</code> class:</p>
 <pre><code class="ts"><span class="hl-6">getMatchupScore</span><span class="hl-5">(</span><span class="hl-3">pokemon</span><span class="hl-5">: </span><span class="hl-3">Pokemon</span><span class="hl-5">): </span><span class="hl-3">number</span><span class="hl-5">;</span>
 </code><button type="button">Copy</button></pre>
 
@@ -24,7 +27,8 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 </ul>
 <p>In most situations, though, a Pokémon's matchup score against an opponent will be at most 16, which is equivalent to having two super effective types and resisting both of the opponent's types with the same HP ratios as before.</p>
 <p>The minimum possible matchup score a Pokémon could have against a single opponent is near zero, which occurs when the Pokémon's HP ratio is near zero while the opponent is at max HP. However, a Pokémon's matchup score can also be very low when its type(s) are 4x weak to and/or resisted by its opponent's types.</p>
-<h3 id="determining-switches-in-enemycommandphase" class="tsd-anchor-link">Determining Switches in EnemyCommandPhase<a href="#determining-switches-in-enemycommandphase" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>The <code>EnemyCommandPhase</code> follows this process to determine whether or not an enemy Pokémon should switch on each turn during a Trainer battle.</p>
+<h3 id="determining-switches-in-enemycommandphase" class="tsd-anchor-link">Determining Switches in EnemyCommandPhase<a href="#determining-switches-in-enemycommandphase" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>The <code>EnemyCommandPhase</code> follows this process to determine whether or not an enemy Pokémon should switch on each turn during a Trainer battle.</p>
 <ol>
 <li>If the Pokémon has a move already queued (e.g. they are recharging after using Hyper Beam), or they are trapped (e.g. by Bind or Arena Trap), skip to resolving a <code>FIGHT</code> command (see next section).</li>
 <li>For each Pokémon in the enemy's party, <a href="#calculating-matchup-scores">compute their matchup scores</a> against the active player Pokémon. If there are two active player Pokémon in the battle, add their matchup scores together.</li>
@@ -48,8 +52,10 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 <ol start="5">
 <li>If the enemy decided to switch, send a switch <code>turnCommand</code> and end this <code>EnemyCommandPhase</code>; otherwise, move on to resolving a <code>FIGHT</code> enemy command.</li>
 </ol>
-<h2 id="step-2-selecting-a-move" class="tsd-anchor-link">Step 2: Selecting a Move<a href="#step-2-selecting-a-move" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><p>At this point, the enemy (a wild or trainer Pokémon) has decided against switching and instead will use a move from its moveset. However, it still needs to figure out which move to use and, if applicable, which target to use the move against. The logic for determining an enemy's next move and target is contained within two methods: <code>EnemyPokemon.getNextMove()</code> and <code>EnemyPokemon.getNextTargets()</code> in <code>src/field/pokemon.ts</code>.</p>
-<h3 id="choosing-a-move-with" class="tsd-anchor-link">Choosing a Move with <code>getNextMove()</code><a href="#choosing-a-move-with" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>In <code>getNextMove()</code>, the enemy Pokémon chooses a move to use in the following steps:</p>
+<h2 id="step-2-selecting-a-move" class="tsd-anchor-link">Step 2: Selecting a Move<a href="#step-2-selecting-a-move" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>At this point, the enemy (a wild or trainer Pokémon) has decided against switching and instead will use a move from its moveset. However, it still needs to figure out which move to use and, if applicable, which target to use the move against. The logic for determining an enemy's next move and target is contained within two methods: <code>EnemyPokemon.getNextMove()</code> and <code>EnemyPokemon.getNextTargets()</code> in <code>src/field/pokemon.ts</code>.</p>
+<h3 id="choosing-a-move-with" class="tsd-anchor-link">Choosing a Move with <code>getNextMove()</code><a href="#choosing-a-move-with" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>In <code>getNextMove()</code>, the enemy Pokémon chooses a move to use in the following steps:</p>
 <ol>
 <li>If the Pokémon has a move in its Move Queue (e.g. the second turn of a charging move), and the queued move is still usable, use that move against the given target.</li>
 <li>Filter out any moves it can't use within its moveset. The remaining moves make up the enemy's <strong>move pool</strong> for the turn.</li>
@@ -73,7 +79,8 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 </li>
 <li>The enemy will use the move selected in Step 5 against the target(s) with the highest <a href="#choosing-targets-with-getnexttargets"><strong>target selection score (TSS)</strong></a></li>
 </ol>
-<h3 id="calculating-move-and-target-scores" class="tsd-anchor-link">Calculating Move and Target Scores<a href="#calculating-move-and-target-scores" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>As part of the move selection process, the enemy Pokémon must compute a <strong>target score (TS)</strong> for each legal target for each move in its move pool. The base target score is a combination of the move's <strong>user benefit score (UBS)</strong> and <strong>target benefit score (TBS)</strong>, representing how much the move helps or hinders the user and/or its target(s).</p>
+<h3 id="calculating-move-and-target-scores" class="tsd-anchor-link">Calculating Move and Target Scores<a href="#calculating-move-and-target-scores" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>As part of the move selection process, the enemy Pokémon must compute a <strong>target score (TS)</strong> for each legal target for each move in its move pool. The base target score is a combination of the move's <strong>user benefit score (UBS)</strong> and <strong>target benefit score (TBS)</strong>, representing how much the move helps or hinders the user and/or its target(s).</p>
 <p>$$
 \text{TS} = \text{UBS} + \left( \text{TBS} \times
 \begin{cases}
@@ -91,7 +98,8 @@ $$</p>
 <li>In addition to influencing move selection, a move's TBS also influences target selection for that move, whereas UBS has no influence.</li>
 <li>When evaluating the target score of a move against an opposing Pokémon, the move's TBS is multiplied by -1, whereas the move's UBS does not change. For this reason, move attributes return negative values for their TBS to reward using the move against an enemy.</li>
 </ol>
-<h4 id="calculating-target-benefit-score-tbs-for-attack-moves" class="tsd-anchor-link">Calculating Target Benefit Score (TBS) for Attack Moves<a href="#calculating-target-benefit-score-tbs-for-attack-moves" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>In addition to the base score from <code>Move.getTargetBenefitScore()</code>, attack moves calculate an <code>attackScore</code> which influences the move's TBS based on the following properties:</p>
+<h4 id="calculating-target-benefit-score-tbs-for-attack-moves" class="tsd-anchor-link">Calculating Target Benefit Score (TBS) for Attack Moves<a href="#calculating-target-benefit-score-tbs-for-attack-moves" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4>
+<p>In addition to the base score from <code>Move.getTargetBenefitScore()</code>, attack moves calculate an <code>attackScore</code> which influences the move's TBS based on the following properties:</p>
 <ul>
 <li>The move's power (after the move's <code>VariablePowerAttrs</code> are applied)</li>
 <li>The move's type effectiveness against the target (note that this also accounts for type immunities from abilities such as Levitate and field effects such as Strong Winds).</li>
@@ -139,13 +147,15 @@ $$</p>
 <p>$\text{attackScore} = (\text{typeMult}\times \text{statMult})+\lfloor \frac{\text{power}}{5} \rfloor$</p>
 <p>The maximum total multiplier in <code>attackScore</code> ($\text{typeMult}\times \text{statMult}$) is 4, which occurs for attacks that are super effective against the target and are categorically aligned with the user's offensive stats (e.g. the move is physical, and the user has much higher Attack than Sp. Atk). The minimum total multiplier of -4 occurs (somewhat confusingly) for attacks that are not super effective but are categorically aligned with the user's offensive stats.</p>
 <p>The attack move's total TBS, then, is $\text{TBS}=\text{baseScore}-\text{attackScore}$, where $\text{baseScore}$ is the result of <code>Move.getTargetBenefitScore()</code>.</p>
-<h4 id="calculating-target-score-ts-for-attack-moves" class="tsd-anchor-link">Calculating Target Score (TS) for Attack Moves<a href="#calculating-target-score-ts-for-attack-moves" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>The final step to calculate an attack move's target score (TS) is to multiply the base target score by the move's type effectiveness and STAB (if it applies):</p>
+<h4 id="calculating-target-score-ts-for-attack-moves" class="tsd-anchor-link">Calculating Target Score (TS) for Attack Moves<a href="#calculating-target-score-ts-for-attack-moves" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4>
+<p>The final step to calculate an attack move's target score (TS) is to multiply the base target score by the move's type effectiveness and STAB (if it applies):</p>
 <ul>
 <li>If the target is an enemy, the corresponding TS is multiplied by the move's type effectiveness against the enemy (e.g. 2 if the move is super effective), then by 1.5 if the move shares a type with the user.</li>
 <li>If the target is an ally, the TS is divided by these factors instead.</li>
 <li>If $\text{TS}=0$ after these multipliers are applied, the TS is set to -20 for the current target.</li>
 </ul>
-<h3 id="choosing-targets-with" class="tsd-anchor-link">Choosing Targets with <code>getNextTargets()</code><a href="#choosing-targets-with" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>The enemy's target selection for single-target moves works in a very similar way to its move selection. Each potential target is given a <strong>target selection score (TSS)</strong> which is based on the move's <a href="#calculating-move-and-target-scores">target benefit score</a> for that target:</p>
+<h3 id="choosing-targets-with" class="tsd-anchor-link">Choosing Targets with <code>getNextTargets()</code><a href="#choosing-targets-with" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>The enemy's target selection for single-target moves works in a very similar way to its move selection. Each potential target is given a <strong>target selection score (TSS)</strong> which is based on the move's <a href="#calculating-move-and-target-scores">target benefit score</a> for that target:</p>
 <p>$$
 \text{TSS} = \text{TBS} \times
 \begin{cases}
@@ -173,7 +183,8 @@ $$</p>
 <li>otherwise, advance to the next target $t_{i+1}$ and repeat this check.</li>
 </ol>
 <p>Once the target is selected, the enemy has successfully determined its next action for the turn, and its corresponding <code>EnemyCommandPhase</code> ends. From here, the <code>TurnStartPhase</code> processes the enemy's commands alongside the player's commands and begins to resolve the turn.</p>
-<h2 id="an-example-in-battle" class="tsd-anchor-link">An Example in Battle<a href="#an-example-in-battle" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Suppose you enter a single battle against an enemy trainer with the following Pokémon in their party:</p>
+<h2 id="an-example-in-battle" class="tsd-anchor-link">An Example in Battle<a href="#an-example-in-battle" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Suppose you enter a single battle against an enemy trainer with the following Pokémon in their party:</p>
 <ol>
 <li>An <a href="https://bulbapedia.bulbagarden.net/wiki/Excadrill_(Pok%C3%A9mon)">Excadrill</a> with the Ability Sand Force and the following moveset</li>
 <li>Earthquake</li>
@@ -187,14 +198,16 @@ $$</p>
 <li>Shadow Claw</li>
 </ol>
 <p>The enemy trainer leads with their Heatmor, and you lead with a <a href="https://bulbapedia.bulbagarden.net/wiki/Dachsbun_(Pok%C3%A9mon)">Dachsbun</a> with the Ability Well-Baked Body. We'll cover the enemy's behavior over the next two turns.</p>
-<h3 id="turn-1" class="tsd-anchor-link">Turn 1<a href="#turn-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>To determine whether the enemy should switch Pokémon, it first calculates each party member's matchup scores against the player's Dachsbun:</p>
+<h3 id="turn-1" class="tsd-anchor-link">Turn 1<a href="#turn-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>To determine whether the enemy should switch Pokémon, it first calculates each party member's matchup scores against the player's Dachsbun:</p>
 <p>$$\text{MUScore} = (\text{atkScore}+\text{defScore}) * \text{hpDiffRatio} $$</p>
 <ul>
 <li>Defensively, Heatmor's Fire typing resists Dachsbun's Fairy typing, so its <code>defScore</code> is 2. However, because of Dachsbun's Fire immunity granted by Well-Baked Body, Heatmor's <code>atkScore</code> against Dachsbun is 0. With both Pokémon at maximum HP, Heatmor's total matchup score is 2.</li>
 <li>Excadrill's Steel typing also resists Fairy, so its <code>defScore</code> is also 2. In this case, though, Steel is also super effective against Fairy, so Excadrill's base <code>atkScore</code> is 2. If Excadrill outspeeds Dachsbun (possibly due to it having a +Spd nature or holding a Carbos), its <code>atkScore</code> is further increased to 2.5. Since both Pokémon are at maximum HP, Excadrill's total matchup score is 4 (or 4.5 if it outspeeds).</li>
 </ul>
 <p>Based on the enemy party's matchup scores, whether or not the trainer switches out Heatmor for Excadrill depends on the trainer's type. The difference in matchup scores is enough to cause a switch to Excadrill for boss trainers (e.g. gym leaders) but not for regular trainers. For this example, we'll assume the trainer is a boss and, therefore, decides to switch to Excadrill on this turn.</p>
-<h3 id="turn-2" class="tsd-anchor-link">Turn 2<a href="#turn-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Now that the enemy Pokémon with the best matchup score is on the field (assuming it survives Dachsbun's attack on the last turn), the enemy will now decide to have Excadrill use one of its moves. Assuming all of its moves are usable, we'll go through the target score calculations for each move:</p>
+<h3 id="turn-2" class="tsd-anchor-link">Turn 2<a href="#turn-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Now that the enemy Pokémon with the best matchup score is on the field (assuming it survives Dachsbun's attack on the last turn), the enemy will now decide to have Excadrill use one of its moves. Assuming all of its moves are usable, we'll go through the target score calculations for each move:</p>
 <ul>
 <li>
 <p><strong>Earthquake</strong>: In a single battle, this move is just a 100-power Ground-type physical attack with no additional effects. With no additional benefit score from attributes, the move's base target score against the player's Dachsbun is just the <code>attackScore</code> from <code>AttackMove.getTargetBenefitScore()</code>. In this case, Earthquake's <code>attackScore</code> is given by</p>
@@ -231,7 +244,8 @@ $$</p>
 <li>Swords Dance (<strong>6</strong>)</li>
 </ol>
 <p>Since no other score is at least half that of Iron Head's score, the enemy AI automatically chooses to use Iron Head against Dachsbun at this point.</p>
-<h2 id="guidelines-for-implementing-benefit-scores" class="tsd-anchor-link">Guidelines for Implementing Benefit Scores<a href="#guidelines-for-implementing-benefit-scores" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><p>When implementing a new move attribute, it's important to override <code>MoveAttr</code>'s <code>getUserBenefitScore</code> and <code>getTargetBenefitScore</code> functions to ensure that the enemy AI can accurately determine when and how to use moves with that attribute. Here are a few basic specifications you should adhere to when implementing benefit scores for a new attribute:</p>
+<h2 id="guidelines-for-implementing-benefit-scores" class="tsd-anchor-link">Guidelines for Implementing Benefit Scores<a href="#guidelines-for-implementing-benefit-scores" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>When implementing a new move attribute, it's important to override <code>MoveAttr</code>'s <code>getUserBenefitScore</code> and <code>getTargetBenefitScore</code> functions to ensure that the enemy AI can accurately determine when and how to use moves with that attribute. Here are a few basic specifications you should adhere to when implementing benefit scores for a new attribute:</p>
 <ul>
 <li>A move's <strong>user benefit score (UBS)</strong> incentivizes (or discourages) the move's usage in general. A positive UBS gives the move more incentive to be used, while a negative UBS gives the move less incentive.</li>
 <li>A move's <strong>target benefit score (TBS)</strong> incentivizes (or discourages) the move's usage on a specific target. A positive TBS indicates the move is better used on the user or its allies, while a negative TBS indicates the move is better used on enemies.</li>
