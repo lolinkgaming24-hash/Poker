@@ -2,6 +2,7 @@ import type { AbilityId } from "#enums/ability-id";
 import type { BiomeId } from "#enums/biome-id";
 import type { BiomePoolTier } from "#enums/biome-pool-tier";
 import type { Challenges } from "#enums/challenges";
+import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { Nature } from "#enums/nature";
 import type { SpeciesId } from "#enums/species-id";
 import type { Variant } from "#sprites/variant";
@@ -87,6 +88,11 @@ export interface DailyEventChallenge {
   value: number;
 }
 
+export interface DailyEventMysteryEncounter {
+  waveIndex: number;
+  type: MysteryEncounterType;
+}
+
 /**
  * Configuration for a custom daily run seed.
  * @privateRemarks
@@ -102,6 +108,7 @@ export interface CustomDailyRunConfig {
   forcedWaves?: DailyForcedWave[];
   trainerManipulations?: DailyTrainerManipulation[];
   challenges?: DailyEventChallenge[];
+  mysteryEncounters?: DailyEventMysteryEncounter[];
   /** The actual seed used for the daily run. */
   seed: string;
 }
@@ -115,5 +122,6 @@ export interface SerializedDailyRunConfig {
   forcedWaves?: DailyForcedWave[] | undefined;
   trainerManipulations?: DailyTrainerManipulation[] | undefined;
   challenges?: DailyEventChallenge[] | undefined;
+  mysteryEncounters?: DailyEventMysteryEncounter[] | undefined;
   seed: string;
 }
