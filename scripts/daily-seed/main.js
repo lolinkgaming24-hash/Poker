@@ -26,6 +26,7 @@ import {
   promptForcedWaves,
   promptLuck,
   promptMoney,
+  promptMysteryEncounters,
   promptSeed,
   promptTrainerManipulation,
 } from "./prompts/general.js";
@@ -43,6 +44,7 @@ const rootDir = join(import.meta.dirname, "..", "..");
  * @import {BossConfig} from "./prompts/boss.js"
  * @import {StarterConfig} from "./prompts/starter.js"
  * @import {ForcedWaveConfig, DailyTrainerManipulation, DailyEventChallenge} from "./prompts/general.js"
+ * @import {DailyEventMysteryEncounter} from "./prompts/general.js"
  */
 
 /**
@@ -59,6 +61,7 @@ const rootDir = join(import.meta.dirname, "..", "..");
  *   forcedWaves?: ForcedWaveConfig[],
  *   trainerManipulations?: DailyTrainerManipulation[],
  *   challenges?: DailyEventChallenge[],
+ *   mysteryEncounters?: DailyEventMysteryEncounter[],
  *   startingMoney?: number,
  *   seed: string
  * }}
@@ -155,6 +158,9 @@ async function handleAnswer(answer) {
       break;
     case "challenges":
       customSeedConfig.challenges = await promptChallenges();
+      break;
+    case "mystery encounters":
+      customSeedConfig.mysteryEncounters = await promptMysteryEncounters();
       break;
     case "starting money":
       customSeedConfig.startingMoney = await promptMoney();

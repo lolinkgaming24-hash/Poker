@@ -11,6 +11,7 @@ import chalk from "chalk";
 import customDailyRunSchema from "../../../src/data/daily-seed/schema.json" with { type: "json" };
 import { BIOMES } from "../../enums/biomes.js";
 import { CHALLENGES } from "../../enums/challenges.js";
+import { MYSTERY_ENCOUNTERS } from "../../enums/mystery-encounters.js";
 import { toTitleCase, toUpperSnakeCase } from "../../helpers/casing.js";
 import { BIOME_POOL_TIERS } from "../constants.js";
 import { promptSpeciesId } from "./pokemon.js";
@@ -39,6 +40,13 @@ import { promptSpeciesId } from "./pokemon.js";
  *   id: number,
  *   value: number,
  * }} DailyEventChallenge
+ */
+
+/**
+ * @typedef {{
+ *  waveIndex: number,
+ *  type: number,
+ * }} DailyEventMysteryEncounter
  */
 
 const ajv = new Ajv({
@@ -294,4 +302,52 @@ export async function promptChallenges() {
     return;
   }
   return challenges;
+}
+
+/**
+ * Prompt the user to enter a list of mystery encounters.
+ * @returns {Promise<DailyEventMysteryEncounter[] | undefined>} A Promise that resolves with the list of mystery encounters.
+ */
+export async function promptMysteryEncounters() {
+  /** @type {DailyEventMysteryEncounter[]} */
+  const mysteryEncounters = [];
+
+  async function addMysteryEncounter() {
+    const waveIndex = await number({
+      message: "Please enter the wave to force a mystery encounter.\nPressing ENTER will end the prompt early.",
+      min: 1,
+      max: 49,
+      validate: value => {
+        if (mysteryEncounters.some(wave => wave.waveIndex === value)) {
+          return chalk.red.bold("Wave already has a mystery encounter!");
+        }
+        return true;
+      },
+    });
+    if (!waveIndex) {
+      return;
+    }
+
+    const type = await search({
+      message: "Please select the mystery encounter to force.",
+      source: term => {
+        if (!term) {
+          return Object.keys(MYSTERY_ENCOUNTERS).map(toTitleCase);
+        }
+        return Object.keys(MYSTERY_ENCOUNTERS)
+          .map(toTitleCase)
+          .filter(id => id.toLowerCase().includes(term.toLowerCase()));
+      },
+    });
+
+    const typeId = MYSTERY_ENCOUNTERS[/** @type {keyof typeof MYSTERY_ENCOUNTERS} */ (toUpperSnakeCase(type))];
+    mysteryEncounters.push({ waveIndex, type: typeId });
+    await addMysteryEncounter();
+  }
+
+  await addMysteryEncounter();
+  if (mysteryEncounters.length === 0) {
+    return;
+  }
+  return mysteryEncounters;
 }
