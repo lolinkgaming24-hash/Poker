@@ -1,12 +1,14 @@
 import { globalScene } from "#app/global-scene";
 import { SHINY_CATCH_RATE_MULTIPLIER } from "#balance/rates";
 import { CLASSIC_CANDY_FRIENDSHIP_MULTIPLIER } from "#balance/starters";
+import { allSpecies } from "#data/data-lists";
 import type { PokemonSpeciesFilter } from "#data/pokemon-species";
 import type { MysteryEncounterTier } from "#enums/mystery-encounter-tier";
 import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
 import type { ModifierTypeKeys } from "#modifiers/modifier-type";
 import type { EventEncounter, EventMysteryEncounterTier, EventWeatherPools, TimedEvent } from "#types/events";
+import { randSeedItem } from "#utils/common";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import { timedEvents } from "./data/balance/timed-events";
 
@@ -205,11 +207,31 @@ export class TimedEventManager {
   }
 
   getEventSpriteReplacement(species: SpeciesId): string | null {
-    const eventSpriteReplacements = this.activeEvent()?.sprites ?? [];
+    const event = this.activeEvent();
+    if (!event) {
+      return null;
+    }
+    const sprites = event?.sprites;
+    if (!sprites) {
+      return null;
+    }
+    const eventSpriteReplacements = sprites.replacements;
+    const fillRandom = sprites.fillRandom ?? false;
     for (const esr of eventSpriteReplacements) {
       if (esr[0] === species.toString()) {
         return esr[1];
       }
+    }
+    if (fillRandom) {
+      let replacement: string;
+      globalScene.executeWithSeedOffset(
+        () => {
+          replacement = randSeedItem(allSpecies).speciesId.toString();
+        },
+        species,
+        event.name,
+      );
+      return replacement!;
     }
     return null;
   }
