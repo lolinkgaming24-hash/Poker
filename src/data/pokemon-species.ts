@@ -32,7 +32,7 @@ import type { LevelMoves } from "#types/pokemon-level-moves";
 import type { StarterMoveset } from "#types/save-data";
 import type { EvolutionLevel, EvolutionLevelWithThreshold } from "#types/species-gen-types";
 import { randSeedFloat, randSeedGauss } from "#utils/common";
-import { getPokemonSpecies } from "#utils/pokemon-utils";
+import { getPokemonSpecies, getPokemonSpeciesForm } from "#utils/pokemon-utils";
 import { toCamelCase, toPascalCase } from "#utils/strings";
 import { argbFromRgba, QuantizerCelebi, rgbaFromArgb } from "@material/material-color-utilities";
 import i18next from "i18next";
@@ -339,10 +339,17 @@ export abstract class PokemonSpeciesForm {
       && female
       && ![SpeciesFormKey.MEGA, SpeciesFormKey.GIGANTAMAX].includes(formSpriteKey as SpeciesFormKey);
 
-    const spriteKey = `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
-    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId);
+    let spriteKey = `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
 
-    return replacement ? replacement : spriteKey;
+    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId);
+    if (replacement) {
+      const replacementFormSpriteKey = getPokemonSpecies(replacement.speciesId).forms[
+        replacement.formIndex
+      ]?.getFormSpriteKey(replacement.formIndex);
+      spriteKey = `${replacement.speciesId}${replacementFormSpriteKey ? `-${replacementFormSpriteKey}` : ""}`;
+    }
+
+    return spriteKey;
   }
 
   /** Compute the sprite ID of the pokemon form. */
@@ -367,7 +374,7 @@ export abstract class PokemonSpeciesForm {
    * @param formIndex optional form index for pokemon with different forms
    * @returns species id if no additional forms, index with formkey if a pokemon with a form
    */
-  getVariantDataIndex(formIndex?: number) {
+  getVariantDataIndex(formIndex?: number): string | number {
     let formkey: string | null = null;
     let variantDataIndex: number | string = this.speciesId;
     const species = getPokemonSpecies(this.speciesId);
@@ -379,8 +386,16 @@ export abstract class PokemonSpeciesForm {
     }
 
     const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId);
+    if (replacement) {
+      formkey = species.forms[replacement.formIndex]?.getFormSpriteKey(replacement.formIndex);
+      if (formkey) {
+        variantDataIndex = `${replacement.speciesId}-${formkey}`;
+      } else {
+        variantDataIndex = replacement.speciesId;
+      }
+    }
 
-    return replacement ? replacement : variantDataIndex;
+    return variantDataIndex;
   }
 
   getIconAtlasKey(formIndex?: number, shiny?: boolean, variant?: number): string {
@@ -388,8 +403,10 @@ export abstract class PokemonSpeciesForm {
     const isVariant =
       shiny && variantData[variantDataIndex] && variant !== undefined && variantData[variantDataIndex][variant];
 
-    const replacementSpecies = Number(timedEventManager.getEventSpriteReplacement(this.speciesId)) as SpeciesId;
-    const generation = replacementSpecies ? getPokemonSpecies(replacementSpecies).generation : this.generation;
+    const replacementSpecies = timedEventManager.getEventSpriteReplacement(this.speciesId);
+    const generation = replacementSpecies
+      ? getPokemonSpeciesForm(replacementSpecies.speciesId, replacementSpecies.formIndex).generation
+      : this.generation;
     return `pokemon_icons_${generation}${isVariant ? "v" : ""}`;
   }
 
@@ -404,8 +421,7 @@ export abstract class PokemonSpeciesForm {
     let ret = this.speciesId.toString();
 
     if (replacement) {
-      formIndex = 0;
-      ret = replacement;
+      ret = replacement.speciesId.toString();
     }
 
     const isVariant =
@@ -433,6 +449,11 @@ export abstract class PokemonSpeciesForm {
     }
 
     let formSpriteKey = this.getFormSpriteKey(formIndex);
+    if (replacement) {
+      formSpriteKey = getPokemonSpeciesForm(replacement.speciesId, replacement.formIndex).getFormSpriteKey(
+        replacement.formIndex,
+      );
+    }
     if (formSpriteKey) {
       switch (this.speciesId) {
         case SpeciesId.DUDUNSPARCE:
