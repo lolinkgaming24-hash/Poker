@@ -1,6 +1,7 @@
 import { determineEnemySpecies } from "#app/ai/ai-species-gen";
 import type { AnySound } from "#app/battle-scene";
 import type { GameMode } from "#app/game-mode";
+import { timedEventManager } from "#app/global-event-manager";
 import { globalScene } from "#app/global-scene";
 import { speciesEggMoves } from "#balance/egg-moves";
 import { starterPassiveAbilities } from "#balance/passives";
@@ -338,7 +339,10 @@ export abstract class PokemonSpeciesForm {
       && female
       && ![SpeciesFormKey.MEGA, SpeciesFormKey.GIGANTAMAX].includes(formSpriteKey as SpeciesFormKey);
 
-    return `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
+    const spriteKey = `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
+    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId);
+
+    return replacement ? replacement : spriteKey;
   }
 
   /** Compute the sprite ID of the pokemon form. */
@@ -373,14 +377,20 @@ export abstract class PokemonSpeciesForm {
         variantDataIndex = `${this.speciesId}-${formkey}`;
       }
     }
-    return variantDataIndex;
+
+    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId);
+
+    return replacement ? replacement : variantDataIndex;
   }
 
   getIconAtlasKey(formIndex?: number, shiny?: boolean, variant?: number): string {
     const variantDataIndex = this.getVariantDataIndex(formIndex);
     const isVariant =
       shiny && variantData[variantDataIndex] && variant !== undefined && variantData[variantDataIndex][variant];
-    return `pokemon_icons_${this.generation}${isVariant ? "v" : ""}`;
+
+    const replacementSpecies = Number(timedEventManager.getEventSpriteReplacement(this.speciesId)) as SpeciesId;
+    const generation = replacementSpecies ? getPokemonSpecies(replacementSpecies).generation : this.generation;
+    return `pokemon_icons_${generation}${isVariant ? "v" : ""}`;
   }
 
   getIconId(female: boolean, formIndex?: number, shiny?: boolean, variant?: number): string {
@@ -389,8 +399,14 @@ export abstract class PokemonSpeciesForm {
     }
 
     const variantDataIndex = this.getVariantDataIndex(formIndex);
+    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId);
 
     let ret = this.speciesId.toString();
+
+    if (replacement) {
+      formIndex = 0;
+      ret = replacement;
+    }
 
     const isVariant =
       shiny && variantData[variantDataIndex] && variant !== undefined && variantData[variantDataIndex][variant];

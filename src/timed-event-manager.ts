@@ -204,6 +204,16 @@ export class TimedEventManager {
     return bgm;
   }
 
+  getEventSpriteReplacement(species: SpeciesId): string | null {
+    const eventSpriteReplacements = this.activeEvent()?.sprites ?? [];
+    for (const esr of eventSpriteReplacements) {
+      if (esr[0] === species.toString()) {
+        return esr[1];
+      }
+    }
+    return null;
+  }
+
   /**
    * Activate any challenges on {@linkcode globalScene.gameMode} for the currently active event
    */

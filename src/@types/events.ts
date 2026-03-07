@@ -38,6 +38,7 @@ export interface EventWaveReward {
 }
 
 export type EventMusicReplacement = readonly [string, string];
+export type EventSpriteReplacement = readonly [string, string];
 
 export interface EventChallenge {
   readonly challenge: Challenges;
@@ -67,6 +68,7 @@ export interface TimedEvent extends EventBanner {
   readonly classicWaveRewards?: readonly EventWaveReward[]; // Rival battle rewards
   readonly trainerShinyChance?: number; // Odds over 65536 of trainer mon generating as shiny
   readonly music?: readonly EventMusicReplacement[];
+  readonly sprites?: readonly EventSpriteReplacement[];
   readonly dailyRunChallenges?: readonly EventChallenge[];
   readonly dailyRunStartingItems?: readonly ModifierTypeKeys[];
 }
