@@ -8,7 +8,7 @@ import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
 import type { ModifierTypeKeys } from "#modifiers/modifier-type";
 import type { EventEncounter, EventMysteryEncounterTier, EventWeatherPools, TimedEvent } from "#types/events";
-import { randSeedIntRange, randSeedItem } from "#utils/common";
+import { randSeedShuffle } from "#utils/common";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import { timedEvents } from "./data/balance/timed-events";
 
@@ -18,6 +18,7 @@ export class TimedEventManager {
    * Used to disable events in testing.
    */
   private disabled: boolean;
+  private cachedReplacementMap: Map<number, { speciesId: SpeciesId; formIndex: number }> | null = null;
 
   isActive(event: TimedEvent) {
     if (this.disabled) {
@@ -206,7 +207,7 @@ export class TimedEventManager {
     return bgm;
   }
 
-  getEventSpriteReplacement(
+  public getEventSpriteReplacement(
     species: SpeciesId,
     formIndex = 0,
   ): {
@@ -233,21 +234,41 @@ export class TimedEventManager {
     }
 
     if (fillRandom) {
-      let replacementId: SpeciesId;
-      let replacementFormIndex: number;
-      globalScene.executeWithSeedOffset(
-        () => {
-          replacementId = randSeedItem(allSpecies).speciesId;
-          const forms = getPokemonSpecies(replacementId).forms;
-          replacementFormIndex = forms.length > 1 ? randSeedIntRange(0, forms.length - 1) : 0;
-        },
-        // multiply by 10000 to avoid collisions
-        species * 10000 + formIndex,
-        event.name,
-      );
-      return { speciesId: replacementId!, formIndex: replacementFormIndex! };
+      // Multiply by 100000 to avoid collisions
+      const key = species * 100_000 + formIndex;
+      if (!this.cachedReplacementMap) {
+        this.fillRandomSpriteReplacements();
+      }
+      return this.cachedReplacementMap!.get(key) ?? null;
     }
     return null;
+  }
+
+  /**
+   * Assign each species/form pair a random other species/form pair for sprite replacement.
+   */
+  private fillRandomSpriteReplacements() {
+    if (!this.cachedReplacementMap) {
+      this.cachedReplacementMap = new Map();
+      const allPairs: { speciesId: SpeciesId; formIndex: number }[] = [];
+      for (const species of allSpecies) {
+        const formCount = species.forms.length || 1;
+        for (let f = 0; f < formCount; f++) {
+          allPairs.push({ speciesId: species.speciesId, formIndex: f });
+        }
+      }
+      globalScene.executeWithSeedOffset(
+        () => {
+          const shuffled = randSeedShuffle([...allPairs]);
+          for (let i = 0; i < allPairs.length; i++) {
+            const sourceKey = allPairs[i].speciesId * 100_000 + allPairs[i].formIndex;
+            this.cachedReplacementMap!.set(sourceKey, shuffled[i]);
+          }
+        },
+        0,
+        this.activeEvent()!.name,
+      );
+    }
   }
 
   /**
