@@ -241,7 +241,8 @@ export class TimedEventManager {
           const forms = getPokemonSpecies(replacementId).forms;
           replacementFormIndex = forms.length > 1 ? randSeedIntRange(0, forms.length - 1) : 0;
         },
-        species,
+        // multiply by 10000 to avoid collisions
+        species * 10000 + formIndex,
         event.name,
       );
       return { speciesId: replacementId!, formIndex: replacementFormIndex! };
