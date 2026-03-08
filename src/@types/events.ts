@@ -41,7 +41,15 @@ export type EventMusicReplacement = readonly [string, string];
 export type EventSpriteReplacement = readonly [string, string];
 
 export interface EventSpriteOptions {
+  /**
+   * An Array of tuples [source, target] for replacing pokemon sprites during events.
+   * Format for both source and target is "speciesId[/formIndex]", where formIndex is optional and defaults to 0 if not provided.
+   */
   readonly replacements: readonly EventSpriteReplacement[];
+  /**
+   * If true, any species not explicitly listed in the replacements array will be replaced with a random species.
+   * @defaultValue false
+   */
   readonly fillRandom?: boolean;
 }
 

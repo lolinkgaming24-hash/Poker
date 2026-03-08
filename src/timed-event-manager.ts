@@ -206,7 +206,10 @@ export class TimedEventManager {
     return bgm;
   }
 
-  getEventSpriteReplacement(species: SpeciesId): {
+  getEventSpriteReplacement(
+    species: SpeciesId,
+    formIndex = 0,
+  ): {
     speciesId: SpeciesId;
     formIndex: number;
   } | null {
@@ -220,13 +223,15 @@ export class TimedEventManager {
     }
     const eventSpriteReplacements = sprites.replacements;
     const fillRandom = sprites.fillRandom ?? false;
+
     for (const esr of eventSpriteReplacements) {
-      const sourceSpeciesIdStr = esr[0].split("/")[0];
-      if (sourceSpeciesIdStr === species.toString()) {
+      const [sourceSpeciesIdStr, sourceFormIndexStr] = esr[0].split("/");
+      if (sourceSpeciesIdStr === species.toString() && (sourceFormIndexStr ?? "0") === formIndex.toString()) {
         const [targetSpeciesIdStr, targetFormIndexStr] = esr[1].split("/");
         return { speciesId: Number(targetSpeciesIdStr) as SpeciesId, formIndex: Number(targetFormIndexStr ?? "0") };
       }
     }
+
     if (fillRandom) {
       let replacementId: SpeciesId;
       globalScene.executeWithSeedOffset(
