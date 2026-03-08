@@ -8,7 +8,7 @@ import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
 import type { ModifierTypeKeys } from "#modifiers/modifier-type";
 import type { EventEncounter, EventMysteryEncounterTier, EventWeatherPools, TimedEvent } from "#types/events";
-import { randSeedItem } from "#utils/common";
+import { randSeedIntRange, randSeedItem } from "#utils/common";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import { timedEvents } from "./data/balance/timed-events";
 
@@ -234,14 +234,17 @@ export class TimedEventManager {
 
     if (fillRandom) {
       let replacementId: SpeciesId;
+      let replacementFormIndex: number;
       globalScene.executeWithSeedOffset(
         () => {
           replacementId = randSeedItem(allSpecies).speciesId;
+          const forms = getPokemonSpecies(replacementId).forms;
+          replacementFormIndex = forms.length > 1 ? randSeedIntRange(0, forms.length - 1) : 0;
         },
         species,
         event.name,
       );
-      return { speciesId: replacementId!, formIndex: 0 };
+      return { speciesId: replacementId!, formIndex: replacementFormIndex! };
     }
     return null;
   }
