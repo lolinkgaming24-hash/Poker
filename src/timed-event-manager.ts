@@ -1,13 +1,16 @@
 import { SHINY_CATCH_RATE_MULTIPLIER } from "#balance/rates";
 import { CLASSIC_CANDY_FRIENDSHIP_MULTIPLIER } from "#balance/starters";
+import { allSpecies } from "#data/data-lists";
 import type { PokemonSpeciesFilter } from "#data/pokemon-species";
 import type { MysteryEncounterTier } from "#enums/mystery-encounter-tier";
 import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
 import type { ModifierTypeKeys } from "#modifiers/modifier-type";
 import type { EventEncounter, EventMysteryEncounterTier, EventWeatherPools, TimedEvent } from "#types/events";
+import { randSeedShuffle } from "#utils/common";
 import { getPokemonSpecies } from "#utils/pokemon-utils";
 import { timedEvents } from "./data/balance/timed-events";
+import { globalScene } from "./global-scene";
 
 export class TimedEventManager {
   /**
@@ -15,6 +18,7 @@ export class TimedEventManager {
    * Used to disable events in testing.
    */
   private disabled: boolean;
+  private cachedReplacementMap: Map<number, { speciesId: SpeciesId; formIndex: number }> | null = null;
 
   isActive(event: TimedEvent) {
     if (this.disabled) {
@@ -201,6 +205,70 @@ export class TimedEventManager {
       }
     }
     return bgm;
+  }
+
+  public getEventSpriteReplacement(
+    species: SpeciesId,
+    formIndex = 0,
+  ): {
+    speciesId: SpeciesId;
+    formIndex: number;
+  } | null {
+    const event = this.activeEvent();
+    if (!event) {
+      return null;
+    }
+    const sprites = event?.sprites;
+    if (!sprites) {
+      return null;
+    }
+    const eventSpriteReplacements = sprites.replacements;
+    const fillRandom = sprites.fillRandom ?? false;
+
+    for (const esr of eventSpriteReplacements) {
+      const [sourceSpeciesIdStr, sourceFormIndexStr] = esr[0].split("/");
+      if (sourceSpeciesIdStr === species.toString() && (sourceFormIndexStr ?? "0") === formIndex.toString()) {
+        const [targetSpeciesIdStr, targetFormIndexStr] = esr[1].split("/");
+        return { speciesId: Number(targetSpeciesIdStr) as SpeciesId, formIndex: Number(targetFormIndexStr ?? "0") };
+      }
+    }
+
+    if (fillRandom) {
+      // Multiply by 100000 to avoid collisions
+      const key = species * 100_000 + formIndex;
+      if (!this.cachedReplacementMap) {
+        this.fillRandomSpriteReplacements();
+      }
+      return this.cachedReplacementMap!.get(key) ?? null;
+    }
+    return null;
+  }
+
+  /**
+   * Assign each species/form pair a random other species/form pair for sprite replacement.
+   */
+  private fillRandomSpriteReplacements() {
+    if (!this.cachedReplacementMap) {
+      this.cachedReplacementMap = new Map();
+      const allPairs: { speciesId: SpeciesId; formIndex: number }[] = [];
+      for (const species of allSpecies) {
+        const formCount = species.forms.length || 1;
+        for (let f = 0; f < formCount; f++) {
+          allPairs.push({ speciesId: species.speciesId, formIndex: f });
+        }
+      }
+      globalScene.executeWithSeedOffset(
+        () => {
+          const shuffled = randSeedShuffle([...allPairs]);
+          for (let i = 0; i < allPairs.length; i++) {
+            const sourceKey = allPairs[i].speciesId * 100_000 + allPairs[i].formIndex;
+            this.cachedReplacementMap!.set(sourceKey, shuffled[i]);
+          }
+        },
+        0,
+        this.activeEvent()!.name,
+      );
+    }
   }
 
   getEventDailyStartingItems(): readonly ModifierTypeKeys[] {
