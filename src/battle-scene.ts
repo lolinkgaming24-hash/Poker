@@ -39,6 +39,7 @@ import { getTypeRgb } from "#data/type";
 import { BattleSpec } from "#enums/battle-spec";
 import { BattleStyle } from "#enums/battle-style";
 import { BattleType } from "#enums/battle-type";
+import type { BattlerIndex } from "#enums/battler-index";
 import { BattlerTagType } from "#enums/battler-tag-type";
 import { BiomeId } from "#enums/biome-id";
 import { EaseType } from "#enums/ease-type";
@@ -807,6 +808,23 @@ export class BattleScene extends SceneBase {
   }
 
   /**
+   * Return the on-field Pokemon with the given battler index, if present.
+   * @param battlerIndex - The {@linkcode BattlerIndex} to search for
+   * @returns The {@linkcode Pokemon} with the given battler index,
+   * or `undefined` if no such Pokemon exists.
+   * @remarks
+   * This function is allowed to return inactive (i.e. fainted) Pokemon.
+   */
+  // TODO: Replace prior indexing into `getField` with this abstraction to make an overhaul of this system easier
+  public getPokemonByBattlerIndex(battlerIndex: BattlerIndex.ENEMY | BattlerIndex.ENEMY_2): EnemyPokemon | undefined;
+  public getPokemonByBattlerIndex(battlerIndex: BattlerIndex.PLAYER | BattlerIndex.PLAYER_2): PlayerPokemon | undefined;
+  public getPokemonByBattlerIndex(battlerIndex: BattlerIndex): Pokemon | undefined;
+  public getPokemonByBattlerIndex(battlerIndex: BattlerIndex): Pokemon | undefined {
+    // TODO: `?? undefined` is dumb and a byproduct of us splicing `null`s into `getFIeld`
+    return this.getField()[battlerIndex] ?? undefined;
+  }
+
+  /**
    * Attempt to redirect a move in double battles from a fainted/removed Pokemon to its ally.
    * @param removedPokemon - The {@linkcode Pokemon} having been removed from the field.
    * @param allyPokemon - The {@linkcode Pokemon} allied with the removed Pokemon; will have moves redirected to it
@@ -1136,11 +1154,7 @@ export class BattleScene extends SceneBase {
 
     this.lockModifierTiers = false;
 
-    this.pokeballCounts = Object.fromEntries(
-      getEnumValues(PokeballType)
-        .filter(p => p <= PokeballType.MASTER_BALL)
-        .map(t => [t, 0]),
-    );
+    this.pokeballCounts = Object.fromEntries(getEnumValues(PokeballType).map(t => [t, 0]));
     this.pokeballCounts[PokeballType.POKEBALL] += 5;
     if (Overrides.POKEBALL_OVERRIDE.active) {
       this.pokeballCounts = Overrides.POKEBALL_OVERRIDE.pokeballs;

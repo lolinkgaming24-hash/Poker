@@ -70,4 +70,5 @@ export class NumberHolder<T = number> extends ValueHolder<T, number> {}
  * @deprecated
  * New code should prefer using `ValueHolder` instead - this is kept for compatibility
  */
+// TODO: Subtyping `boolean` is a bit weird since it only has 2 possible values; consider if we need the generic at all
 export class BooleanHolder<T = boolean> extends ValueHolder<T, boolean> {}
