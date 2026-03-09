@@ -8,7 +8,8 @@ import { SpeciesId } from "#enums/species-id";
  * moves are added.
  *
  * @privateRemarks
- * If multiple moves are in the map, those that the species can learn will be selected with equal probability.
+ * - If multiple moves are in the map, those that the species can learn will be selected with equal probability.
+ * - The same move *can* be listed multiple times without breaking; it will merely increase the chances.
  */
 export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]>> = {
   // These moves are vitally important due to form interactions so they're listed separately
@@ -64,7 +65,6 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
   [SpeciesId.SKELEDIRGE]: MoveId.TORCH_SONG,
   [SpeciesId.QUAQUAVAL]: MoveId.AQUA_STEP,
 
-  // Note: Putting the same move multiple times means it is more likely to be randomly selected
   [SpeciesId.KOMMO_O]: [MoveId.CLANGING_SCALES, MoveId.CLANGOROUS_SOUL, MoveId.CLANGOROUS_SOUL],
 
   [SpeciesId.FLAPPLE]: MoveId.GRAV_APPLE,
