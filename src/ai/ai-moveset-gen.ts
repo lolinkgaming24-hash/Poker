@@ -51,6 +51,7 @@ import { StatusEffect } from "#enums/status-effect";
 import { WeatherType } from "#enums/weather-type";
 import type { EnemyPokemon, Pokemon } from "#field/pokemon";
 import { targetSleptOrComatoseCondition, userSleptOrComatoseCondition } from "#moves/move-condition";
+import { isWeatherInstantCharge } from "#moves/move-utils";
 import { PokemonMove } from "#moves/pokemon-move";
 import type { Move, StatStageChangeAttr } from "#types/move-types";
 import { NumberHolder, randSeedInt, randSeedItem } from "#utils/common";
@@ -797,7 +798,7 @@ function shouldRemoveSunnyDay(pokemon: Pokemon): boolean {
       move.hasAttr("WeatherBallTypeAttr")
       || move.id === MoveId.HYDRO_STEAM
       || (move.category === MoveCategory.SPECIAL && hasSolarPower)
-      || move.findAttr(attr => attr.is("WeatherInstantChargeAttr") && attr.weatherTypes.includes(WeatherType.SUNNY))
+      || isWeatherInstantCharge(move, WeatherType.SUNNY)
     ) {
       return false;
     }
@@ -830,14 +831,7 @@ function removeSnowscapeHail(pokemon: Pokemon, willTera: boolean): boolean {
   }
   for (const pokemonMove of pokemon.moveset) {
     const move = pokemonMove.getMove();
-    if (
-      move.id === MoveId.AURORA_VEIL
-      || move.findAttr(
-        attr =>
-          attr.is("WeatherInstantChargeAttr")
-          && (attr.weatherTypes.includes(WeatherType.HAIL) || attr.weatherTypes.includes(WeatherType.SNOW)),
-      )
-    ) {
+    if (move.id === MoveId.AURORA_VEIL || isWeatherInstantCharge(move, WeatherType.SNOW)) {
       return false;
     }
   }
@@ -869,9 +863,7 @@ function shouldRemoveSandstorm(pokemon: Pokemon, willTera: boolean): boolean {
   }
   for (const pokemonMove of pokemon.moveset) {
     const move = pokemonMove.getMove();
-    if (
-      move.findAttr(attr => attr.is("WeatherInstantChargeAttr") && attr.weatherTypes.includes(WeatherType.SANDSTORM))
-    ) {
+    if (isWeatherInstantCharge(move, WeatherType.SANDSTORM)) {
       return false;
     }
   }

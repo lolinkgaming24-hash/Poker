@@ -5,6 +5,7 @@ import { MoveCategory, type MoveDamageCategory } from "#enums/move-category";
 import type { MoveId } from "#enums/move-id";
 import { MoveTarget } from "#enums/move-target";
 import { PokemonType } from "#enums/pokemon-type";
+import type { WeatherType } from "#enums/weather-type";
 import type { Pokemon } from "#field/pokemon";
 import { applyMoveAttrs } from "#moves/apply-attrs";
 import type { Move, UserMoveConditionFunc } from "#moves/move";
@@ -175,4 +176,13 @@ export function mayTargetOpponent(move: Move): boolean {
       return true;
   }
   return false;
+}
+
+/**
+ * @returns Whether the move is instantly charged by the given weather
+ * @param move - The move to check
+ * @param weather - The weather to check
+ */
+export function isWeatherInstantCharge(move: Move, weather: WeatherType): boolean {
+  return !!move.findAttr(attr => attr.is("WeatherInstantChargeAttr") && attr.weatherTypes.includes(weather));
 }

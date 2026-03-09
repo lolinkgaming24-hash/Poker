@@ -1234,7 +1234,10 @@ export abstract class Move implements Localizable {
     const params2 = {
       pokemon,
       // Setting `opponent` as this pokemon is safe;
-      // the ability attributes that make use of `opponent` check the `
+      // Any ability attributes that make use of `opponent` in a way that
+      // makes the move's power vary based on opponent
+      // have `skipDuringMovesetGen` set to true
+      // (e.g. moves that rely on opponent weight)
       opponent: pokemon,
       move: this,
       power: powerMult,

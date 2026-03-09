@@ -5795,9 +5795,12 @@ class ForceSwitchOutHelper {
 }
 
 /**
- * Parameters for ability attributes that modify move stats during AI move generation.
+ * Parameters for ability attributes that modify move stats during AI move
+ * generation.
  *
- * Ability attributes should modify the parameters here to indicate
+ * @remarks
+ * Ability attributes should modify the parameters here to indicate that
+ * they modify the move's power or accuracy unconditionally
  *
  * @see {@linkcode AiMovegenMoveStatsAbAttr}
  */
@@ -5823,7 +5826,7 @@ export interface AiMovegenMoveStatsAbAttrParams extends AbAttrBaseParams {
  * Ability attribute for modifying move stats during AI move generation.
  * Modifies the power and accuracy multiplier of the move, agnostic of the move's target.
  *
- * ⚠️ Should not be added to moves that already have any `VariableMovePowerAbAttr`
+ * ⚠️ Should not be added for abilities that already have any `VariableMovePowerAbAttr`
  *
  * @remarks
  * Meant to be used for things like Drizzle (which gives water moves a 1.5x power boost)
