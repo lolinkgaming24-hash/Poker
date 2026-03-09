@@ -73,7 +73,7 @@ export type DailyForcedWave =
     };
 
 /**
- * Configuration fto manipulate on what waves a trainer spawns for a custom seed.
+ * Configuration to manipulate on what waves a trainer spawns for a custom seed.
  * @privateRemarks
  * When updating this interface, also update:
  * - `src/data/daily-seed/schema.json`
