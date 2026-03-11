@@ -38,7 +38,11 @@ export type TrappingBattlerTagType =
 /**
  * Subset of {@linkcode BattlerTagType}s that are related to protection effects.
  */
-export type ProtectionBattlerTagType = BattlerTagType.PROTECTED | BattlerTagType.SPIKY_SHIELD | DamageProtectedTagType;
+export type ProtectionBattlerTagType =
+  | BattlerTagType.PROTECTED
+  | BattlerTagType.SPIKY_SHIELD
+  | BattlerTagType.BANEFUL_BUNKER
+  | DamageProtectedTagType;
 /**
  * Subset of {@linkcode BattlerTagType}s related to protection effects that block damage but not status moves.
  */
@@ -47,7 +51,7 @@ export type DamageProtectedTagType = ContactSetStatusProtectedTagType | ContactS
 /**
  * Subset of {@linkcode BattlerTagType}s related to protection effects that set a status effect on the attacker.
  */
-export type ContactSetStatusProtectedTagType = BattlerTagType.BANEFUL_BUNKER | BattlerTagType.BURNING_BULWARK;
+export type ContactSetStatusProtectedTagType = BattlerTagType.BURNING_BULWARK;
 
 /**
  * Subset of {@linkcode BattlerTagType}s related to protection effects that change stat stages of the attacker.

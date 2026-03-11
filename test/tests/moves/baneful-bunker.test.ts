@@ -22,7 +22,7 @@ describe("Moves - Baneful Bunker", () => {
 
     game.override
       .battleStyle("single")
-      .moveset([MoveId.SLASH, MoveId.FLASH_CANNON])
+      .moveset([MoveId.SLASH, MoveId.FLASH_CANNON, MoveId.SPORE])
       .enemySpecies(SpeciesId.TOXAPEX)
       .enemyAbility(AbilityId.INSOMNIA)
       .enemyMoveset(MoveId.BANEFUL_BUNKER)
@@ -68,5 +68,19 @@ describe("Moves - Baneful Bunker", () => {
 
     expect(toxapex.hp).toBe(toxapex.getMaxHp());
     expect(charizard.status?.effect).toBeUndefined();
+  });
+
+  it("should protect the user from status moves without poisoning attackers", async () => {
+    await game.classicMode.startBattle(SpeciesId.CHARIZARD);
+
+    const charizard = game.field.getPlayerPokemon();
+    const toxapex = game.field.getEnemyPokemon();
+
+    game.move.use(MoveId.SPORE);
+
+    await game.toEndOfTurn();
+
+    expect(toxapex).toHaveStatusEffect(StatusEffect.NONE);
+    expect(charizard).toHaveStatusEffect(StatusEffect.NONE);
   });
 });
