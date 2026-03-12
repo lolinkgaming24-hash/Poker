@@ -10,9 +10,8 @@ import { playTween } from "#utils/anim-utils";
 import i18next from "i18next";
 
 /**
- * - Handles all VFX and SFX related to recalling a {@linkcode Pokemon} for player Pokemon at all times,
- * and for enemy Pokemon in trainer battles.
- * - {@linkcode Pokemon.leaveField | Removes the Pokemon from the field}.
+ * Phase handling recalling Player and Enemy {@linkcode Pokemon} from the field,
+ * handling all visual and functional effects related to said process.
  */
 export class RecallPhase extends PokemonPhase {
   public override readonly phaseName = "RecallPhase";
@@ -26,8 +25,6 @@ export class RecallPhase extends PokemonPhase {
     this.switchType = switchType;
   }
 
-  // #region Public methods
-
   public override async start(): Promise<void> {
     const pokemon = this.getPokemonAtFieldIndex();
     if (!pokemon?.isOnField()) {
@@ -40,11 +37,8 @@ export class RecallPhase extends PokemonPhase {
     this.end();
   }
 
-  // #endregion
-  // #region Private methods
-
   /**
-   * Recall thos Phase's target {@linkcode Pokemon}.
+   * Recall this Phase's target {@linkcode Pokemon}.
    * This plays a return animation and message, then removes the Pokemon
    * and related assets from the field container.
    * @returns A Promise that resolves once the animations have completed.
@@ -116,6 +110,4 @@ export class RecallPhase extends PokemonPhase {
 
     substitute.sprite.destroy();
   }
-
-  // #endregion
 }
