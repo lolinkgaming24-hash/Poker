@@ -179,11 +179,11 @@ export class MovePhase extends PokemonPhase {
       globalScene.arena.setIgnoreAbilities(true, user.getBattlerIndex());
     }
 
-    // At this point, move's type changing and multi-target effects *should* be applied
+    // TODO: Apply move-type changing effects here for mainline consistency.
     // Pokerogue's current implementation applies these effects during the move effect phase
     // as there is not (yet) a notion of a move-in-flight for determinations to occur
 
-    // Re-evaluate variable-target moves in case terrain/field changed mid-turn.
+    // Re-evaluate variable-target moves
     this.resolveChangeMoveTarget();
 
     this.resolveRedirectTarget();
@@ -546,7 +546,7 @@ export class MovePhase extends PokemonPhase {
     }
   }
 
-  // recompute targets when VariableTargetAttr may change mid-turn
+  /** Recompute the targets for variable-target moves. */
   protected resolveChangeMoveTarget(): void {
     const user = this.pokemon;
     const moveObj = this.move.getMove();
