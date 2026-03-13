@@ -971,7 +971,9 @@ export class GameData {
     globalScene.updateScoreText();
 
     globalScene.mysteryEncounterSaveData = new MysteryEncounterSaveData(fromSession.mysteryEncounterSaveData);
-
+    if (globalScene.lowMemoryMode) {
+      await globalScene.loadBiomeAssetsIfNeeded(fromSession.arena.biome);
+    }
     globalScene.newArena(fromSession.arena.biome, fromSession.playerFaints);
 
     const battle = globalScene.newBattle(fromSession);
