@@ -1671,6 +1671,7 @@ export class BattleScene extends SceneBase {
       this.load.start();
     });
   }
+
   public evictBiomeAssets(biome: BiomeId): void {
     const btKey = getBiomeKey(biome);
 
