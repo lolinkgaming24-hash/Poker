@@ -416,6 +416,7 @@ export const Setting: Setting[] = [
     options: OFF_ON,
     default: 0,
     type: SettingType.GENERAL,
+    requireReload: true,
   },
   {
     key: SettingKeys.Language,
