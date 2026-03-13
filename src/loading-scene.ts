@@ -570,7 +570,7 @@ export class LoadingScene extends SceneBase {
     Object.values(BiomeId).forEach(bt => {
       // In low memory mode, skip all biomes except TOWN (the starting biome).
       // Other biomes will be loaded on demand when the arena transitions.
-      if ((lowMemory && bt !== BiomeId.TOWN) || bt !== startingBiome) {
+      if ((lowMemory && bt !== BiomeId.TOWN) || (lowMemory && bt !== startingBiome)) {
         return;
       }
       const btKey = enumValueToKey(BiomeId, bt).toLowerCase();
