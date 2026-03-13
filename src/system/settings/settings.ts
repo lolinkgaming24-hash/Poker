@@ -414,7 +414,7 @@ export const Setting: Setting[] = [
     key: SettingKeys.LOW_MEMORY_MODE,
     label: i18next.t("settings:lowMemoryMode"),
     options: OFF_ON,
-    default: 0,
+    default: 1,
     type: SettingType.GENERAL,
     requireReload: true,
   },

@@ -566,7 +566,7 @@ export class LoadingScene extends SceneBase {
     console.debug(`Destroyed ${LoadingScene.KEY} scene`);
   }
 
-  private loadBiomeImages(lowMemory = false, startingBiome = BiomeId.TOWN): this {
+  private loadBiomeImages(lowMemory = false, startingBiome: BiomeId = BiomeId.TOWN): this {
     Object.values(BiomeId).forEach(bt => {
       // In low memory mode, skip all biomes except TOWN (the starting biome).
       // Other biomes will be loaded on demand when the arena transitions.
