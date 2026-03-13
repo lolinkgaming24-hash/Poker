@@ -9,7 +9,6 @@ import { getCharVariantFromDialogue } from "#data/dialogue";
 import { getNatureName } from "#data/nature";
 import { BattleSpec } from "#enums/battle-spec";
 import { BattleType } from "#enums/battle-type";
-import { BattlerIndex } from "#enums/battler-index";
 import { BiomeId } from "#enums/biome-id";
 import { FieldPosition } from "#enums/field-position";
 import { ModifierPoolType } from "#enums/modifier-pool-type";
@@ -548,13 +547,7 @@ export class EncounterPhase extends BattlePhase {
       checkSwitch: battleType !== BattleType.TRAINER && (waveIndex > 1 || !gameMode.isDaily),
     });
 
-    enemyField.forEach((enemyPokemon, e) => {
-      // TODO: This might result in multiple shiny sparkles being emitted for trainer fights
-      // (since `SummonPhase` also unshifts them as well)
-      if (enemyPokemon.isShiny(true)) {
-        globalScene.phaseManager.unshiftNew("ShinySparklePhase", BattlerIndex.ENEMY + e);
-      }
-
+    enemyField.forEach(enemyPokemon => {
       // TODO: Move this anywhere but here
       /** This sets Eternatus' held item to be untransferrable, preventing it from being stolen */
       if (

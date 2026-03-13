@@ -369,7 +369,7 @@ export class SummonPhase extends PokemonPhase {
     // its `switchOutStatus` may need to be adjusted to reflect it being active again.
     pokemon.switchOutStatus = false;
 
-    if (pokemon.isShiny()) {
+    if (pokemon.isShiny(true)) {
       globalScene.phaseManager.unshiftNew("ShinySparklePhase", pokemon.getBattlerIndex());
     }
 

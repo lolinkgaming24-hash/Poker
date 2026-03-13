@@ -44,7 +44,6 @@ import { GameOverModifierRewardPhase } from "#phases/game-over-modifier-reward-p
 import { GameOverPhase } from "#phases/game-over-phase";
 import { HideAbilityPhase } from "#phases/hide-ability-phase";
 import { HidePartyExpBarPhase } from "#phases/hide-party-exp-bar-phase";
-import { InitEncounterPhase } from "#phases/init-encounter-phase";
 import { LearnMovePhase } from "#phases/learn-move-phase";
 import { LevelCapPhase } from "#phases/level-cap-phase";
 import { LevelUpPhase } from "#phases/level-up-phase";
@@ -155,7 +154,6 @@ const PHASES = Object.freeze({
   GameOverModifierRewardPhase,
   HideAbilityPhase,
   HidePartyExpBarPhase,
-  InitEncounterPhase,
   LearnMovePhase,
   LevelCapPhase,
   LevelUpPhase,
@@ -271,7 +269,7 @@ interface BattlerSwitchOutParams {
   when?: "eager" | "deferred";
 
   /**
-   * A {@linkcode SwitchType} dictating the type of switching behavior to implement.
+   * The {@linkcode SwitchType} dictating the type of switching behavior to implement.
    * @defaultValue {@linkcode SwitchType.SWITCH}
    */
   switchType?: SwitchType;
@@ -281,7 +279,7 @@ interface BattlerSwitchOutParams {
    * by showing the player party modal or prompting the enemy AI.
    * @defaultValue `-1`
    */
-  // TODO: Convert to IntClosedRange<0, 5> in the wimp out code duplication PR
+  // TODO: Convert to IntClosedRange<0, 5> | `-1` in the wimp out code duplication PR
   switchInIndex?: number | undefined;
 }
 //#endregion Constants
@@ -320,9 +318,11 @@ export class PhaseManager {
   }
 
   /**
-   * Queue a sequence of phases to switch out a Pokemon on the field with another Pokemon.
+   * Queue a sequence of phases to switch out a currently on-field Pokemon with another party member.
    * @param battlerIndex - The {@linkcode FieldBattlerIndex} of the Pokemon to switch out
-   * @param __namedParameters - Needed for Typedoc to function
+   * @param params - Parameters used to customize the switching behaviour
+   * @remarks
+   * This should not be used to queue start-of-battle entrance sequences.
    */
   public queueBattlerSwitchOut(
     battlerIndex: FieldBattlerIndex,
@@ -346,8 +346,7 @@ export class PhaseManager {
   }
 
   /**
-   * Queue a sequence of phases to add a single Pokemon to the field.
-   * Encompasses both visual and logical elements.
+   * Queue a sequence of phases to add a **single** Pokemon to the field.
    * @param battlerIndex - The {@linkcode FieldBattlerIndex} of the Pokemon to send in
    * @param params - Parameters used to customize switching behavior
    * @throws {Error}

@@ -14,7 +14,7 @@ import { PartyOption, PartyUiMode } from "#ui/party-ui-handler";
 
 /**
  * Phase to handle all logical elements of switching 2 Pokemon in battle.
- * @see {@linkcode SummonPhase} - Phase handling visual aspects of sending in Pokemon
+ * @see {@linkcode SummonPhase} - Phase handling visual aspects of sending in a Pokemon
  */
 export class SwitchPhase extends PokemonPhase {
   public override readonly phaseName = "SwitchPhase";
@@ -117,14 +117,13 @@ export class SwitchPhase extends PokemonPhase {
     // A similar effect occurs for the user's active Substitute and Shed Tail.
     if (this.switchType === SwitchType.BATON_PASS) {
       this.transferBatonPassableEffects(activePokemon, switchedInPokemon);
-      activePokemon.resetSummonData();
     } else if (this.switchType === SwitchType.SHED_TAIL) {
       const subTag = activePokemon.getTag(BattlerTagType.SUBSTITUTE);
       if (subTag) {
         switchedInPokemon.summonData.tags.push(subTag);
       }
-      activePokemon.resetSummonData();
     }
+    activePokemon.resetSummonData();
 
     // If a Substitute was transferred, update the switched in Pokemon's sprite
     // to a "behind Substitute" state
