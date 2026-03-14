@@ -244,7 +244,7 @@ export class BattleScene extends SceneBase {
   public hpBarSpeed = 0;
   public fusionPaletteSwaps = true;
   public enableTouchControls = false;
-  public lowMemoryMode = false;
+  public lowMemoryMode = true;
 
   public enableVibration = false;
   public showBgmBar = true;

@@ -150,7 +150,6 @@ export const SettingKeys = {
   Hide_IVs: "HIDE_IVS",
   Tutorials: "TUTORIALS",
   Touch_Controls: "TOUCH_CONTROLS",
-  LOW_MEMORY_MODE: "LOW_MEMORY_MODE",
   Vibration: "VIBRATION",
   Language: "LANGUAGE",
   UI_Theme: "UI_THEME",
@@ -409,14 +408,6 @@ export const Setting: Setting[] = [
     type: SettingType.GENERAL,
     activatable: true,
     isHidden: () => !hasTouchscreen(),
-  },
-  {
-    key: SettingKeys.LOW_MEMORY_MODE,
-    label: i18next.t("settings:lowMemoryMode"),
-    options: OFF_ON,
-    default: 1,
-    type: SettingType.GENERAL,
-    requireReload: true,
   },
   {
     key: SettingKeys.Language,
@@ -923,10 +914,7 @@ export function setSetting(setting: string, value: number): boolean {
       }
       break;
     }
-    case SettingKeys.LOW_MEMORY_MODE: {
-      globalScene.lowMemoryMode = Setting[index].options[value].value === "On";
-      break;
-    }
+
     case SettingKeys.Vibration:
       globalScene.enableVibration = Setting[index].options[value].value !== "Disabled" && hasTouchscreen();
       break;

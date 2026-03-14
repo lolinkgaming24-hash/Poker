@@ -6,7 +6,6 @@ import { BiomeId } from "#enums/biome-id";
 import { GachaType } from "#enums/gacha-types";
 import { getBiomeHasProps } from "#field/arena";
 import { CacheBustedLoaderPlugin } from "#plugins/cache-busted-loader-plugin";
-import { SettingKeys } from "#system/settings";
 import { getWindowVariantSuffix, WindowVariant } from "#ui/ui-theme";
 import { hasAllLocalizedSprites, localPing } from "#utils/common";
 import { enumValueToKey, getEnumValues } from "#utils/enums";
@@ -27,14 +26,6 @@ export class LoadingScene extends SceneBase {
 
   preload() {
     localPing();
-    // Read low memory mode directly from localStorage since globalScene
-    // isn't fully initialized yet during the loading phase
-    const savedSettings = localStorage.getItem("settings");
-    const lowMemory =
-      savedSettings
-      && (JSON.parse(savedSettings) as Record<(typeof SettingKeys)[keyof typeof SettingKeys], number> | undefined)?.[
-        SettingKeys.LOW_MEMORY_MODE
-      ] === 1;
     const startingBiome = globalScene?.arena?.biomeId ?? BiomeId.TOWN;
     // TODO: Categorize these into sub-methods that make sense
     // I'm 99.9% sure the order doesn't matter here,
@@ -165,7 +156,7 @@ export class LoadingScene extends SceneBase {
       .loadImage("link_icon", "ui")
       .loadImage("unlink_icon", "ui")
       .loadImage("default_bg", "arenas")
-      .loadBiomeImages(lowMemory, startingBiome)
+      .loadBiomeImages(true, startingBiome)
 
       // Load trainer images
       .loadAtlas("trainer_m_back", "trainer")
@@ -570,7 +561,7 @@ export class LoadingScene extends SceneBase {
     console.debug(`Destroyed ${LoadingScene.KEY} scene`);
   }
 
-  private loadBiomeImages(lowMemory = false, startingBiome: BiomeId = BiomeId.TOWN): this {
+  private loadBiomeImages(lowMemory = true, startingBiome: BiomeId = BiomeId.TOWN): this {
     const biomesToLoad = new Set([BiomeId.TOWN, startingBiome]);
     Object.values(BiomeId).forEach(bt => {
       // In low memory mode, skip all biomes except TOWN (the starting biome).
