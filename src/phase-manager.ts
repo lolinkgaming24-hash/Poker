@@ -250,13 +250,11 @@ interface BattlerEntranceParams extends SummonPhaseOptions {
    * If the switch prompt is denied, a regular {@linkcode PostSummonPhase} will be queued after said phase ends.
    * @defaultValue `true` if the passed `BattlerIndex` corresponds to a player Pokemon.
    */
+  // TODO: At a later date, review if we need this parameter or can instead just use its default value instead
   checkSwitch?: boolean;
 }
 
-type QueueBattlerEntranceParams<P extends boolean> = P extends true
-  ? BattlerEntranceParams
-  : Omit<BattlerEntranceParams, "checkSwitch">;
-
+/** Parameter type for {@linkcode PhaseManager.queueBattlerSwitchOut}. */
 interface BattlerSwitchOutParams {
   /**
    * String denoting when to add the phase.
@@ -356,18 +354,20 @@ export class PhaseManager {
    */
   public queueBattlerEntrance<T extends FieldBattlerIndex>(
     battlerIndex: T,
-    params: QueueBattlerEntranceParams<T extends BattlerIndex.PLAYER | BattlerIndex.PLAYER_2 ? true : false>,
+    params: T extends BattlerIndex.PLAYER | BattlerIndex.PLAYER_2
+      ? BattlerEntranceParams
+      : Omit<BattlerEntranceParams, "checkSwitch">,
   ): void;
   public queueBattlerEntrance(
     battlerIndex: FieldBattlerIndex,
-    { when, checkSwitch = !isEnemy(battlerIndex), ...rest }: BattlerEntranceParams,
+    { when, checkSwitch = !isEnemy(battlerIndex), ...summonPhaseOpts }: BattlerEntranceParams,
   ): void {
     if (checkSwitch && isEnemy(battlerIndex)) {
       throw new Error("Cannot queue a CheckSwitchPhase for an enemy Pokemon!");
     }
 
     const phases = [
-      this.create("SummonPhase", battlerIndex, rest),
+      this.create("SummonPhase", battlerIndex, summonPhaseOpts satisfies SummonPhaseOptions),
       this.create(checkSwitch ? "CheckSwitchPhase" : "PostSummonPhase", battlerIndex),
     ] as const;
 

@@ -31,7 +31,7 @@ export interface SummonPhaseOptions {
   readonly playTrainerAnim?: boolean;
   /**
    * The type of switching behavior that was triggered; default `SwitchType.SWITCH`.
-   * Used to configure custom messages for Force switching moves.
+   * Used solely to configure custom messages for Force switching moves.
    */
   // TODO: Expand this into an entire 'message override' parameter (will be needed for U-Turn and co.)
   readonly switchType?: SwitchType;
@@ -77,12 +77,12 @@ export class SummonPhase extends PokemonPhase {
   }
 
   /**
-   * Handles edge cases where the Pokemon to be summoned by this phase is somehow not allowed in battle.
+   * Handle edge cases where the Pokemon to be summoned by this phase is somehow not allowed in battle.
    * This will attempt to swap the illegal Pokemon with the first inactive legal
    * Pokemon in the same party.
-   * If no legal Pokemon can be summoned, a game over is queued instead.
-   * @returns `true` if this phase should continue after error handling.
+   * @returns Whether a legal party member can be swapped in.
    */
+  // TODO: This ideally shouldn't exist
   private handleIllegalSummon(): boolean {
     console.warn(
       "The Pokemon about to be sent out is fainted or illegal under the current challenge(s). Attempting to resolve...",
@@ -267,13 +267,11 @@ export class SummonPhase extends PokemonPhase {
 
     animations.addPokeballOpenParticles(pokemon.x, pokemon.y - 16, pokemon.pokeball);
     globalScene.updateModifiers(this.player);
-    globalScene.updateFieldScale();
 
     pokemon.showInfo();
     pokemon.playAnim();
-    pokemon.setVisible(true);
+    pokemon.setVisible(true).setScale(0.5);
     pokemon.getSprite().setVisible(true);
-    pokemon.setScale(0.5);
     pokemon.tint(getPokeballTintColor(pokemon.pokeball));
     pokemon.untint(250, "Sine.easeIn");
 
@@ -291,6 +289,7 @@ export class SummonPhase extends PokemonPhase {
     pokemon.getSprite().clearTint();
     // required to load the proper assets when loading from save data
     // TODO: Do we need this?
+    // TODO: This is a floating promise
     if (this.loaded && pokemon.summonData.speciesForm) {
       pokemon.loadAssets(false);
     }
@@ -335,9 +334,8 @@ export class SummonPhase extends PokemonPhase {
 
     pokemon.showInfo();
     pokemon.playAnim();
-    pokemon.setVisible(true);
+    pokemon.setVisible(true).setScale(0.75);
     pokemon.getSprite().setVisible(true);
-    pokemon.setScale(0.75);
     pokemon.tint(getPokeballTintColor(pokemon.pokeball));
     pokemon.untint(250, "Sine.easeIn");
     pokemon.x += 16;
@@ -374,7 +372,6 @@ export class SummonPhase extends PokemonPhase {
     }
 
     // TODO: Review these conditions
-    // TODO: Gameplay changes shouldn't happen here???
     if (
       !this.loaded
       || [BattleType.TRAINER, BattleType.MYSTERY_ENCOUNTER].includes(battleType)
