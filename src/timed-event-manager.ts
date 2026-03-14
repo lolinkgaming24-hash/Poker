@@ -271,6 +271,37 @@ export class TimedEventManager {
     }
   }
 
+  /**
+   * Return the key replacement for the given i18n key if it exists in the active event, otherwise return the original key.
+   * @param key The i18n key to check for a replacement
+   * @returns The replacement key if it exists, otherwise the original key
+   */
+  public getEventTextReplacement(key: string): string {
+    const event = this.activeEvent();
+    if (!event || !event.textReplacements) {
+      return key;
+    }
+    for (const [source, target] of event.textReplacements) {
+      if (key === source) {
+        return target;
+      }
+    }
+    return key;
+  }
+
+  /**
+   * Check if the current active event has any text replacements. \
+   * This is used to determine wheater the i18next proxy should be loaded.
+   * @returns Whether the active event has text replacements
+   */
+  public hasEventTextReplacement(): boolean {
+    const event = this.activeEvent();
+    if (!event) {
+      return false;
+    }
+    return event.textReplacements != null && event.textReplacements.length > 0;
+  }
+
   getEventDailyStartingItems(): readonly ModifierTypeKeys[] {
     return this.activeEvent()?.dailyRunStartingItems ?? [];
   }

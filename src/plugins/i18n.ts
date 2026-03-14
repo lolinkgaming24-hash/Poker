@@ -1,3 +1,4 @@
+import { timedEventManager } from "#app/global-event-manager";
 import { getCachedUrl } from "#utils/fetch-utils";
 import { toKebabCase } from "#utils/strings";
 import i18next from "i18next";
@@ -225,5 +226,20 @@ await i18next
       await initFonts(localStorage.getItem("prLang") ?? undefined);
     },
   );
+
+//#endregion
+
+//#region Event Proxy
+
+if (timedEventManager.hasEventTextReplacement()) {
+  console.warn("Event text replacements are active.");
+  i18next.t = new Proxy(i18next.t.bind(i18next), {
+    apply(target, _, args: [key: string, options?: any]) {
+      const key = timedEventManager.getEventTextReplacement(args[0]);
+      args[0] = key;
+      return target(...args);
+    },
+  });
+}
 
 //#endregion

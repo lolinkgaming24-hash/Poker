@@ -52,6 +52,8 @@ export interface EventSpriteOptions {
   readonly fillRandom?: boolean;
 }
 
+export type EventTextReplacement = readonly [string, string];
+
 export type EventWeatherPools = Readonly<Partial<Record<BiomeId, WeatherPool>>>;
 export type EventTerrainPools = Readonly<Partial<Record<BiomeId, TerrainPool>>>;
 
@@ -76,5 +78,6 @@ export interface TimedEvent extends EventBanner {
   readonly trainerShinyChance?: number; // Odds over 65536 of trainer mon generating as shiny
   readonly music?: readonly EventMusicReplacement[];
   readonly sprites?: EventSpriteOptions;
+  readonly textReplacements?: readonly EventTextReplacement[];
   readonly dailyRunStartingItems?: readonly ModifierTypeKeys[];
 }
