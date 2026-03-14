@@ -479,6 +479,13 @@ export abstract class PokemonSpeciesForm {
 
   getCryKey(formIndex?: number): string {
     let speciesId = this.speciesId;
+
+    const override = timedEventManager.getEventSpriteReplacement(this.speciesId, formIndex);
+    if (override) {
+      speciesId = override.speciesId;
+      formIndex = override.formIndex;
+    }
+
     if (this.speciesId > 2000) {
       switch (this.speciesId) {
         case SpeciesId.GALAR_SLOWPOKE:
