@@ -71,12 +71,9 @@ export class SwitchBiomePhase extends BattlePhase {
             if (globalScene.lastEnemyTrainer) {
               globalScene.lastEnemyTrainer.destroy();
             }
-            // Evict previous biome textures now that the transition is complete
+            // Clear previous biome textures now that the transition is complete
             if (globalScene.lowMemoryMode) {
-              // Delay eviction by a tick to ensure all textures are no longer in use before we try to evict them
-              globalScene.time.delayedCall(0, () => {
-                globalScene.evictBiomeAssets(previousBiome);
-              });
+              globalScene.clearBiomeAssets(previousBiome);
             }
             this.end();
           },

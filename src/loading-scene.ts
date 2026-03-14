@@ -30,7 +30,11 @@ export class LoadingScene extends SceneBase {
     // Read low memory mode directly from localStorage since globalScene
     // isn't fully initialized yet during the loading phase
     const savedSettings = localStorage.getItem("settings");
-    const lowMemory = savedSettings ? JSON.parse(savedSettings)?.[SettingKeys.LOW_MEMORY_MODE] === 1 : false;
+    const lowMemory =
+      savedSettings
+      && (JSON.parse(savedSettings) as Record<(typeof SettingKeys)[keyof typeof SettingKeys], number> | undefined)?.[
+        SettingKeys.LOW_MEMORY_MODE
+      ] === 1;
     const startingBiome = globalScene?.arena?.biomeId ?? BiomeId.TOWN;
     // TODO: Categorize these into sub-methods that make sense
     // I'm 99.9% sure the order doesn't matter here,
@@ -567,10 +571,11 @@ export class LoadingScene extends SceneBase {
   }
 
   private loadBiomeImages(lowMemory = false, startingBiome: BiomeId = BiomeId.TOWN): this {
+    const biomesToLoad = new Set([BiomeId.TOWN, startingBiome]);
     Object.values(BiomeId).forEach(bt => {
       // In low memory mode, skip all biomes except TOWN (the starting biome).
       // Other biomes will be loaded on demand when the arena transitions.
-      if ((lowMemory && bt !== BiomeId.TOWN) || (lowMemory && bt !== startingBiome)) {
+      if (lowMemory && !biomesToLoad.has(bt)) {
         return;
       }
       const btKey = enumValueToKey(BiomeId, bt).toLowerCase();

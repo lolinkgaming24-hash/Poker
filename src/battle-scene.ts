@@ -1632,7 +1632,7 @@ export class BattleScene extends SceneBase {
     return this.arena;
   }
 
-  public loadBiomeAssetsIfNeeded(biome: BiomeId): Promise<void> {
+  public async loadBiomeAssetsIfNeeded(biome: BiomeId): Promise<void> {
     const btKey = getBiomeKey(biome);
 
     // Already in texture cache — nothing to load
@@ -1671,24 +1671,23 @@ export class BattleScene extends SceneBase {
       this.load.start();
     });
   }
-
-  public evictBiomeAssets(biome: BiomeId): void {
+  public clearBiomeAssets(biome: BiomeId): void {
     const btKey = getBiomeKey(biome);
 
-    // Don't evict TOWN — it's the starting biome
+    // Don't clear TOWN — it's the starting biome
     if (btKey === "town") {
       return;
     }
 
-    const keysToEvict = [`${btKey}_bg`, `${btKey}_a`, `${btKey}_b`];
+    const keysToClear = [`${btKey}_bg`, `${btKey}_a`, `${btKey}_b`];
 
     if (getBiomeHasProps(biome)) {
       for (let p = 1; p <= 3; p++) {
-        keysToEvict.push(`${btKey}_b_${p}`);
+        keysToClear.push(`${btKey}_b_${p}`);
       }
     }
 
-    for (const key of keysToEvict) {
+    for (const key of keysToClear) {
       if (this.textures.exists(key)) {
         this.textures.remove(key);
       }

@@ -283,9 +283,7 @@ async function animateBiomeChange(nextBiome: BiomeId) {
               globalScene.lastEnemyTrainer.destroy();
             }
             if (globalScene.lowMemoryMode) {
-              globalScene.time.delayedCall(0, () => {
-                globalScene.evictBiomeAssets(previousBiome);
-              });
+              globalScene.clearBiomeAssets(previousBiome);
             }
             resolve();
 
