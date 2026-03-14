@@ -72,7 +72,7 @@ export class SwitchBiomePhase extends BattlePhase {
               globalScene.lastEnemyTrainer.destroy();
             }
             // Clear previous biome textures now that the transition is complete
-            if (globalScene.lowMemoryMode) {
+            if (globalScene.lowMemoryMode && globalScene.load) {
               globalScene.clearBiomeAssets(previousBiome);
             }
             this.end();

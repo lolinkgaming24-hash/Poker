@@ -971,7 +971,7 @@ export class GameData {
     globalScene.updateScoreText();
 
     globalScene.mysteryEncounterSaveData = new MysteryEncounterSaveData(fromSession.mysteryEncounterSaveData);
-    if (globalScene.lowMemoryMode) {
+    if (globalScene.lowMemoryMode && globalScene.load) {
       await globalScene.loadBiomeAssetsIfNeeded(fromSession.arena.biome);
     }
     globalScene.newArena(fromSession.arena.biome, fromSession.playerFaints);
