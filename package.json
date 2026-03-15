@@ -21,7 +21,7 @@
     "test:create": "node scripts/create-test/create-test.js",
     "eggMoves:parse": "node scripts/parse-egg-moves/main.js",
     "scrape-trainers": "node scripts/scrape-trainer-names/main.js",
-    "dailySeed:create": "node --experimental-transform-types scripts/daily-seed/main.js",
+    "dailySeed:create": "node scripts/daily-seed/main.js",
     "changelog": "node scripts/changelog-reader/main.mjs",
     "typecheck": "tsc --noEmit",
     "typecheck:js": "tsc -p jsconfig.json",
