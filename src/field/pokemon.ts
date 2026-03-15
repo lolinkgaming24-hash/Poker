@@ -4659,7 +4659,7 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
       }
     }
     const cry = globalScene.playSound(key, crySoundConfig);
-    if (!cry || globalScene.fieldVolume === 0) {
+    if (!cry || globalScene.fieldVolume === 0 || scene.masterVolume === 0) {
       callback();
       return;
     }
@@ -4730,7 +4730,7 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
     let fusionCry = globalScene.playSound(fusionCryKey, {
       rate,
     });
-    if (!cry || !fusionCry || globalScene.fieldVolume === 0) {
+    if (!cry || !fusionCry || globalScene.fieldVolume === 0 || scene.masterVolume === 0) {
       callback();
       return;
     }
