@@ -16,7 +16,6 @@ import { sharedConfig } from "./vite.config";
 // biome-ignore lint/style/noDefaultExport: required for vitest
 export default defineConfig(async config => {
   const viteConfig = await sharedConfig(config);
-  viteConfig.plugins;
   const opts: UserConfig = {
     ...viteConfig,
     test: {
