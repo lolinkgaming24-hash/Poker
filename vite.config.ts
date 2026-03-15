@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineConfig, loadEnv, type UserConfig, type UserConfigFnPromise } from "vite";
+import { defineConfig, loadEnv, type PluginOption, type UserConfig, type UserConfigFnPromise } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 /**
  * Default config object used for both Vitest and local dev runs.
  */
 export const sharedConfig: UserConfigFnPromise = async ({ mode }) => {
-  const opts: UserConfig = {
+  const opts = {
     clearScreen: false,
     appType: "mpa",
     build: {
@@ -55,16 +56,19 @@ export const sharedConfig: UserConfigFnPromise = async ({ mode }) => {
         },
       },
     },
-    resolve: {
-      tsconfigPaths: true,
-    },
-  };
+    // TODO: Vitest is currently incompatible with vite's tsconfig paths resolution, requiring us to use the plugin
+    // resolve: {
+    //   tsconfigPaths: true,
+    // },
+    plugins: [] as PluginOption[],
+  } satisfies UserConfig;
 
   if (!process.env.MERGE_REPORTS) {
     opts.plugins = [
       (await import("./src/plugins/vite/vite-minify-json-plugin")).minifyPublicJsonFiles(),
       (await import("./src/plugins/vite/namespaces-i18n-plugin")).LocaleNamespace(),
       (await import("unplugin-inline-enum/vite")).default({ scanDir: "src" }),
+      tsconfigPaths(),
     ];
   }
   return opts;
