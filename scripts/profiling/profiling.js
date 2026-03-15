@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import { Command } from "@commander-js/extra-typings";
 import chalk from "chalk";
-import { startVitest } from "vitest/node";
+import { parseCLI, startVitest } from "vitest/node";
 import { defaultCommanderHelpArgs } from "../helpers/arguments.js";
 
 const version = "1.0.0";
@@ -29,11 +29,12 @@ const testProfile = new Command("pnpm test:profile")
   .option("--no-cpu", "Disable CPU profiling.")
   .option("-m, --memory", "Enable memory profiling.", true)
   .option("--no-memory", "Disable memory profiling.")
-  .option("--clean", "Whether to clean the output directory before writing new profiles.")
-  .argument("<vitest-args...>", "Arguments to pass directly to Vitest.")
+  .option("--clean", "Whether to clean the output directory before writing new profiles.", false)
+  .argument("<vitest-args...>", "Arguments and flags to pass directly to Vitest.")
   .configureHelp(defaultCommanderHelpArgs)
   // only show help on argument parsing errors, not on test failures
   .showHelpAfterError(true)
+  .passThroughOptions()
   .parse();
 
 const { output, cpu, memory, clean } = testProfile.opts();
@@ -54,6 +55,7 @@ async function main() {
     await rm(outputDir, { recursive: true, force: true });
     await mkdir(outputDir, { recursive: true });
   } else {
+    await mkdir(output, { recursive: true });
     // output profile files to a temp directory before moving them to the desired location, ensuring both exist
     outputDir = await mkdtemp(join(tmpdir(), "vitest-profile-"), { encoding: "utf-8" });
   }
@@ -69,9 +71,9 @@ async function main() {
     execArgv.push("--heap-prof", `--heap-prof-dir=${outputDir}`);
   }
 
-  const vitest = await startVitest("test", [...testProfile.args, "no-file-parallelism"], {
-    execArgv,
-  });
+  const { filter, options } = parseCLI(["vitest", "run", ...testProfile.args]);
+
+  const vitest = await startVitest("test", filter, { ...options, fileParallelism: false, execArgv });
   // NB: This sets `process.exitCode` to a non-zero value if it fails
   await vitest.close();
   if (process.exitCode) {
