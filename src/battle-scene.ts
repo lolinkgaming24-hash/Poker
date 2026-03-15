@@ -265,6 +265,18 @@ export class BattleScene extends SceneBase {
 
   /** Manager for the phases active in the battle scene */
   public readonly phaseManager: PhaseManager;
+  /**
+   * Global state variable indicating AI moveset generation is in progress
+   *
+   * @remarks
+   * It is intended that this is set to `true` while movesets are being generated.
+   * Its purpose is to skip certain checks and effects that are not relevant during
+   * the moveset generation process, such as ability suppression checks.
+   *
+   * @defaultValue `false`
+   */
+  public movesetGenInProgress = false;
+
   /** A manager for the commands and moves used in the current battle. */
   public readonly turnCommandManager: TurnCommandManager = new TurnCommandManager();
   public field: Phaser.GameObjects.Container;
@@ -916,6 +928,7 @@ export class BattleScene extends SceneBase {
     shinyLock = false,
     dataSource?: PokemonData,
     postProcess?: (enemyPokemon: EnemyPokemon) => void,
+    forRival = false,
   ): EnemyPokemon {
     if (Overrides.ENEMY_LEVEL_OVERRIDE > 0) {
       level = Overrides.ENEMY_LEVEL_OVERRIDE;
@@ -926,7 +939,7 @@ export class BattleScene extends SceneBase {
       boss = this.getEncounterBossSegments(this.currentBattle.waveIndex, level, species) > 1;
     }
 
-    const pokemon = new EnemyPokemon(species, level, trainerSlot, boss, shinyLock, dataSource);
+    const pokemon = new EnemyPokemon(species, level, trainerSlot, boss, shinyLock, dataSource, forRival);
     if (Overrides.ENEMY_FUSION_OVERRIDE) {
       pokemon.generateFusionSpecies();
     }
@@ -1271,8 +1284,8 @@ export class BattleScene extends SceneBase {
 
   /**
    * Create and initialize a new battle.
-   * @param fromSession - The {@linkcode SessionSaveData} being used to seed the battle.
-   * Should be omitted if not loading an existing save file.
+   * @param fromSession - The {@linkcode SessionSaveData} being used to seed the battle. \
+   *   Should be omitted if not loading an existing save file.
    * @returns The newly created `Battle` instance.
    */
   public newBattle(fromSession?: SessionSaveData): Battle {
@@ -1284,10 +1297,10 @@ export class BattleScene extends SceneBase {
     this.resetSeed(waveIndex);
 
     // Set attributes of the `resolved` object based on the type of battle being created.
-    if (this.gameMode.isFixedBattle(waveIndex)) {
-      this.handleFixedBattle(resolved);
-    } else if (fromSession) {
+    if (fromSession) {
       this.handleSavedBattle(resolved, props);
+    } else if (this.gameMode.isFixedBattle(waveIndex)) {
+      this.handleFixedBattle(resolved);
     } else {
       this.handleNonFixedBattle(resolved);
     }
@@ -1355,7 +1368,7 @@ export class BattleScene extends SceneBase {
     const mysteryEncounterType = sessionMEType !== -1 ? sessionMEType : undefined;
 
     let fixedDouble: boolean;
-    // defensive programming - don't force double battles on trainers that can't be doubles due to enum shifting
+    // make sure illegal battle types don't occur due to save data corruption (e.g. from enum shifting)
     if (
       trainerData?.variant === TrainerVariant.DOUBLE
       && !trainerConfigs[trainerData.trainerType].hasDouble
@@ -1363,6 +1376,13 @@ export class BattleScene extends SceneBase {
     ) {
       trainerData.variant = TrainerVariant.DEFAULT;
       fixedDouble = false;
+    } else if (
+      trainerData
+      && trainerData.variant !== TrainerVariant.DOUBLE
+      && trainerConfigs[trainerData.trainerType].doubleOnly
+    ) {
+      trainerData.variant = TrainerVariant.DOUBLE;
+      fixedDouble = true;
     }
 
     switch (battleType) {
@@ -3464,7 +3484,7 @@ export class BattleScene extends SceneBase {
           ) as TurnHeldItemTransferModifier;
           finalBossMBH.setTransferrableFalse();
           this.addEnemyModifier(finalBossMBH, false, true);
-          pokemon.generateAndPopulateMoveset(1);
+          pokemon.generateAndPopulateMoveset(false, 1);
           this.setFieldScale(0.75);
           this.triggerPokemonFormChange(pokemon, SpeciesFormChangeManualTrigger, false);
           this.currentBattle.double = true;
