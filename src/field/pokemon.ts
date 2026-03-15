@@ -4601,7 +4601,7 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
   public cry(soundConfig?: Phaser.Types.Sound.SoundConfig, sceneOverride?: BattleScene): AnySound | null {
     const scene = sceneOverride ?? globalScene; // TODO: is `sceneOverride` needed?
     const cry = this.getSpeciesForm(undefined, true).cry(soundConfig);
-    if (!cry) {
+    if (!cry || scene.masterVolume === 0 || globalScene.fieldVolume === 0) {
       return cry;
     }
     let duration = cry.totalDuration * 1000;
