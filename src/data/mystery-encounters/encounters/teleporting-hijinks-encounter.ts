@@ -250,9 +250,7 @@ async function animateBiomeChange(nextBiome: BiomeId) {
       x: "+=300",
       duration: 2000,
       onComplete: async () => {
-        if (globalScene.lowMemoryMode && globalScene.load) {
-          await globalScene.loadBiomeAssetsIfNeeded(nextBiome);
-        }
+        await globalScene.loadBiomeAssetsIfNeeded(nextBiome);
         const previousBiome = globalScene.arena.biomeId;
         globalScene.newArena(nextBiome);
 
@@ -282,9 +280,7 @@ async function animateBiomeChange(nextBiome: BiomeId) {
             if (globalScene.lastEnemyTrainer) {
               globalScene.lastEnemyTrainer.destroy();
             }
-            if (globalScene.lowMemoryMode && globalScene.load) {
-              globalScene.clearBiomeAssets(previousBiome);
-            }
+            globalScene.clearBiomeAssets(previousBiome);
             resolve();
 
             globalScene.tweens.add({

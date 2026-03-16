@@ -11,7 +11,7 @@ import { hasAllLocalizedSprites, localPing } from "#utils/common";
 import { enumValueToKey, getEnumValues } from "#utils/enums";
 import i18next from "i18next";
 import type { GameObjects } from "phaser";
-import { globalScene } from "./global-scene";
+import { globalScene } from "#app/global-scene";
 
 export class LoadingScene extends SceneBase {
   public static readonly KEY = "loading";
@@ -156,7 +156,7 @@ export class LoadingScene extends SceneBase {
       .loadImage("link_icon", "ui")
       .loadImage("unlink_icon", "ui")
       .loadImage("default_bg", "arenas")
-      .loadBiomeImages(true, startingBiome)
+      .loadBiomeImages(startingBiome)
 
       // Load trainer images
       .loadAtlas("trainer_m_back", "trainer")
@@ -561,12 +561,12 @@ export class LoadingScene extends SceneBase {
     console.debug(`Destroyed ${LoadingScene.KEY} scene`);
   }
 
-  private loadBiomeImages(lowMemory = true, startingBiome: BiomeId = BiomeId.TOWN): this {
+  private loadBiomeImages(startingBiome: BiomeId = BiomeId.TOWN): this {
     const biomesToLoad = new Set([BiomeId.TOWN, startingBiome]);
     Object.values(BiomeId).forEach(bt => {
-      // In low memory mode, skip all biomes except TOWN (the starting biome).
+      // Skip all biomes except TOWN (and the starting biome, if it's different).
       // Other biomes will be loaded on demand when the arena transitions.
-      if (lowMemory && !biomesToLoad.has(bt)) {
+      if (!biomesToLoad.has(bt)) {
         return;
       }
       const btKey = enumValueToKey(BiomeId, bt).toLowerCase();

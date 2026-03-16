@@ -22,9 +22,7 @@ export class SwitchBiomePhase extends BattlePhase {
 
     // Kick off biome asset loading in parallel with the 2000ms slide-out
     // tween. By the time onComplete fires, assets will be ready.
-    const biomeLoadPromise = globalScene.lowMemoryMode
-      ? globalScene.loadBiomeAssetsIfNeeded(this.nextBiome)
-      : Promise.resolve();
+    const biomeLoadPromise = globalScene.loadBiomeAssetsIfNeeded(this.nextBiome);
 
     // Before switching biomes, make sure to set the last encounter for other phases that need it too.
     globalScene.lastEnemyTrainer = globalScene.currentBattle?.trainer ?? null;
@@ -72,9 +70,7 @@ export class SwitchBiomePhase extends BattlePhase {
               globalScene.lastEnemyTrainer.destroy();
             }
             // Clear previous biome textures now that the transition is complete
-            if (globalScene.lowMemoryMode && globalScene.load) {
-              globalScene.clearBiomeAssets(previousBiome);
-            }
+            globalScene.clearBiomeAssets(previousBiome);
             this.end();
           },
         });
