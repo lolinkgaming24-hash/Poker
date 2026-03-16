@@ -65,10 +65,18 @@ async function main() {
   /** @type {string[]} */
   const execArgv = [];
   if (cpu) {
-    execArgv.push("--cpu-prof", `--cpu-prof-dir=${outputDir}`);
+    execArgv.push(
+      "--cpu-prof",
+      `--cpu-prof-name=vitest-cpu-profile.${Date.now()}.cpuprofile`,
+      `--cpu-prof-dir=${outputDir}`,
+    );
   }
   if (memory) {
-    execArgv.push("--heap-prof", `--heap-prof-dir=${outputDir}`);
+    execArgv.push(
+      "--heap-prof",
+      `--heap-prof-name=vitest-heap-profile.${Date.now()}.heapprofile`,
+      `--heap-prof-dir=${outputDir}`,
+    );
   }
 
   const { filter, options } = parseCLI(["vitest", "run", ...testProfile.args]);
