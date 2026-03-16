@@ -1,4 +1,5 @@
 import { timedEventManager } from "#app/global-event-manager";
+import { globalScene } from "#app/global-scene";
 import { initializeGame } from "#app/init/init";
 import { SceneBase } from "#app/scene-base";
 import { isMobile } from "#app/touch-controls";
@@ -11,7 +12,6 @@ import { hasAllLocalizedSprites, localPing } from "#utils/common";
 import { enumValueToKey, getEnumValues } from "#utils/enums";
 import i18next from "i18next";
 import type { GameObjects } from "phaser";
-import { globalScene } from "#app/global-scene";
 
 export class LoadingScene extends SceneBase {
   public static readonly KEY = "loading";
