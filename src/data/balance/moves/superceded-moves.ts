@@ -109,7 +109,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   // ],
   // [MoveId.BONEMERANG]: [MoveId.EARTHQUAKE, MoveId.PRECIPICE_BLADES],
   [MoveId.BRANCH_POKE]: [
-    MoveId.VINE_WHIP,
     MoveId.RAZOR_LEAF,
     MoveId.NEEDLE_ARM,
     MoveId.LEAF_BLADE,
@@ -124,7 +123,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   [MoveId.BRINE]: [MoveId.SURF, MoveId.SCALD, MoveId.STEAM_ERUPTION, MoveId.SPARKLING_ARIA, MoveId.SPLISHY_SPLASH],
   [MoveId.BRUTAL_SWING]: DARK_TYPE_60_POW_REPLACEMENTS,
   [MoveId.BUBBLE]: [
-    MoveId.WATER_GUN,
     MoveId.SURF,
     MoveId.BUBBLE_BEAM,
     MoveId.WATER_PULSE,
@@ -137,7 +135,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   ],
   [MoveId.BUBBLE_BEAM]: [
     MoveId.SURF,
-    MoveId.BRINE,
     MoveId.SCALD,
     MoveId.STEAM_ERUPTION,
     MoveId.SPARKLING_ARIA,
@@ -203,7 +200,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   ],
   [MoveId.DIG]: [MoveId.EARTHQUAKE, MoveId.DRILL_RUN, MoveId.THOUSAND_WAVES, MoveId.HIGH_HORSEPOWER],
   [MoveId.DISARMING_VOICE]: [MoveId.DRAINING_KISS, MoveId.MOONBLAST, MoveId.DAZZLING_GLEAM, MoveId.ALLURING_VOICE],
-  [MoveId.DIVE]: [MoveId.SURF, MoveId.LIQUIDATION, MoveId.FISHIOUS_REND, MoveId.AQUA_CUTTER],
+  [MoveId.DIVE]: [MoveId.WATERFALL, MoveId.LIQUIDATION, MoveId.FISHIOUS_REND, MoveId.AQUA_CUTTER],
   [MoveId.DOUBLE_HIT]: [
     MoveId.MEGA_PUNCH,
     MoveId.HEADBUTT,
@@ -244,15 +241,12 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.ROCK_CLIMB,
     MoveId.TAIL_SLAP,
   ],
-  [MoveId.DUAL_CHOP]: [MoveId.DRAGON_CLAW, MoveId.DRAGON_HAMMER],
   // Dual Wingbeat is actually OK
   // [MoveId.DUAL_WINGBEAT]: [MoveId.DRILL_PECK, MoveId.FLOATY_FALL],
   [MoveId.ECHOED_VOICE]: [
-    MoveId.SWIFT,
     MoveId.TRI_ATTACK,
     MoveId.UPROAR,
     MoveId.HYPER_VOICE,
-    MoveId.ROUND,
     MoveId.TECHNO_BLAST,
     MoveId.BOOMBURST,
     MoveId.TERRAIN_PULSE,
@@ -270,7 +264,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.TORCH_SONG,
   ],
   [MoveId.FAIRY_WIND]: [
-    MoveId.DISARMING_VOICE,
     MoveId.DRAINING_KISS,
     MoveId.MOONBLAST,
     MoveId.DAZZLING_GLEAM,
@@ -301,17 +294,13 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   [MoveId.FELL_STINGER]: [
     MoveId.LEECH_LIFE,
     MoveId.X_SCISSOR,
-    MoveId.BUG_BITE,
-    MoveId.STEAMROLLER,
     MoveId.LUNGE,
-    MoveId.POUNCE,
   ],
   [MoveId.FIRE_FANG]: [
     MoveId.FIRE_PUNCH,
     MoveId.SACRED_FIRE,
     MoveId.BLAZE_KICK,
     MoveId.BITTER_BLADE,
-    MoveId.TEMPER_FLARE,
   ],
   [MoveId.FLAME_WHEEL]: [
     MoveId.FLAMETHROWER,
@@ -399,7 +388,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   ],
   [MoveId.ICE_BALL]: [
     MoveId.ICE_PUNCH,
-    MoveId.ICE_SHARD,
     MoveId.ICE_FANG,
     MoveId.ICICLE_CRASH,
     MoveId.MOUNTAIN_GALE,
@@ -421,7 +409,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.COLLISION_COURSE,
   ],
   [MoveId.LEAFAGE]: [
-    MoveId.VINE_WHIP,
     MoveId.RAZOR_LEAF,
     MoveId.NEEDLE_ARM,
     MoveId.LEAF_BLADE,
@@ -440,6 +427,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   [MoveId.METAL_CLAW]: [
     MoveId.METEOR_MASH,
     MoveId.IRON_HEAD,
+    MoveId.STEEL_WING,
     MoveId.SUNSTEEL_STRIKE,
     MoveId.BEHEMOTH_BASH,
     MoveId.BEHEMOTH_BLADE,
@@ -486,6 +474,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   [MoveId.POISON_STING]: [
     MoveId.POISON_FANG,
     MoveId.POISON_JAB,
+    MoveId.POISON_TAIL,
     MoveId.BARB_BARRAGE,
     MoveId.MORTAL_SPIN,
     MoveId.NOXIOUS_TORQUE,
@@ -530,7 +519,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   ],
   [MoveId.QUICK_ATTACK]: [MoveId.EXTREME_SPEED],
   [MoveId.RAZOR_LEAF]: [
-    MoveId.NEEDLE_ARM,
     MoveId.LEAF_BLADE,
     MoveId.SEED_BOMB,
     MoveId.HORN_LEECH,
@@ -671,7 +659,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.CHIP_AWAY,
     MoveId.RETALIATE,
   ],
-  [MoveId.THUNDER_FANG]: [MoveId.THUNDER_PUNCH, MoveId.SPARK, MoveId.ZIPPY_ZAP, MoveId.BOLT_BEAK, MoveId.AURA_WHEEL],
+  [MoveId.THUNDER_FANG]: [MoveId.THUNDER_PUNCH, MoveId.BOLT_BEAK, MoveId.AURA_WHEEL],
   [MoveId.THUNDER_SHOCK]: [
     MoveId.THUNDERBOLT,
     MoveId.DISCHARGE,
@@ -718,7 +706,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   ],
   [MoveId.VITAL_THROW]: [
     MoveId.BRICK_BREAK,
-    MoveId.WAKE_UP_SLAP,
     MoveId.DRAIN_PUNCH,
     MoveId.SACRED_SWORD,
     MoveId.FLYING_PRESS,
@@ -736,7 +723,6 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.CHILLING_WATER,
   ],
   [MoveId.WING_ATTACK]: [MoveId.DRILL_PECK, MoveId.AERIAL_ACE, MoveId.PLUCK, MoveId.FLOATY_FALL],
-  [MoveId.WRAP]: [MoveId.BIND],
 
   // Status moves
   // technically, defense curl is better than harden because it boosts rollout and ice ball, though not added here
@@ -760,8 +746,8 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.STRENGTH_SAP,
   ],
   [MoveId.METAL_SOUND]: [MoveId.FAKE_TEARS],
-  [MoveId.PROTECT]: [MoveId.BANEFUL_BUNKER, MoveId.KINGS_SHIELD, MoveId.SPIKY_SHIELD],
-  [MoveId.DETECT]: [MoveId.BANEFUL_BUNKER, MoveId.KINGS_SHIELD, MoveId.SPIKY_SHIELD],
+  [MoveId.PROTECT]: [MoveId.BANEFUL_BUNKER, MoveId.KINGS_SHIELD, MoveId.SPIKY_SHIELD, MoveId.BURNING_BULWARK],
+  [MoveId.DETECT]: [MoveId.BANEFUL_BUNKER, MoveId.KINGS_SHIELD, MoveId.SPIKY_SHIELD, MoveId.BURNING_BULWARK],
   [MoveId.REST]: [
     MoveId.MORNING_SUN,
     MoveId.SYNTHESIS,

@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { applyAbAttrs } from "#abilities/apply-ab-attrs";
 import { EVOLVE_MOVE, RELEARN_MOVE } from "#app/constants";
 import { globalScene } from "#app/global-scene";
 import { speciesEggMoves } from "#balance/moves/egg-moves";
@@ -50,6 +51,7 @@ import { Stat } from "#enums/stat";
 import { StatusEffect } from "#enums/status-effect";
 import { WeatherType } from "#enums/weather-type";
 import type { EnemyPokemon, Pokemon } from "#field/pokemon";
+import { noAbilityTypeOverrideMoves } from "#moves/invalid-moves";
 import { targetSleptOrComatoseCondition, userSleptOrComatoseCondition } from "#moves/move-condition";
 import { isWeatherInstantCharge } from "#moves/move-utils";
 import { PokemonMove } from "#moves/pokemon-move";
@@ -603,6 +605,10 @@ function forceSignatureMove(
   return allMoves[forcedSignature];
 }
 
+function simulateAbilityCheck(move: MoveId, pokemon: Pokemon) {
+  
+}
+
 /**
  * Forcibly add a STAB move to the Pokémon's moveset from the provided pools.
  *
@@ -683,7 +689,13 @@ function getMoveType(move: MoveId | Move, pokemon: Pokemon, willTera: boolean): 
     return variableMoveTypeAttr.getTypeForMovegen(pokemon, move, willTera);
   }
 
-  return move.type;
+  const typeHolder = new ValueHolder(move.type);
+
+  if (!noAbilityTypeOverrideMoves.has(move.id) && pokemon.hasAbilityWithAttr("MoveTypeChangeAbAttr")) {
+    applyAbAttrs("MoveTypeChangeAbAttr", { moveType: typeHolder, move: move, pokemon: pokemon, opponent: pokemon });
+  }
+
+  return typeHolder.value;
 }
 
 /**
@@ -786,6 +798,7 @@ function shouldRemoveSunnyDay(pokemon: Pokemon): boolean {
     AbilityId.PROTOSYNTHESIS,
     AbilityId.HARVEST,
     AbilityId.FORECAST,
+    // AbilityId.LEAF_GUARD, not included for balance reasons
   ]) {
     if (pokemon.hasAbility(sunAbility, false, true)) {
       return false;
