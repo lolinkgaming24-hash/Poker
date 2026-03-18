@@ -209,4 +209,34 @@ describe("Abilities - Commander", () => {
 
     expect(game.field.getEnemyPokemon()).toHaveFullHp();
   });
+
+  describe("Self-Switching and Escape Items", () => {
+    beforeEach(() => {
+      game.override.enemyMoveset([MoveId.SPLASH]);
+    });
+
+    it("should allow Dondozo to deal damage with U-turn but prevent it from switching out", async () => {
+      game.override.moveset([MoveId.U_TURN, MoveId.SPLASH]);
+      await game.classicMode.startBattle(SpeciesId.DONDOZO, SpeciesId.TATSUGIRI, SpeciesId.PIDGEY);
+
+      const [dondozo] = game.scene.getPlayerField();
+      game.move.select(MoveId.U_TURN);
+      await game.toNextTurn();
+
+      expect(dondozo.isOnField()).toBe(true);
+      expect(game.scene.getPlayerField()[0].species.speciesId).toBe(SpeciesId.DONDOZO);
+    });
+
+    it("should fail the switch when Dondozo uses Baton Pass", async () => {
+      game.override.moveset([MoveId.BATON_PASS, MoveId.SPLASH]);
+      await game.classicMode.startBattle(SpeciesId.DONDOZO, SpeciesId.TATSUGIRI, SpeciesId.PIDGEY);
+
+      const [dondozo] = game.scene.getPlayerField();
+      game.move.select(MoveId.BATON_PASS);
+      await game.toNextTurn();
+
+      expect(dondozo.isOnField()).toBe(true);
+      expect(game.scene.getPlayerField()[0].species.speciesId).toBe(SpeciesId.DONDOZO);
+    });
+  });
 });
