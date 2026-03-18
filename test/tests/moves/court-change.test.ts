@@ -1,3 +1,4 @@
+import type { EntryHazardTag } from "#data/arena-tag";
 import { AbilityId } from "#enums/ability-id";
 import { ArenaTagSide } from "#enums/arena-tag-side";
 import { ArenaTagType } from "#enums/arena-tag-type";
@@ -22,13 +23,14 @@ describe("Move - Court Change", () => {
   beforeEach(() => {
     game = new GameManager(phaserGame);
     game.override
+      .moveset([MoveId.COURT_CHANGE, MoveId.SPIKES])
       .ability(AbilityId.BALL_FETCH)
       .criticalHits(false)
       .enemyAbility(AbilityId.STURDY)
       .startingLevel(100)
       .battleStyle("single")
       .enemySpecies(SpeciesId.MAGIKARP)
-      .enemyMoveset(MoveId.SPLASH);
+      .enemyMoveset(MoveId.SPIKES);
   });
 
   it("should swap combined Pledge effects to the opposite side", async () => {
@@ -77,5 +79,21 @@ describe("Move - Court Change", () => {
     expect(game.scene.arena.getTagOnSide(ArenaTagType.SAFEGUARD, ArenaTagSide.PLAYER)).toBeUndefined();
     expect(game.scene.arena.getTagOnSide(ArenaTagType.SAFEGUARD, ArenaTagSide.ENEMY)).toBeDefined();
     expect(ninjask.status?.effect).toBe(StatusEffect.POISON);
+  });
+
+  it("should swap spikes layers to the enemy side", async () => {
+    await game.classicMode.startBattle(SpeciesId.CINDERACE);
+
+    for (let i = 0; i < 3; i++) {
+      game.move.use(MoveId.SPIKES);
+      await game.toNextTurn();
+    }
+
+    game.move.use(MoveId.COURT_CHANGE);
+    await game.toEndOfTurn();
+
+    // Magikarp and Cinderace should both keep the same number of layers on their respective sides
+    expect((game.scene.arena.getTagOnSide(ArenaTagType.SPIKES, ArenaTagSide.PLAYER) as EntryHazardTag)?.layers).toBe(3);
+    expect((game.scene.arena.getTagOnSide(ArenaTagType.SPIKES, ArenaTagSide.ENEMY) as EntryHazardTag)?.layers).toBe(3);
   });
 });
