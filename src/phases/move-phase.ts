@@ -725,7 +725,7 @@ export class MovePhase extends PokemonPhase {
         failedText = i18next.t("battle:moveDisabledHealBlock", {
           pokemonNameWithAffix: getPokemonNameWithAffix(user),
           moveName: move.name,
-        })
+        });
       }
       this.failed = true;
     } else if (arena.isMoveWeatherCancelled(user, move)) {

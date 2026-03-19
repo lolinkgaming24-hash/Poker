@@ -1327,7 +1327,7 @@ export abstract class Move implements Localizable {
    * @param target - (Optional) The targeted pokemon, used for Pollen Puff
    * @returns Whether this Move can be given additional strikes.
    */
-  // TODO: Remove target parameter used solely to allow Pollen Puff to only multi strike enemies 
+  // TODO: Remove target parameter used solely to allow Pollen Puff to only multi strike enemies
   public canBeMultiStrikeEnhanced(user: Pokemon, restrictSpread = false, target?: Pokemon | null): boolean {
     if (this.isChargingMove()) {
       return false;
