@@ -29,7 +29,7 @@ const testProfile = new Command("pnpm test:profile")
   .option("--no-cpu", "Disable CPU profiling.")
   .option("-m, --memory", "Enable memory profiling.", true)
   .option("--no-memory", "Disable memory profiling.")
-  .option("--clean", "Whether to clean the output directory before writing new profiles.", false)
+  .option("--clean", "Whether to clean the output directory before writing new profiles.", true)
   .argument("<vitest-args...>", "Arguments and flags to pass directly to Vitest.")
   .configureHelp(defaultCommanderHelpArgs)
   // only show help on argument parsing errors, not on test failures
@@ -81,7 +81,14 @@ async function main() {
 
   const { filter, options } = parseCLI(["vitest", "run", ...testProfile.args]);
 
-  const vitest = await startVitest("test", filter, { ...options, fileParallelism: false, execArgv });
+  const vitest = await startVitest("test", filter, {
+    ...options,
+    fileParallelism: false,
+    // swap to threads to work around vitest-dev/vitest#9907;
+    // the lack of SIGTERM events on windows would otherwise prevent profiling data from being written
+    pool: "threads",
+    execArgv,
+  });
   // NB: This sets `process.exitCode` to a non-zero value if it fails
   await vitest.close();
   if (process.exitCode) {
