@@ -2566,6 +2566,8 @@ export class BattleScene extends SceneBase {
         return 127.489;
       case "battle_legendary_kanto": //XY Kanto Legendary Battle
         return 32.966;
+      case "battle_legendary_mew": //Emerald Mew Battle
+        return 13.284;
       case "battle_legendary_raikou": //HGSS Raikou Battle
         return 12.632;
       case "battle_legendary_entei": //HGSS Entei Battle
@@ -2654,6 +2656,8 @@ export class BattleScene extends SceneBase {
         return 12.703;
       case "battle_wild_strong": //BW Strong Wild Battle
         return 13.94;
+      case "battle_rogue_mega": //PLZA Rogue Mega Battle
+        return 22.135;
       case "end_summit": //PMD RTDX Sky Tower Summit
         return 30.025;
       case "battle_rocket_grunt": //HGSS Team Rocket Battle
