@@ -721,7 +721,12 @@ export class MovePhase extends PokemonPhase {
     const arena = globalScene.arena;
 
     if (!move.applyConditions(user, this.getActiveTargetPokemon()[0], 2)) {
-      // TODO: Make pollen puff failing from heal block use its own message
+      if (move.name === "Pollen Puff") {
+        failedText = i18next.t("battle:moveDisabledHealBlock", {
+          pokemonNameWithAffix: getPokemonNameWithAffix(user),
+          moveName: move.name,
+        })
+      }
       this.failed = true;
     } else if (arena.isMoveWeatherCancelled(user, move)) {
       failedText = getWeatherBlockMessage(globalScene.arena.weatherType);

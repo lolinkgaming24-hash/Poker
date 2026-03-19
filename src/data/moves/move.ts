@@ -1327,7 +1327,7 @@ export abstract class Move implements Localizable {
    * @param target - (Optional) The targeted pokemon, used for Pollen Puff
    * @returns Whether this Move can be given additional strikes.
    */
-  // TODO: Remove target parameter used solely to circumvent Pollen Puff shenanigans - the entire move needs to be fixed anyhow
+  // TODO: Remove target parameter used solely to allow Pollen Puff to only multi strike enemies 
   public canBeMultiStrikeEnhanced(user: Pokemon, restrictSpread = false, target?: Pokemon | null): boolean {
     if (this.isChargingMove()) {
       return false;
@@ -1340,15 +1340,16 @@ export abstract class Move implements Localizable {
       }
     }
 
-    if (
-      this.category === MoveCategory.STATUS
-      || (target != null && user.getMoveCategory(target, this) === MoveCategory.STATUS)
-    ) {
+    if (this.category === MoveCategory.STATUS) {
       return false;
     }
 
     const exceptAttrs: readonly MoveAttrString[] = ["MultiHitAttr", "SacrificialAttr", "SacrificialAttrOnHit"];
     if (exceptAttrs.some(attr => this.hasAttr(attr))) {
+      return false;
+    }
+
+    if (this.hasAttr("HealOnAllyAttr") && target != null && target.getAlly() === user) {
       return false;
     }
 
@@ -11579,7 +11580,6 @@ export function initMoves() {
     new AttackMove(MoveId.THROAT_CHOP, PokemonType.DARK, MoveCategory.PHYSICAL, 80, 100, 15, 100, 0, 7) //
       .attr(AddBattlerTagAttr, BattlerTagType.THROAT_CHOPPED),
     new AttackMove(MoveId.POLLEN_PUFF, PokemonType.BUG, MoveCategory.SPECIAL, 90, 100, 15, -1, 0, 7)
-      .attr(StatusCategoryOnAllyAttr)
       .attr(HealOnAllyAttr, 0.5, true, false)
       .ballBombMove()
       // Fail if used against an ally that is affected by heal block, during the second failure check
