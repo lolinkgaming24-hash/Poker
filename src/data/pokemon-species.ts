@@ -3,7 +3,7 @@ import type { AnySound } from "#app/battle-scene";
 import type { GameMode } from "#app/game-mode";
 import { timedEventManager } from "#app/global-event-manager";
 import { globalScene } from "#app/global-scene";
-import { speciesEggMoves } from "#balance/egg-moves";
+import { speciesEggMoves } from "#balance/moves/egg-moves";
 import { starterPassiveAbilities } from "#balance/passives";
 import { pokemonEvolutions, pokemonPrevolutions } from "#balance/pokemon-evolutions";
 import {
