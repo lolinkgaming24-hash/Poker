@@ -174,14 +174,6 @@ const languageSettings: { [key: string]: LanguageSetting } = {
   },
 };
 
-enum FilterTextOptions {
-  NAME,
-  MOVE_1,
-  MOVE_2,
-  ABILITY_1,
-  ABILITY_2,
-}
-
 interface ContainerData {
   species: PokemonSpecies;
   cost: number;
@@ -246,7 +238,7 @@ export class PokedexUiHandler extends MessageUiHandler {
   private oldCursor = -1;
 
   private lastSpecies: PokemonSpecies;
-  private speciesLoaded: Map<SpeciesId, boolean> = new Map<SpeciesId, boolean>();
+  private readonly speciesLoaded: Map<SpeciesId, boolean> = new Map<SpeciesId, boolean>();
   private pokerusSpecies: PokemonSpecies[] = [];
   private speciesStarterDexEntry: DexEntry | null;
 
@@ -260,18 +252,9 @@ export class PokedexUiHandler extends MessageUiHandler {
 
   protected blockInput = false;
 
-  // for text filters
-  private readonly textPadding = 8;
-  private readonly defaultMessageBoxWidth = 220;
-  private readonly defaultWordWrapWidth = 1224;
-  private menuMessageBoxContainer: Phaser.GameObjects.Container;
-  private menuMessageBox: Phaser.GameObjects.NineSlice;
-  private dialogueMessageBox: Phaser.GameObjects.NineSlice;
   protected manageDataConfig: OptionSelectConfig;
-  private filterTextOptions: FilterTextOptions[];
   protected optionSelectText: Phaser.GameObjects.Text;
   protected scale = 0.1666666667;
-  private menuBg: Phaser.GameObjects.NineSlice;
 
   private filterTextContainer: Phaser.GameObjects.Container;
   private filterText: FilterText;
