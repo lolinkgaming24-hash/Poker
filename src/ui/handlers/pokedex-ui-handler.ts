@@ -1,7 +1,7 @@
 import { globalScene } from "#app/global-scene";
 import { starterColors } from "#app/global-vars/starter-colors";
 import { speciesEggMoves } from "#balance/moves/egg-moves";
-import { pokemonStarters } from "#balance/pokemon-evolutions";
+import { pokemonEvolutions, pokemonPrevolutions, pokemonStarters } from "#balance/pokemon-evolutions";
 import { pokemonFormLevelMoves, pokemonSpeciesLevelMoves } from "#balance/pokemon-level-moves";
 import {
   getPassiveCandyCount,
@@ -1425,6 +1425,7 @@ export class PokedexUiHandler extends MessageUiHandler {
     return levelMoves.includes(selectedMove);
   }
 
+  // TODO: why does this need to be `() => {}` in order to not crash?
   updateStarters = () => {
     this.scrollCursor = 0;
     this.filteredPokemonData = [];
@@ -1436,8 +1437,8 @@ export class PokedexUiHandler extends MessageUiHandler {
 
     this.filteredPokemonData = [];
 
-    allSpecies.forEach(species => {
-      const starterId = this.getStarterSpeciesId(species.speciesId);
+    for (const species of allSpecies) {
+      const starterId: SpeciesId = this.getStarterSpeciesId(species.speciesId);
 
       const currentDexAttr = this.getCurrentDexProps(species.speciesId);
       const props = this.getSanitizedProps(this.gameData.getSpeciesDexAttrProps(species, currentDexAttr));
@@ -1559,18 +1560,41 @@ export class PokedexUiHandler extends MessageUiHandler {
       const indexToBiome = new Map(Object.keys(BiomeId).map((key, idx) => [idx, key]));
       indexToBiome.set(35, "Uncatchable");
 
-      // We get biomes for both the mon and its starters to ensure that evolutions get the correct filters.
-      // TODO: We might also need to do it the other way around.
-      const biomes = catchableSpecies[species.speciesId]
-        .concat(catchableSpecies[starterId])
-        .map(b => enumValueToKey(BiomeId, Number(b.biome) as BiomeId) as string);
-      if (biomes.length === 0) {
-        biomes.push("Uncatchable");
+      // The entire evolutionary line is processed from the point of the current species,
+      // due to pokemon being automatically [de-]evolved when encountered
+      const evoLine: Set<SpeciesId> = new Set([species.speciesId]);
+
+      let preEvoSpeciesId = pokemonPrevolutions[species.speciesId];
+      while (preEvoSpeciesId) {
+        evoLine.add(preEvoSpeciesId);
+        preEvoSpeciesId = pokemonPrevolutions[preEvoSpeciesId];
       }
-      const showNoBiome = !!(biomes.length === 0 && this.filterBar.getVals(DropDownColumn.BIOME).length === 36);
+
+      const getEvolutions = (sId: SpeciesId) => {
+        const evolutions = pokemonEvolutions[sId] ?? [];
+        for (const evoSpecies of evolutions) {
+          evoLine.add(evoSpecies.speciesId);
+          getEvolutions(evoSpecies.speciesId);
+        }
+      };
+      getEvolutions(species.speciesId);
+
+      const biomes: Set<string> = new Set(catchableSpecies[starterId].map(b => enumValueToKey(BiomeId, b.biome)));
+      for (const sId of evoLine) {
+        for (const bttod of catchableSpecies[sId]) {
+          biomes.add(enumValueToKey(BiomeId, bttod.biome));
+        }
+      }
+
+      if (biomes.size === 0) {
+        biomes.add("Uncatchable");
+      }
+
+      const showNoBiome = !!(biomes.size === 0 && this.filterBar.getVals(DropDownColumn.BIOME).length === 36);
       const fitsBiome =
-        this.filterBar.getVals(DropDownColumn.BIOME).some(item => biomes.includes(indexToBiome.get(item) ?? ""))
-        || showNoBiome;
+        this.filterBar
+          .getVals(DropDownColumn.BIOME)
+          .some(item => indexToBiome.has(item) && biomes.has(indexToBiome.get(item)!)) || showNoBiome;
 
       // Caught / Shiny filter
       const isNonShinyCaught = !!(caughtAttr & DexAttr.NON_SHINY);
@@ -1777,7 +1801,7 @@ export class PokedexUiHandler extends MessageUiHandler {
       ) {
         this.filteredPokemonData.push(data);
       }
-    });
+    }
 
     this.starterSelectScrollBar.setTotalRows(Math.max(Math.ceil(this.filteredPokemonData.length / 9), 1));
     this.starterSelectScrollBar.setScrollCursor(0);
