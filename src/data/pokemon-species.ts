@@ -346,7 +346,13 @@ export abstract class PokemonSpeciesForm {
       const replacementFormSpriteKey = getPokemonSpecies(replacement.speciesId).forms[
         replacement.formIndex
       ]?.getFormSpriteKey(replacement.formIndex);
-      spriteKey = `${replacement.speciesId}${replacementFormSpriteKey ? `-${replacementFormSpriteKey}` : ""}`;
+
+      const replacementShowGenderDiffs =
+        getPokemonSpecies(replacement.speciesId).genderDiffs
+        && female
+        && ![SpeciesFormKey.MEGA, SpeciesFormKey.GIGANTAMAX].includes(replacementFormSpriteKey as SpeciesFormKey);
+
+      spriteKey = `${replacementShowGenderDiffs ? "female__" : ""}${replacement.speciesId}${replacementFormSpriteKey ? `-${replacementFormSpriteKey}` : ""}`;
     }
 
     return spriteKey;

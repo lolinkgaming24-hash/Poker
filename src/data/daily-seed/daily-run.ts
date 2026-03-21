@@ -2,6 +2,7 @@ import { globalScene } from "#app/global-scene";
 import { dailyBiomeWeights } from "#balance/daily-biome-weights";
 import { pokemonStarters } from "#balance/pokemon-evolutions";
 import { speciesStarterCosts } from "#balance/starters";
+import { allChallenges } from "#data/challenge";
 import type { PokemonSpecies } from "#data/pokemon-species";
 import { BiomeId } from "#enums/biome-id";
 import type { BiomePoolTier } from "#enums/biome-pool-tier";
@@ -306,6 +307,11 @@ export function startDailyEventChallenges(): void {
   for (const dailyChallenge of dailyConfig?.challenges ?? []) {
     if (!getEnumValues(Challenges).includes(dailyChallenge.id)) {
       console.warn("Invalid challenge ID used for custom daily run seed:", dailyChallenge.id);
+      continue;
+    }
+    // check that the value is a valid number for the challenge type
+    if (!isBetween(dailyChallenge.value, 1, allChallenges[dailyChallenge.id].maxValue)) {
+      console.warn("Invalid challenge value used for custom daily run seed:", dailyChallenge.value);
       continue;
     }
     globalScene.gameMode.setChallengeValue(dailyChallenge.id, dailyChallenge.value);

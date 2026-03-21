@@ -188,7 +188,7 @@ export function validateDailyBossConfig(config: DailySeedBoss): DailySeedBoss | 
     config.passive = undefined;
   }
 
-  if (config.segments != null && config.segments < 1) {
+  if (config.segments != null && (config.segments < 1 || !Number.isSafeInteger(config.segments))) {
     console.warn("Invalid number of segments used for custom daily run seed boss:", config.segments);
     config.segments = undefined;
   }

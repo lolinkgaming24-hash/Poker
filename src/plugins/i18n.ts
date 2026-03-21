@@ -236,7 +236,10 @@ if (timedEventManager.hasEventTextReplacement()) {
   i18next.t = new Proxy(i18next.t.bind(i18next), {
     apply(target, _, args: [key: string, options?: any]) {
       const key = timedEventManager.getEventTextReplacement(args[0]);
-      args[0] = key;
+      if (args[0] !== key) {
+        console.debug(`Replacing i18n key "${args[0]}" with "${key}"`);
+        args[0] = key;
+      }
       return target(...args);
     },
   });

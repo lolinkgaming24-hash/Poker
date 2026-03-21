@@ -83,11 +83,23 @@ export interface DailyTrainerManipulation {
   isTrainer: boolean;
 }
 
+/**
+ * Configuration for a custom daily run challenge.
+ * @privateRemarks
+ * When updating this interface, also update:
+ * - `src/data/daily-seed/schema.json`
+ */
 export interface DailyEventChallenge {
   id: Challenges;
   value: number;
 }
 
+/**
+ * Configuration for a custom daily run mystery encounter.
+ * @privateRemarks
+ * When updating this interface, also update:
+ * - `src/data/daily-seed/schema.json`
+ */
 export interface DailyEventMysteryEncounter {
   waveIndex: number;
   type: MysteryEncounterType;
@@ -115,6 +127,9 @@ export interface CustomDailyRunConfig {
 
 /**
  * The daily run config as it is serialized in the save data.
+ * @privateRemarks
+ * When updating this interface, also update:
+ * `daily-seed-utils.ts` -> `getSerializedDailyRunConfig`
  */
 export interface SerializedDailyRunConfig {
   boss?: DailySeedBoss | undefined;

@@ -237,9 +237,7 @@ export class TimedEventManager {
     if (fillRandom) {
       // Multiply by 100000 to avoid collisions
       const key = species * 100_000 + formIndex;
-      if (!this.cachedReplacementMap) {
-        this.fillRandomSpriteReplacements();
-      }
+      this.fillRandomSpriteReplacements();
       return this.cachedReplacementMap!.get(key) ?? null;
     }
     return null;
@@ -248,28 +246,29 @@ export class TimedEventManager {
   /**
    * Assign each species/form pair a random other species/form pair for sprite replacement.
    */
-  private fillRandomSpriteReplacements() {
-    if (!this.cachedReplacementMap) {
-      this.cachedReplacementMap = new Map();
-      const allPairs: { speciesId: SpeciesId; formIndex: number }[] = [];
-      for (const species of allSpecies) {
-        const formCount = species.forms.length || 1;
-        for (let f = 0; f < formCount; f++) {
-          allPairs.push({ speciesId: species.speciesId, formIndex: f });
-        }
-      }
-      globalScene.executeWithSeedOffset(
-        () => {
-          const shuffled = randSeedShuffle([...allPairs]);
-          for (let i = 0; i < allPairs.length; i++) {
-            const sourceKey = allPairs[i].speciesId * 100_000 + allPairs[i].formIndex;
-            this.cachedReplacementMap!.set(sourceKey, shuffled[i]);
-          }
-        },
-        0,
-        this.activeEvent()!.name,
-      );
+  private fillRandomSpriteReplacements(): void {
+    if (this.cachedReplacementMap) {
+      return;
     }
+    this.cachedReplacementMap = new Map();
+    const allPairs: { speciesId: SpeciesId; formIndex: number }[] = [];
+    for (const species of allSpecies) {
+      const formCount = species.forms.length || 1;
+      for (let f = 0; f < formCount; f++) {
+        allPairs.push({ speciesId: species.speciesId, formIndex: f });
+      }
+    }
+    globalScene.executeWithSeedOffset(
+      () => {
+        const shuffled = randSeedShuffle([...allPairs]);
+        for (let i = 0; i < allPairs.length; i++) {
+          const sourceKey = allPairs[i].speciesId * 100_000 + allPairs[i].formIndex;
+          this.cachedReplacementMap!.set(sourceKey, shuffled[i]);
+        }
+      },
+      0,
+      this.activeEvent()!.name,
+    );
   }
 
   /**
@@ -292,7 +291,7 @@ export class TimedEventManager {
 
   /**
    * Check if the current active event has any text replacements. \
-   * This is used to determine wheater the i18next proxy should be loaded.
+   * This is used to determine whether the i18next proxy should be loaded.
    * @returns Whether the active event has text replacements
    */
   public hasEventTextReplacement(): boolean {
