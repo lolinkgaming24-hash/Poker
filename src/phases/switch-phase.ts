@@ -21,6 +21,7 @@ export class SwitchPhase extends PokemonPhase {
 
   private switchType: SwitchType;
   private switchInIndex: number;
+  private readonly withSummon: boolean;
 
   /**
    * @param battlerIndex - The {@linkcode FieldBattlerIndex} of the Pokemon switching **out**
@@ -28,12 +29,16 @@ export class SwitchPhase extends PokemonPhase {
    * to perform
    * @param switchInIndex - The party index of the Pokemon switching **in**, or `-1` to prompt a switch
    * from the Player party selector or enemy AI; default `-1`
+   * @param withSummon (Default `false`) Whether to queue a `SummonPhase` immediately after this phase ends.
+   * Uesd exclusively for faint switches to propagate the selected switch in choice.
    */
-  constructor(battlerIndex: FieldBattlerIndex, switchType: SwitchType, switchInIndex = -1) {
+  // TODO: Remove the `withSummon` parameter in favor of queueing relevant switches at turn end
+  constructor(battlerIndex: FieldBattlerIndex, switchType: SwitchType, switchInIndex = -1, withSummon = false) {
     super(battlerIndex);
 
     this.switchType = switchType;
     this.switchInIndex = switchInIndex;
+    this.withSummon = withSummon;
   }
 
   public override start(): void {
@@ -175,5 +180,17 @@ export class SwitchPhase extends PokemonPhase {
     }
 
     switchedInPokemon.transferSummon(activePokemon);
+  }
+
+  public override end(): void {
+    const party = this.getAlliedParty();
+    // TODO: This is bad for the reasons described above
+    if (this.withSummon) {
+      globalScene.phaseManager.unshiftNew("SummonPhase", party[this.switchInIndex].getBattlerIndex(), {
+        switchType: this.switchType,
+      });
+      globalScene.pushNew("PostSummonPhase", party[this.switchInIndex].getBattlerIndex());
+    }
+    super.end();
   }
 }
