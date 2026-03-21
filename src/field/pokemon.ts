@@ -9,7 +9,8 @@ import { timedEventManager } from "#app/global-event-manager";
 import { globalScene } from "#app/global-scene";
 import { getPokemonNameWithAffix } from "#app/messages";
 import Overrides from "#app/overrides";
-import { speciesEggMoves } from "#balance/egg-moves";
+import { speciesEggMoves } from "#balance/moves/egg-moves";
+import type { FORCED_RIVAL_SIGNATURE_MOVES } from "#balance/moves/signature-moves";
 import type { SpeciesFormEvolution } from "#balance/pokemon-evolutions";
 import {
   FusionSpeciesFormEvolution,
@@ -183,6 +184,7 @@ import {
 } from "#utils/common";
 import { calculateBossSegmentDamage } from "#utils/damage";
 import { getEnumValues } from "#utils/enums";
+import { cachedFetch } from "#utils/fetch-utils";
 import { getFusedSpeciesName, getPokemonSpecies, getPokemonSpeciesForm } from "#utils/pokemon-utils";
 import { inSpeedOrder } from "#utils/speed-order-generator";
 import { argbFromRgba, QuantizerCelebi, rgbaFromArgb } from "@material/material-color-utilities";
@@ -332,10 +334,6 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
   ) {
     super(globalScene, x, y);
 
-    if (!species.isObtainable() && this.isPlayer()) {
-      throw new Error(`Cannot create a player Pokemon for species "${species.getName(formIndex)}"`);
-    }
-
     this.species = species;
     this.pokeball = dataSource?.pokeball || PokeballType.POKEBALL;
     this.level = level;
@@ -454,10 +452,6 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
     this.battleData = new PokemonBattleData(dataSource?.battleData);
 
     this.generateName();
-
-    if (!species.isObtainable()) {
-      this.shiny = false;
-    }
 
     if (!dataSource) {
       this.calculateStats();
@@ -906,8 +900,7 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
    */
   async populateVariantColorCache(cacheKey: string, useExpSprite: boolean, battleSpritePath: string) {
     const spritePath = `./images/pokemon/variant/${useExpSprite ? "exp/" : ""}${battleSpritePath}.json`;
-    return globalScene
-      .cachedFetch(spritePath)
+    return cachedFetch(spritePath)
       .then(res => {
         // Prevent the JSON from processing if it failed to load
         if (!res.ok) {
@@ -2224,6 +2217,10 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
     if (this.isFusion() && ability.hasAttr("NoFusionAbilityAbAttr")) {
       return false;
     }
+    // Suppression / transformation checks are ignored during moveset generation
+    if (globalScene.movesetGenInProgress) {
+      return true;
+    }
     if (this.isTransformed() && ability.hasAttr("NoTransformAbilityAbAttr")) {
       return false;
     }
@@ -3187,9 +3184,13 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
     this.calculateStats();
   }
 
-  /** Generate a semi-random moveset for this Pokémon */
-  public generateAndPopulateMoveset(): void {
-    generateMoveset(this);
+  /**
+   * Generate a semi-random moveset for this Pokémon
+   *
+   * @param useRivalSignatures - (default `false`) Sets moveset gen to use rival signature pool ({@linkcode FORCED_RIVAL_SIGNATURE_MOVES})
+   */
+  public generateAndPopulateMoveset(useRivalSignatures = false): void {
+    generateMoveset(this, useRivalSignatures);
 
     // Trigger FormChange, except for enemy Pokemon during Mystery Encounters, to avoid crashes
     if (
@@ -6439,6 +6440,7 @@ export class EnemyPokemon extends Pokemon {
     boss: boolean,
     shinyLock = false,
     dataSource?: PokemonData,
+    forRival = false,
   ) {
     super(
       236,
@@ -6481,7 +6483,7 @@ export class EnemyPokemon extends Pokemon {
     }
 
     if (!dataSource) {
-      this.generateAndPopulateMoveset();
+      this.generateAndPopulateMoveset(forRival);
       if (shinyLock || Overrides.ENEMY_SHINY_OVERRIDE === false) {
         this.shiny = false;
       } else {
@@ -6594,7 +6596,7 @@ export class EnemyPokemon extends Pokemon {
     }
   }
 
-  generateAndPopulateMoveset(formIndex?: number): void {
+  override generateAndPopulateMoveset(useRivalSignatures = false, formIndex?: number): void {
     switch (true) {
       case this.species.speciesId === SpeciesId.SMEARGLE:
         this.moveset = [
@@ -6623,7 +6625,7 @@ export class EnemyPokemon extends Pokemon {
         }
         break;
       default:
-        super.generateAndPopulateMoveset();
+        super.generateAndPopulateMoveset(useRivalSignatures);
         break;
     }
   }
