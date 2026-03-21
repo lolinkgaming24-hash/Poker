@@ -189,7 +189,7 @@ export class SwitchPhase extends PokemonPhase {
       globalScene.phaseManager.unshiftNew("SummonPhase", party[this.switchInIndex].getBattlerIndex(), {
         switchType: this.switchType,
       });
-      globalScene.pushNew("PostSummonPhase", party[this.switchInIndex].getBattlerIndex());
+      globalScene.phaseManager.pushNew("PostSummonPhase", party[this.switchInIndex].getBattlerIndex());
     }
     super.end();
   }
