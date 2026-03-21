@@ -31,7 +31,7 @@
     "biome:ci": "biome ci --diagnostic-level=error --reporter=github --reporter=default --no-errors-on-unmatched",
     "typedoc": "typedoc",
     "depcruise": "depcruise src test",
-    "postinstall": "lefthook install; git config --local fetch.recurseSubmodules true; git config --local blame.ignoreRevsFile .git-blame-ignore-revs",
+    "postinstall": "lefthook install 2>/dev/null || true; git config --local fetch.recurseSubmodules true 2>/dev/null || true; git config --local blame.ignoreRevsFile .git-blame-ignore-revs 2>/dev/null || true",
     "update-version:patch": "pnpm version patch --force --no-git-tag-version",
     "update-version:minor": "pnpm version minor --force --no-git-tag-version",
     "update-locales": "pnpm update-submodules locales",
@@ -70,6 +70,7 @@
     "@vitest/expect": "^4.0.18",
     "@vitest/utils": "^4.0.18",
     "chalk": "^5.6.2",
+    "commander": "^14.0.3",
     "dependency-cruiser": "^17.3.8",
     "jsdom": "^28.1.0",
     "lefthook": "^2.1.2",
@@ -93,7 +94,7 @@
     "octokit": "^5.0.5"
   },
   "engines": {
-    "node": ">=24.9.0"
+    "node": ">=20.0.0"
   },
   "packageManager": "pnpm@10.30.3"
 }
