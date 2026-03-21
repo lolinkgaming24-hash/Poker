@@ -3647,7 +3647,8 @@ export class BattleScene extends SceneBase {
     // MEs can only spawn 3 or more waves after the previous ME, barring overrides
     const canSpawn =
       Overrides.MYSTERY_ENCOUNTER_RATE_OVERRIDE !== null // Bang on `at()` is justified due to the check for length === 0
-      && (encounteredEvents.length === 0 || waveIndex > 3 + encounteredEvents.at(-1)!.waveIndex);
+      || encounteredEvents.length === 0
+      || waveIndex > 3 + encounteredEvents.at(-1)!.waveIndex;
     if (!canSpawn) {
       return false;
     }
