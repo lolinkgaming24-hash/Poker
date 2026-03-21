@@ -1769,6 +1769,12 @@ export class InfestationTag extends DamagingTrapTag {
 
 export class ProtectedTag extends BattlerTag {
   public declare readonly tagType: ProtectionBattlerTagType;
+
+  /** Whether this protection effect blocks status moves in addition to damaging moves. */
+  public get blockStatus(): boolean {
+    return true;
+  }
+
   constructor(sourceMove: MoveId, tagType: ProtectionBattlerTagType = BattlerTagType.PROTECTED) {
     super(tagType, BattlerTagLapseType.TURN_END, 0, sourceMove);
   }
@@ -1869,49 +1875,45 @@ export class ContactDamageProtectedTag extends ContactProtectedTag {
   }
 }
 
-/**
- * `BattlerTag` class for moves that block ALL moves (including status moves) and
- * inflict poison status on the attacker if the attacker's move makes contact.
- * @see {@link https://bulbapedia.bulbagarden.net/wiki/Baneful_Bunker_(move)}
- * @remarks
- * Unlike {@linkcode DamageProtectedTag}, this blocks status moves as well as damaging moves.
- * @sealed
- */
-export class ContactSetPoisonProtectedTag extends ContactProtectedTag {
-  public override readonly tagType = BattlerTagType.BANEFUL_BUNKER;
-  readonly #statusEffect: StatusEffect;
-
-  constructor(sourceMove: MoveId, statusEffect: StatusEffect) {
-    super(sourceMove, BattlerTagType.BANEFUL_BUNKER);
-    this.#statusEffect = statusEffect;
-  }
-  /**
-   * Inflict poison status on the attacker
-   * @param attacker - The pokemon using the contact move
-   * @param user - The pokemon that is being attacked and has the tag
-   */
-  override onContact(attacker: Pokemon, user: Pokemon): void {
-    attacker.trySetStatus(this.#statusEffect, user);
-  }
-}
-
 /** Base class for `BattlerTag`s that block damaging moves but not status moves */
 export abstract class DamageProtectedTag extends ContactProtectedTag {
   public declare readonly tagType: DamageProtectedTagType;
+
+  public override get blockStatus(): boolean {
+    return false;
+  }
 }
 
-export class ContactSetStatusProtectedTag extends DamageProtectedTag {
+/**
+ * `BattlerTag` class for protection effects that set a status condition on contact.
+ * Used by {@linkcode MoveId.BANEFUL_BUNKER} and {@linkcode MoveId.BURNING_BULWARK}.
+ */
+export class ContactSetStatusProtectedTag extends ContactProtectedTag {
   public declare readonly tagType: ContactSetStatusProtectedTagType;
   /** The status effect applied to attackers */
   #statusEffect: StatusEffect;
+  /** Whether this protection effect blocks status moves. */
+  readonly #blockStatus: boolean;
+
+  public override get blockStatus(): boolean {
+    return this.#blockStatus;
+  }
+
   /**
    * @param sourceMove - The move that caused the tag to be applied
    * @param tagType - The type of the tag
    * @param statusEffect - The status effect applied to attackers
+   * @param blockStatus - Whether this protection also blocks status-category moves
    */
-  constructor(sourceMove: MoveId, tagType: ContactSetStatusProtectedTagType, statusEffect: StatusEffect) {
+  constructor(
+    sourceMove: MoveId,
+    tagType: ContactSetStatusProtectedTagType,
+    statusEffect: StatusEffect,
+    blockStatus = true,
+  ) {
     super(sourceMove, tagType);
     this.#statusEffect = statusEffect;
+    this.#blockStatus = blockStatus;
   }
 
   /**
@@ -3772,9 +3774,9 @@ export function getBattlerTag(
     case BattlerTagType.SILK_TRAP:
       return new ContactStatStageChangeProtectedTag(sourceMove, tagType, Stat.SPD, -1);
     case BattlerTagType.BANEFUL_BUNKER:
-      return new ContactSetPoisonProtectedTag(sourceMove, StatusEffect.POISON);
+      return new ContactSetStatusProtectedTag(sourceMove, tagType, StatusEffect.POISON);
     case BattlerTagType.BURNING_BULWARK:
-      return new ContactSetStatusProtectedTag(sourceMove, tagType, StatusEffect.BURN);
+      return new ContactSetStatusProtectedTag(sourceMove, tagType, StatusEffect.BURN, false);
     case BattlerTagType.ENDURING:
       return new EnduringTag(tagType, BattlerTagLapseType.TURN_END, sourceMove);
     case BattlerTagType.ENDURE_TOKEN:
