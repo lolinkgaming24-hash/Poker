@@ -77,7 +77,6 @@ describe("Moves - Baneful Bunker", () => {
     const toxapex = game.field.getEnemyPokemon();
 
     game.move.use(MoveId.SPORE);
-
     await game.toEndOfTurn();
 
     expect(toxapex).toHaveStatusEffect(StatusEffect.NONE);
