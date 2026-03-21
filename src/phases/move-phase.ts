@@ -27,7 +27,7 @@ import { StatusEffect } from "#enums/status-effect";
 import { MoveUsedEvent } from "#events/battle-scene";
 import type { Pokemon } from "#field/pokemon";
 import { applyMoveAttrs } from "#moves/apply-attrs";
-import { frenzyMissFunc } from "#moves/move-utils";
+import { frenzyMissFunc, getMoveTargets } from "#moves/move-utils";
 import type { PokemonMove } from "#moves/pokemon-move";
 import type { Move, PreUseInterruptAttr } from "#types/move-types";
 import type { TurnMove } from "#types/turn-move";
@@ -183,6 +183,8 @@ export class MovePhase extends PokemonPhase {
     // Pokerogue's current implementation applies these effects during the move effect phase
     // as there is not (yet) a notion of a move-in-flight for determinations to occur
 
+    // Re-evaluate variable targets (e.g., Expanding Force) at execution time
+    this.resolveVariableTarget();
     this.resolveRedirectTarget();
     this.resolveCounterAttackTarget();
 
@@ -634,6 +636,25 @@ export class MovePhase extends PokemonPhase {
     targets[0] = targetHolder.value;
     if (targetHolder.value === BattlerIndex.ATTACKER) {
       this.fail();
+    }
+  }
+
+  /**
+   * Re-evaluate targets for moves with {@linkcode VariableTargetAttr} at execution time.
+   *
+   * This ensures that moves like Expanding Force correctly check terrain status when the move
+   * is actually used, rather than when it was selected during the command phase.
+   */
+  protected resolveVariableTarget(): void {
+    const move = this.move.getMove();
+    if (!move.hasAttr("VariableTargetAttr")) {
+      return;
+    }
+
+    // Re-evaluate the move targets based on current arena state
+    const newTargets = getMoveTargets(this.pokemon, move.id);
+    if (newTargets.targets.length > 0) {
+      this.targets = newTargets.targets;
     }
   }
 
