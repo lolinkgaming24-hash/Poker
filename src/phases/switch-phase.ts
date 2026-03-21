@@ -30,7 +30,7 @@ export class SwitchPhase extends PokemonPhase {
    * @param switchInIndex - The party index of the Pokemon switching **in**, or `-1` to prompt a switch
    * from the Player party selector or enemy AI; default `-1`
    * @param withSummon (Default `false`) Whether to queue a `SummonPhase` immediately after this phase ends.
-   * Uesd exclusively for faint switches to propagate the selected switch in choice.
+   * Used exclusively for faint switches to propagate the selected switch in choice.
    */
   // TODO: Remove the `withSummon` parameter in favor of queueing relevant switches at turn end
   constructor(battlerIndex: FieldBattlerIndex, switchType: SwitchType, switchInIndex = -1, withSummon = false) {
@@ -155,9 +155,9 @@ export class SwitchPhase extends PokemonPhase {
    * @param switchedInPokemon - The {@linkcode Pokemon} switching in
    */
   private transferBatonPassableEffects(activePokemon: Pokemon, switchedInPokemon: Pokemon): void {
-    this.getOpposingField().forEach((opposingPokemon: Pokemon) =>
-      opposingPokemon.transferTagsBySourceId(activePokemon.id, switchedInPokemon.id),
-    );
+    this.getOpposingField().forEach((opposingPokemon: Pokemon) => {
+      opposingPokemon.transferTagsBySourceId(activePokemon.id, switchedInPokemon.id);
+    });
 
     // If the prior pokemon held a Baton and the current one doesn't, pass it along
     const switchedInPokemonHeldBaton = globalScene.findModifier(
@@ -183,13 +183,12 @@ export class SwitchPhase extends PokemonPhase {
   }
 
   public override end(): void {
-    const party = this.getAlliedParty();
     // TODO: This is bad for the reasons described above
     if (this.withSummon) {
-      globalScene.phaseManager.unshiftNew("SummonPhase", party[this.switchInIndex].getBattlerIndex(), {
+      globalScene.phaseManager.unshiftNew("SummonPhase", this.battlerIndex, {
         switchType: this.switchType,
       });
-      globalScene.phaseManager.pushNew("PostSummonPhase", party[this.switchInIndex].getBattlerIndex());
+      globalScene.phaseManager.pushNew("PostSummonPhase", this.battlerIndex);
     }
     super.end();
   }
