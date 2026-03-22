@@ -44,10 +44,7 @@ const SINGLE_STAGE_ATK_BOOST_REPLACEMENTS: readonly MoveId[] = [
   MoveId.VICTORY_DANCE,
 ];
 
-const MULTIHIT_NORMAL_REPLACEMENTS: readonly MoveId[] = [
-  MoveId.SPIKE_CANNON,
-  MoveId.TAIL_SLAP,
-];
+const MULTIHIT_NORMAL_REPLACEMENTS: readonly MoveId[] = [MoveId.SPIKE_CANNON, MoveId.TAIL_SLAP];
 
 const NORMAL_40BP_REPLACEMENTS: readonly MoveId[] = [
   MoveId.VISE_GRIP,
@@ -68,7 +65,7 @@ const NORMAL_40BP_REPLACEMENTS: readonly MoveId[] = [
   MoveId.COVET,
   MoveId.CHIP_AWAY,
   MoveId.RETALIATE,
-]
+];
 
 /**
  * Map of moves to moves that are strictly better replacements.
@@ -276,17 +273,8 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   ],
   [MoveId.FALSE_SWIPE]: NORMAL_40BP_REPLACEMENTS,
   [MoveId.FEINT_ATTACK]: DARK_TYPE_60_POW_REPLACEMENTS,
-  [MoveId.FELL_STINGER]: [
-    MoveId.LEECH_LIFE,
-    MoveId.X_SCISSOR,
-    MoveId.LUNGE,
-  ],
-  [MoveId.FIRE_FANG]: [
-    MoveId.FIRE_PUNCH,
-    MoveId.SACRED_FIRE,
-    MoveId.BLAZE_KICK,
-    MoveId.BITTER_BLADE,
-  ],
+  [MoveId.FELL_STINGER]: [MoveId.LEECH_LIFE, MoveId.X_SCISSOR, MoveId.LUNGE],
+  [MoveId.FIRE_FANG]: [MoveId.FIRE_PUNCH, MoveId.SACRED_FIRE, MoveId.BLAZE_KICK, MoveId.BITTER_BLADE],
   [MoveId.FLAME_WHEEL]: [
     MoveId.FLARE_BLITZ,
     MoveId.FIRE_FANG,
@@ -339,13 +327,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.CHIP_AWAY,
     MoveId.RETALIATE,
   ],
-  [MoveId.ICE_BALL]: [
-    MoveId.ICE_PUNCH,
-    MoveId.ICE_FANG,
-    MoveId.ICICLE_CRASH,
-    MoveId.MOUNTAIN_GALE,
-    MoveId.ICE_SPINNER,
-  ],
+  [MoveId.ICE_BALL]: [MoveId.ICE_PUNCH, MoveId.ICE_FANG, MoveId.ICICLE_CRASH, MoveId.MOUNTAIN_GALE, MoveId.ICE_SPINNER],
   [MoveId.ICE_FANG]: [MoveId.ICE_PUNCH, MoveId.ICICLE_CRASH, MoveId.ICE_SPINNER],
   [MoveId.ICY_WIND]: [MoveId.ICE_BEAM, MoveId.FREEZE_DRY, MoveId.BLIZZARD],
   // Incinerate is actually pretty good as it removes berries.
@@ -474,11 +456,7 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
     MoveId.AXE_KICK,
     MoveId.COLLISION_COURSE,
   ],
-  [MoveId.ROLLOUT]: [
-    MoveId.ROCK_BLAST,
-    MoveId.ROCK_SLIDE,
-    MoveId.MIGHTY_CLEAVE,
-  ],
+  [MoveId.ROLLOUT]: [MoveId.ROCK_BLAST, MoveId.ROCK_SLIDE, MoveId.MIGHTY_CLEAVE],
   [MoveId.ROUND]: [MoveId.TRI_ATTACK, MoveId.UPROAR, MoveId.HYPER_VOICE, MoveId.TECHNO_BLAST, MoveId.BOOMBURST],
   [MoveId.SCRATCH]: NORMAL_40BP_REPLACEMENTS,
   [MoveId.SHADOW_PUNCH]: [MoveId.SHADOW_CLAW, MoveId.SPIRIT_SHACKLE, MoveId.SPECTRAL_THIEF],

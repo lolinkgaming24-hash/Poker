@@ -119,6 +119,7 @@ export const LEVEL_BASED_DENYLIST: ReadonlySet<MoveId> = new Set([
   MoveId.SONIC_BOOM,
   MoveId.SPARK,
   MoveId.SPIT_UP,
+  MoveId.SPIKE_CANNON, // No one who has it really cares for it
   MoveId.SPLASH,
   MoveId.SUPERSONIC,
   MoveId.SWALLOW,
