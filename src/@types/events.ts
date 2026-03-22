@@ -39,7 +39,7 @@ export interface EventWaveReward {
 
 export type EventMusicReplacement = readonly [string, string];
 export type EventPokemonSpriteReplacement = readonly [string, string];
-export type EventTrainerSpriteReplacement = readonly [TrainerType, TrainerType];
+export type EventTrainerSpriteReplacement = readonly [TrainerType, string];
 
 export interface EventSpriteOptions {
   /**
@@ -48,7 +48,8 @@ export interface EventSpriteOptions {
    */
   readonly pokemonReplacements: readonly EventPokemonSpriteReplacement[];
   /**
-   * An Array of tuples [source, target] for replacing trainer sprites during events.,
+   * An Array of tuples [source, target] for replacing trainer sprites during events.
+   * Source is a {@linkcode TrainerType} and target is the literal filename of the sprite to use for that trainer type during the event (without file extension).
    */
   readonly trainerReplacements: readonly EventTrainerSpriteReplacement[];
   /**

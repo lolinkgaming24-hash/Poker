@@ -219,11 +219,7 @@ export class TrainerConfig {
 
     const replacement = timedEventManager.getEventTrainerSpriteReplacement(this.trainerType);
     if (replacement) {
-      const replacementConfig = trainerConfigs[replacement];
-      ret = TrainerType[replacementConfig.getDerivedType()].toString().toLowerCase();
-      if (replacementConfig.hasGenders) {
-        ret += `_${female ? "f" : "m"}`;
-      }
+      ret = replacement;
     }
 
     return ret;

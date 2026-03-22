@@ -284,7 +284,7 @@ export class TimedEventManager {
    * @param trainerType - The trainer type to check for a sprite replacement
    * @returns The trainer type of the replacement sprite, or null if no replacement exists.
    */
-  public getEventTrainerSpriteReplacement(trainerType: TrainerType): TrainerType | null {
+  public getEventTrainerSpriteReplacement(trainerType: TrainerType): string | null {
     const event = this.activeEvent();
     if (!event) {
       return null;
@@ -340,5 +340,5 @@ export class TimedEventManager {
     this.disabled = true;
   }
 
-  // todo: add option to enable to aloow for testing timed events
+  // todo: add option to enable to allow for testing timed events
 }
