@@ -395,18 +395,18 @@ function postProcessSlot4Fight3(pokemon: EnemyPokemon): void {
       // Heat, Wash, Mow
       const newIndex = randSeedItem([1, 2, 5]);
       if (pokemon.formIndex !== newIndex) {
+        pokemon.formIndex = newIndex;
         pokemon.generateAndPopulateMoveset();
       }
-      pokemon.formIndex = newIndex;
       return;
     }
     case SpeciesId.PALDEA_TAUROS: {
       // Blaze, Aqua
       const newIndex = randSeedItem([1, 2]);
       if (pokemon.formIndex !== newIndex) {
+        pokemon.formIndex = newIndex;
         pokemon.generateAndPopulateMoveset();
       }
-      pokemon.formIndex = newIndex;
       return;
     }
   }
@@ -470,18 +470,18 @@ function postProcessSlot4Fight4(pokemon: EnemyPokemon, level = SLOT_4_FIGHT_4_LE
       // Heat, Wash, Mow
       const newIndex = randSeedItem([1, 2, 5]);
       if (pokemon.formIndex !== newIndex) {
+        pokemon.formIndex = newIndex;
         pokemon.generateAndPopulateMoveset();
       }
-      pokemon.formIndex = newIndex;
       return;
     }
     case SpeciesId.PALDEA_TAUROS: {
       // Blaze, Aqua
       const newIndex = randSeedItem([1, 2]);
       if (pokemon.formIndex !== newIndex) {
+        pokemon.formIndex = newIndex;
         pokemon.generateAndPopulateMoveset();
       }
-      pokemon.formIndex = newIndex;
       return;
     }
   }
