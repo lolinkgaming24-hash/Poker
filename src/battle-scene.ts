@@ -122,7 +122,6 @@ import { trainerConfigs } from "#trainers/trainer-config";
 import type { Constructor } from "#types/common";
 import type { HeldModifierConfig } from "#types/held-modifier-config";
 import type { Localizable } from "#types/locales";
-import type { TypedEventTarget } from "#types/typed-event-target";
 import type {
   NewBattleConstructedProps,
   NewBattleInitialProps,
@@ -130,6 +129,7 @@ import type {
   NewBattleSavedProps,
 } from "#types/new-battle-props";
 import type { SessionSaveData } from "#types/save-data";
+import type { TypedEventTarget } from "#types/typed-event-target";
 import { AbilityBar } from "#ui/ability-bar";
 import { ArenaFlyout } from "#ui/arena-flyout";
 import { CandyBar } from "#ui/candy-bar";
