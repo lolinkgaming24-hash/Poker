@@ -2,7 +2,7 @@ import { timedEventManager } from "#app/global-event-manager";
 import { PokeballType } from "#enums/pokeball";
 import { SpeciesId } from "#enums/species-id";
 import type { EnemyPokemon } from "#field/pokemon";
-import { randSeedIntRange, randSeedItem } from "#utils/common";
+import { randSeedItem } from "#utils/common";
 
 //#region constants
 
