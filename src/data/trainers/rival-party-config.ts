@@ -388,15 +388,27 @@ function postProcessSlot4Fight3(pokemon: EnemyPokemon): void {
   pokemon.level = SLOT_4_FIGHT_3_LEVEL;
   switch (pokemon.species.speciesId) {
     case SpeciesId.BASCULIN:
-      pokemon.formIndex = 2; // White
+      // White
+      pokemon.formIndex = 2;
       return;
-    case SpeciesId.ROTOM:
+    case SpeciesId.ROTOM: {
       // Heat, Wash, Mow
-      pokemon.formIndex = randSeedItem([1, 2, 5]);
+      const newIndex = randSeedItem([1, 2, 5]);
+      if (pokemon.formIndex !== newIndex) {
+        pokemon.generateAndPopulateMoveset();
+      }
+      pokemon.formIndex = newIndex;
       return;
-    case SpeciesId.PALDEA_TAUROS:
-      pokemon.formIndex = randSeedIntRange(1, 2); // Blaze, Aqua
+    }
+    case SpeciesId.PALDEA_TAUROS: {
+      // Blaze, Aqua
+      const newIndex = randSeedItem([1, 2]);
+      if (pokemon.formIndex !== newIndex) {
+        pokemon.generateAndPopulateMoveset();
+      }
+      pokemon.formIndex = newIndex;
       return;
+    }
   }
 }
 /** Rival's slot 4 species pool for fight 3 */
@@ -451,15 +463,27 @@ function postProcessSlot4Fight4(pokemon: EnemyPokemon, level = SLOT_4_FIGHT_4_LE
   pokemon.level = level;
   switch (pokemon.species.speciesId) {
     case SpeciesId.BASCULEGION:
+      // Male, Female
       pokemon.formIndex = randSeedIntRange(0, 1);
       return;
-    case SpeciesId.ROTOM:
+    case SpeciesId.ROTOM: {
       // Heat, Wash, Mow
-      pokemon.formIndex = randSeedItem([1, 2, 5]);
+      const newIndex = randSeedItem([1, 2, 5]);
+      if (pokemon.formIndex !== newIndex) {
+        pokemon.generateAndPopulateMoveset();
+      }
+      pokemon.formIndex = newIndex;
       return;
-    case SpeciesId.PALDEA_TAUROS:
-      pokemon.formIndex = randSeedIntRange(1, 2); // Blaze, Aqua
+    }
+    case SpeciesId.PALDEA_TAUROS: {
+      // Blaze, Aqua
+      const newIndex = randSeedItem([1, 2]);
+      if (pokemon.formIndex !== newIndex) {
+        pokemon.generateAndPopulateMoveset();
+      }
+      pokemon.formIndex = newIndex;
       return;
+    }
   }
 }
 
