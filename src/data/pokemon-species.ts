@@ -492,8 +492,8 @@ export abstract class PokemonSpeciesForm {
       formIndex = override.formIndex;
     }
 
-    if (this.speciesId > 2000) {
-      switch (this.speciesId) {
+    if (speciesId > 2000) {
+      switch (speciesId) {
         case SpeciesId.GALAR_SLOWPOKE:
           break;
         case SpeciesId.ETERNAL_FLOETTE:
