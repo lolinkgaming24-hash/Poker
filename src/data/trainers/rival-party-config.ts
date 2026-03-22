@@ -15,7 +15,7 @@ const SLOT_3_FIGHT_4_LEVEL = 71;
 const SLOT_3_FIGHT_5_LEVEL = 125;
 const SLOT_3_FIGHT_6_LEVEL = 189;
 
-// Fights 1 and 2 don't have slot 4
+// Fights 1-2 don't have slot 4
 const SLOT_4_FIGHT_3_LEVEL = 38;
 const SLOT_4_FIGHT_4_LEVEL = 71;
 const SLOT_4_FIGHT_5_LEVEL = 125;
