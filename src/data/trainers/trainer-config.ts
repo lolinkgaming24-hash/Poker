@@ -1,4 +1,5 @@
 import { getRandomRivalPartyMemberFunc } from "#app/ai/rival-team-gen";
+import { timedEventManager } from "#app/global-event-manager";
 import { globalScene } from "#app/global-scene";
 import { signatureSpecies } from "#balance/signature-species";
 import { tmSpecies } from "#balance/tm-species-map";
@@ -215,6 +216,16 @@ export class TrainerConfig {
       // Get the derived type for the double trainer since the sprite key is based on the derived type
       ret = TrainerType[this.getDerivedType(this.trainerTypeDouble)].toString().toLowerCase();
     }
+
+    const replacement = timedEventManager.getEventTrainerSpriteReplacement(this.trainerType);
+    if (replacement) {
+      const replacementConfig = trainerConfigs[replacement];
+      ret = TrainerType[replacementConfig.getDerivedType()].toString().toLowerCase();
+      if (replacementConfig.hasGenders) {
+        ret += `_${female ? "f" : "m"}`;
+      }
+    }
+
     return ret;
   }
 

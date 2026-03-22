@@ -4,6 +4,7 @@ import type { ClassicFixedBossWaves } from "#enums/fixed-boss-waves";
 import type { MysteryEncounterTier } from "#enums/mystery-encounter-tier";
 import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
+import type { TrainerType } from "#enums/trainer-type";
 import type { ModifierTypeKeys } from "#modifiers/modifier-type";
 import type { TerrainPool, WeatherPool } from "#types/biomes";
 
@@ -37,14 +38,19 @@ export interface EventWaveReward {
 }
 
 export type EventMusicReplacement = readonly [string, string];
-export type EventSpriteReplacement = readonly [string, string];
+export type EventPokemonSpriteReplacement = readonly [string, string];
+export type EventTrainerSpriteReplacement = readonly [TrainerType, TrainerType];
 
 export interface EventSpriteOptions {
   /**
    * An Array of tuples [source, target] for replacing pokemon sprites during events.
    * Format for both source and target is "speciesId[/formIndex]", where formIndex is optional and defaults to 0 if not provided.
    */
-  readonly replacements: readonly EventSpriteReplacement[];
+  readonly pokemonReplacements: readonly EventPokemonSpriteReplacement[];
+  /**
+   * An Array of tuples [source, target] for replacing trainer sprites during events.,
+   */
+  readonly trainerReplacements: readonly EventTrainerSpriteReplacement[];
   /**
    * If true, any species not explicitly listed in the replacements array will be replaced with a random species.
    * @defaultValue false

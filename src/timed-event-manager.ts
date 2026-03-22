@@ -5,6 +5,7 @@ import type { PokemonSpeciesFilter } from "#data/pokemon-species";
 import type { MysteryEncounterTier } from "#enums/mystery-encounter-tier";
 import type { MysteryEncounterType } from "#enums/mystery-encounter-type";
 import type { SpeciesId } from "#enums/species-id";
+import type { TrainerType } from "#enums/trainer-type";
 import type { ModifierTypeKeys } from "#modifiers/modifier-type";
 import type { EventEncounter, EventMysteryEncounterTier, EventWeatherPools, TimedEvent } from "#types/events";
 import { randSeedShuffle } from "#utils/common";
@@ -208,7 +209,14 @@ export class TimedEventManager {
     return bgm;
   }
 
-  public getEventSpriteReplacement(
+  /**
+   * Get the event sprite replacement for a given species and form, if it exists. If the active event has `fillRandom` enabled, \
+   * will return a random replacement for any species/form pair that isn't explicitly listed in the `pokemonReplacements` array.
+   * @param species - The species ID of the pokemon to check for a sprite replacement
+   * @param formIndex - The form index of the pokemon to check for a sprite replacement. Defaults to 0
+   * @returns An object containing the species ID and form index of the replacement sprite, or null if no replacement exists.
+   */
+  public getEventPokemonSpriteReplacement(
     species: SpeciesId,
     formIndex = 0,
   ): {
@@ -223,7 +231,7 @@ export class TimedEventManager {
     if (!sprites) {
       return null;
     }
-    const eventSpriteReplacements = sprites.replacements;
+    const eventSpriteReplacements = sprites.pokemonReplacements;
     const fillRandom = sprites.fillRandom ?? false;
 
     for (const esr of eventSpriteReplacements) {
@@ -237,7 +245,7 @@ export class TimedEventManager {
     if (fillRandom) {
       // Multiply by 100000 to avoid collisions
       const key = species * 100_000 + formIndex;
-      this.fillRandomSpriteReplacements();
+      this.fillRandomPokemonSpriteReplacements();
       return this.cachedReplacementMap!.get(key) ?? null;
     }
     return null;
@@ -246,7 +254,7 @@ export class TimedEventManager {
   /**
    * Assign each species/form pair a random other species/form pair for sprite replacement.
    */
-  private fillRandomSpriteReplacements(): void {
+  private fillRandomPokemonSpriteReplacements(): void {
     if (this.cachedReplacementMap) {
       return;
     }
@@ -269,6 +277,25 @@ export class TimedEventManager {
       0,
       this.activeEvent()!.name,
     );
+  }
+
+  /**
+   * Get the event trainer sprite replacement for a given trainer type, if it exists.
+   * @param trainerType - The trainer type to check for a sprite replacement
+   * @returns The trainer type of the replacement sprite, or null if no replacement exists.
+   */
+  public getEventTrainerSpriteReplacement(trainerType: TrainerType): TrainerType | null {
+    const event = this.activeEvent();
+    if (!event) {
+      return null;
+    }
+    const trainerReplacements = event.sprites?.trainerReplacements ?? [];
+    for (const tr of trainerReplacements) {
+      if (tr[0] === trainerType) {
+        return tr[1];
+      }
+    }
+    return null;
   }
 
   /**

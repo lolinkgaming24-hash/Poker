@@ -341,7 +341,7 @@ export abstract class PokemonSpeciesForm {
 
     let spriteKey = `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
 
-    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId, formIndex);
+    const replacement = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
     if (replacement) {
       const replacementFormSpriteKey = getPokemonSpecies(replacement.speciesId).forms[
         replacement.formIndex
@@ -391,7 +391,7 @@ export abstract class PokemonSpeciesForm {
       }
     }
 
-    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId, formIndex);
+    const replacement = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
     if (replacement) {
       formkey = species.forms[replacement.formIndex]?.getFormSpriteKey(replacement.formIndex);
       if (formkey) {
@@ -409,7 +409,7 @@ export abstract class PokemonSpeciesForm {
     const isVariant =
       shiny && variantData[variantDataIndex] && variant !== undefined && variantData[variantDataIndex][variant];
 
-    const replacementSpecies = timedEventManager.getEventSpriteReplacement(this.speciesId, formIndex);
+    const replacementSpecies = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
     const generation = replacementSpecies
       ? getPokemonSpeciesForm(replacementSpecies.speciesId, replacementSpecies.formIndex).generation
       : this.generation;
@@ -422,7 +422,7 @@ export abstract class PokemonSpeciesForm {
     }
 
     const variantDataIndex = this.getVariantDataIndex(formIndex);
-    const replacement = timedEventManager.getEventSpriteReplacement(this.speciesId, formIndex);
+    const replacement = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
 
     let ret = this.speciesId.toString();
 
@@ -486,7 +486,7 @@ export abstract class PokemonSpeciesForm {
   getCryKey(formIndex?: number): string {
     let speciesId = this.speciesId;
 
-    const override = timedEventManager.getEventSpriteReplacement(this.speciesId, formIndex);
+    const override = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
     if (override) {
       speciesId = override.speciesId;
       formIndex = override.formIndex;
