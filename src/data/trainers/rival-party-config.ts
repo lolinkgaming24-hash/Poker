@@ -464,7 +464,7 @@ function postProcessSlot4Fight4(pokemon: EnemyPokemon, level = SLOT_4_FIGHT_4_LE
   switch (pokemon.species.speciesId) {
     case SpeciesId.BASCULEGION:
       // Male, Female
-      pokemon.formIndex = randSeedItem([1, 2]);
+      pokemon.formIndex = randSeedItem([0, 1]);
       return;
     case SpeciesId.ROTOM: {
       // Heat, Wash, Mow
