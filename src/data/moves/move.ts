@@ -8878,6 +8878,22 @@ export class VariableTargetAttr extends MoveAttr {
   }
 }
 
+export class OverrideTargetAttr extends MoveAttr {
+  private readonly targetChangeFunc: (user: Pokemon, target: Pokemon, move: Move) => number;
+
+  constructor(targetChange: (user: Pokemon, target: Pokemon, move: Move) => number) {
+    super();
+
+    this.targetChangeFunc = targetChange;
+  }
+
+  apply(user: Pokemon, target: Pokemon, move: Move, args: any[]): boolean {
+    const targetVal = args[0] as NumberHolder;
+    targetVal.value = this.targetChangeFunc(user, target, move);
+    return true;
+  }
+}
+
 /**
  * Attribute to cause the target to move immediately after the user.
  *
@@ -9287,6 +9303,7 @@ const MoveAttrs = Object.freeze({
   AddBattlerTagIfBoostedAttr,
   StatusIfBoostedAttr,
   VariableTargetAttr,
+  OverrideTargetAttr,
   AfterYouAttr,
   ForceLastAttr,
   ResistLastMoveTypeAttr,
@@ -12540,7 +12557,7 @@ export function initMoves() {
     new AttackMove(MoveId.TERA_STARSTORM, PokemonType.NORMAL, MoveCategory.SPECIAL, 120, 100, 5, -1, 0, 9)
       .attr(TeraMoveCategoryAttr)
       .attr(TeraStarstormTypeAttr)
-      .attr(VariableTargetAttr, (user, _target, _move) =>
+      .attr(OverrideTargetAttr, (user, _target, _move) =>
         user.hasSpecies(SpeciesId.TERAPAGOS)
         && (user.isTerastallized
           || globalScene.currentBattle.preTurnCommands[user.getFieldIndex()]?.command === Command.TERA)

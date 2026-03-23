@@ -80,8 +80,8 @@ describe("Move - Expanding Force", () => {
     const feebas = game.field.getPlayerPokemon();
     expect(feebas).toHaveUsedMove({ move: MoveId.EXPANDING_FORCE, targets: [BattlerIndex.ENEMY_2] });
     const [karp1, karp2] = game.scene.getEnemyField();
-    expect(karp1).not.toHaveFullHp();
-    expect(karp2).toHaveFullHp();
+    expect(karp2).not.toHaveFullHp();
+    expect(karp1).toHaveFullHp();
 
     // repeat, but enabling the terrain mid-turn instead
     karp1.hp = karp1.getMaxHp();
@@ -89,6 +89,7 @@ describe("Move - Expanding Force", () => {
     game.move.use(MoveId.EXPANDING_FORCE, BattlerIndex.PLAYER, BattlerIndex.ENEMY_2);
     await game.move.forceEnemyMove(MoveId.PSYCHIC_TERRAIN);
     await game.move.forceEnemyMove(MoveId.SPLASH);
+    game.setTurnOrder([BattlerIndex.ENEMY, BattlerIndex.ENEMY_2, BattlerIndex.PLAYER]);
     await game.toEndOfTurn();
 
     expect(feebas).toHaveUsedMove({

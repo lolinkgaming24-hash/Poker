@@ -555,7 +555,12 @@ export class MovePhase extends PokemonPhase {
       return;
     }
 
-    const newTargetSet = getMoveTargets(user, moveObj.id);
+    // Apply the VariableTargetAttr to determine the new MoveTarget.
+    const variableTargetHolder = new NumberHolder(moveObj.moveTarget);
+    const selectedTarget = globalScene.getField()[this.targets[0]];
+    const attrTarget = selectedTarget ?? user.getOpponents(false)[0] ?? user;
+    applyMoveAttrs("VariableTargetAttr", user, attrTarget, moveObj, variableTargetHolder);
+    const newTargetSet = getMoveTargets(user, moveObj.id, variableTargetHolder.value);
 
     if (newTargetSet.multiple) {
       // move has become a spread move – adopt the full set of targets.
