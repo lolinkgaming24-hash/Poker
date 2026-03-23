@@ -34,8 +34,10 @@ import {
   shiftCharCodes,
 } from "#utils/common";
 import { getEnumValues } from "#utils/enums";
+import { getPokemonSpecies } from "#utils/pokemon-utils";
 import { randSeedUniqueItem } from "#utils/random";
 import i18next from "i18next";
+import { timedEventManager } from "./global-event-manager";
 
 export interface TurnCommand {
   command: Command;
@@ -269,6 +271,13 @@ export class Battle {
     }
     const wildOpponents = globalScene.getEnemyParty();
     for (const pokemon of wildOpponents) {
+      const replacement = timedEventManager.getEventPokemonSpriteReplacement(
+        pokemon.species.speciesId,
+        pokemon.formIndex,
+      );
+      const species = getPokemonSpecies(replacement?.speciesId || pokemon.species.speciesId);
+      const formIndex = replacement?.formIndex || pokemon.formIndex;
+
       if (this.battleSpec === BattleSpec.FINAL_BOSS) {
         if (pokemon.species.getFormSpriteKey(pokemon.formIndex) === SpeciesFormKey.ETERNAMAX) {
           return "battle_final";
@@ -276,13 +285,13 @@ export class Battle {
         return "battle_final_encounter";
       }
       if (
-        pokemon.species.legendary
-        || pokemon.species.subLegendary
-        || pokemon.species.mythical
-        || (pokemon.species.category.startsWith("Paradox") && globalScene.arena.biomeId !== BiomeId.END)
+        species.legendary
+        || species.subLegendary
+        || species.mythical
+        || (species.category.startsWith("Paradox") && globalScene.arena.biomeId !== BiomeId.END)
       ) {
         if (globalScene.musicPreference === MusicPreference.GENFIVE) {
-          switch (pokemon.species.speciesId) {
+          switch (species.speciesId) {
             case SpeciesId.REGIROCK:
             case SpeciesId.REGICE:
             case SpeciesId.REGISTEEL:
@@ -293,14 +302,14 @@ export class Battle {
             case SpeciesId.KYUREM:
               return "battle_legendary_kyurem";
             default:
-              if (pokemon.species.legendary) {
+              if (species.legendary) {
                 return "battle_legendary_res_zek";
               }
               return "battle_legendary_unova";
           }
         }
         if (globalScene.musicPreference === MusicPreference.ALLGENS) {
-          switch (pokemon.species.speciesId) {
+          switch (species.speciesId) {
             case SpeciesId.ARTICUNO:
             case SpeciesId.ZAPDOS:
             case SpeciesId.MOLTRES:
@@ -342,7 +351,7 @@ export class Battle {
               return "battle_legendary_sinnoh";
             case SpeciesId.DIALGA:
             case SpeciesId.PALKIA:
-              if (pokemon.species.getFormSpriteKey(pokemon.formIndex) === SpeciesFormKey.ORIGIN) {
+              if (species.getFormSpriteKey(formIndex) === SpeciesFormKey.ORIGIN) {
                 return "battle_legendary_origin_forme";
               }
               return "battle_legendary_dia_pal";
@@ -375,7 +384,7 @@ export class Battle {
             case SpeciesId.LUNALA:
               return "battle_legendary_sol_lun";
             case SpeciesId.NECROZMA:
-              switch (pokemon.getFormKey()) {
+              switch (species.forms[formIndex].formKey) {
                 case "dusk-mane":
                 case "dawn-wings":
                   return "battle_legendary_dusk_dawn";
@@ -400,7 +409,7 @@ export class Battle {
             case SpeciesId.ZAMAZENTA:
               return "battle_legendary_zac_zam";
             case SpeciesId.ETERNATUS:
-              if (pokemon.getFormKey() === "eternamax") {
+              if (species.forms[formIndex].formKey === SpeciesFormKey.ETERNAMAX) {
                 return "battle_legendary_eternatus_p2";
               }
               return "battle_legendary_eternatus_p1";
@@ -408,7 +417,7 @@ export class Battle {
             case SpeciesId.SPECTRIER:
               return "battle_legendary_glas_spec";
             case SpeciesId.CALYREX:
-              if (pokemon.getFormKey() === "ice" || pokemon.getFormKey() === "shadow") {
+              if (species.forms[formIndex].formKey === "ice" || species.forms[formIndex].formKey === "shadow") {
                 return "battle_legendary_riders";
               }
               return "battle_legendary_calyrex";
@@ -455,7 +464,7 @@ export class Battle {
             case SpeciesId.PECHARUNT:
               return "battle_legendary_pecharunt";
             default:
-              if (pokemon.species.legendary) {
+              if (species.legendary) {
                 return "battle_legendary_res_zek";
               }
               return "battle_legendary_unova";
