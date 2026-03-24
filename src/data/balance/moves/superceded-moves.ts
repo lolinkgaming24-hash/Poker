@@ -582,6 +582,10 @@ export const SUPERCEDED_MOVES: Partial<Record<MoveId, readonly MoveId[]>> = {
   [MoveId.STUN_SPORE]: [MoveId.THUNDER_WAVE, MoveId.GLARE],
   [MoveId.THUNDER_WAVE]: [MoveId.GLARE, MoveId.NUZZLE, MoveId.BUZZY_BUZZ],
   [MoveId.WILL_O_WISP]: [MoveId.SIZZLY_SLIDE],
+  [MoveId.LIGHT_SCREEN]: [MoveId.GLITZY_GLOW],
+  [MoveId.REFLECT]: [MoveId.BADDY_BAD],
+  [MoveId.LEECH_SEED]: [MoveId.SAPPY_SEED],
+  [MoveId.HAZE]: [MoveId.FREEZY_FROST],
   [MoveId.LEER]: [MoveId.TICKLE, MoveId.OCTOLOCK, MoveId.SCREECH],
   [MoveId.GROWL]: [
     MoveId.FEATHER_DANCE,
