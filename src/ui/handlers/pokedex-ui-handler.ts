@@ -894,8 +894,8 @@ export class PokedexUiHandler extends MessageUiHandler {
     return globalScene.candyUpgradeNotification !== 0 && globalScene.candyUpgradeDisplay === 1;
   }
 
-  getStarterSpeciesId(speciesId): number {
-    if (speciesStarterCosts.hasOwnProperty(speciesId)) {
+  getStarterSpeciesId(speciesId: SpeciesId): SpeciesId {
+    if (Object.hasOwn(speciesStarterCosts, speciesId)) {
       return speciesId;
     }
     return pokemonStarters[speciesId];
@@ -1438,7 +1438,7 @@ export class PokedexUiHandler extends MessageUiHandler {
     this.filteredPokemonData = [];
 
     for (const species of allSpecies) {
-      const starterId: SpeciesId = this.getStarterSpeciesId(species.speciesId);
+      const starterId = this.getStarterSpeciesId(species.speciesId);
 
       const currentDexAttr = this.getCurrentDexProps(species.speciesId);
       const props = this.getSanitizedProps(this.gameData.getSpeciesDexAttrProps(species, currentDexAttr));
