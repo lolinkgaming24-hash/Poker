@@ -387,9 +387,9 @@ export const pokemonFormChanges: PokemonFormChanges = {
     new SpeciesFormChange(SpeciesId.GENESECT, "", "chill", new SpeciesFormChangeItemTrigger(FormChangeItem.CHILL_DRIVE)),
     new SpeciesFormChange(SpeciesId.GENESECT, "", "douse", new SpeciesFormChangeItemTrigger(FormChangeItem.DOUSE_DRIVE))
   ],
-  [SpeciesId.GRENINJA]: [
-    new SpeciesFormChange(SpeciesId.GRENINJA, "battle-bond", "ash", new SpeciesFormChangeAbilityTrigger(), true),
-    new SpeciesFormChange(SpeciesId.GRENINJA, "ash", "battle-bond", new SpeciesFormChangeAbilityTrigger(), true)
+  [SpeciesId.BATTLE_BOND_GRENINJA]: [
+    new SpeciesFormChange(SpeciesId.BATTLE_BOND_GRENINJA, "", "ash", new SpeciesFormChangeAbilityTrigger(), true),
+    new SpeciesFormChange(SpeciesId.BATTLE_BOND_GRENINJA, "ash", "", new SpeciesFormChangeAbilityTrigger(), true)
   ],
   [SpeciesId.PALAFIN] : [
     new SpeciesFormChange(SpeciesId.PALAFIN, "zero", "hero", new SpeciesFormChangeAbilityTrigger(), true),

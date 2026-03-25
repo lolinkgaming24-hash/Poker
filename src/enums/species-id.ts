@@ -2163,4 +2163,6 @@ export enum SpeciesId {
   PALDEA_WOOPER = 8194,
   /**{@link https://bulbapedia.bulbagarden.net/wiki/Ursaluna_(Pokémon) | Source} */
   BLOODMOON_URSALUNA = 8901,
+  /**{@link https://bulbapedia.bulbagarden.net/wiki/Greninja_(Pokémon) | Source} */
+  BATTLE_BOND_GRENINJA = 9658, // Change dex number?
 }

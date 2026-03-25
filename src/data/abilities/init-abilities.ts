@@ -1435,12 +1435,12 @@ export function initAbilities() {
       .build(),
     new AbBuilder(AbilityId.BATTLE_BOND, 7) //
       .conditionalAttr(
-        p => p.species.speciesId === SpeciesId.GRENINJA && !p.isFusion(),
+        p => p.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA && !p.isFusion(),
         PostVictoryFormChangeAbAttr,
         () => 2,
       )
       .conditionalAttr(
-        p => p.species.speciesId === SpeciesId.GRENINJA && !p.isFusion(),
+        p => p.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA && !p.isFusion(),
         PostBattleInitFormChangeAbAttr,
         () => 1,
       )

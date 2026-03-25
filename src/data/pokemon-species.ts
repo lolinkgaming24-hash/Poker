@@ -64,9 +64,7 @@ export const normalForm: SpeciesId[] = [
   SpeciesId.PALKIA,
   SpeciesId.KYUREM,
   SpeciesId.GENESECT,
-  SpeciesId.FROAKIE,
-  SpeciesId.FROGADIER,
-  SpeciesId.GRENINJA,
+  SpeciesId.BATTLE_BOND_GRENINJA,
   SpeciesId.ROCKRUFF,
   SpeciesId.NECROZMA,
   SpeciesId.MAGEARNA,
@@ -279,7 +277,7 @@ export abstract class PokemonSpeciesForm {
   }
 
   isTrainerForbidden(): boolean {
-    return [SpeciesId.ETERNAL_FLOETTE, SpeciesId.BLOODMOON_URSALUNA].includes(this.speciesId);
+    return [SpeciesId.ETERNAL_FLOETTE, SpeciesId.BLOODMOON_URSALUNA, SpeciesId.BATTLE_BOND_GRENINJA].includes(this.speciesId);
   }
 
   isRareRegional(): boolean {
@@ -962,6 +960,9 @@ export class PokemonSpecies extends PokemonSpeciesForm implements Localizable {
     } else if (this.speciesId === SpeciesId.BLOODMOON_URSALUNA) {
       // Not a real form, so the key is made up
       return i18next.t("pokemonForm:ursalunaBloodmoon");
+    } else if (this.speciesId === SpeciesId.BATTLE_BOND_GRENINJA) {
+      // Not a real form, so the key is made up
+      return i18next.t("pokemonForm:greninjaBattleBond");
     } else {
       // Only regional forms should be left at this point
       return i18next.t(`pokemonForm:regionalForm.${toCamelCase(Region[region])}`);

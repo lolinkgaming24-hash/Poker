@@ -802,7 +802,6 @@ $pkmnTable = @{
 	"froakie" = "656"
 	"frogadier" = "657"
 	"greninja" = "658"
-	"greninja-battle-bond" = "658-battle-bond"
 	"bunnelby" = "659"
 	"diggersby" = "660"
 	"fletchling" = "661"
@@ -1404,6 +1403,7 @@ $pkmnTable = @{
 	"tauros-aqua-paldea" = "8128-aqua"
 	"wooper-paldea" = "8194"
 	"bloodmoon-ursaluna" = "8901"
+	"battle-bond-greninja" = "9658"
 }
 
 $dir = "."

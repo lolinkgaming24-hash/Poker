@@ -57,7 +57,7 @@ export const FORCED_SIGNATURE_MOVES: Partial<Record<SpeciesId, MoveId | MoveId[]
 
   // Starters
   [SpeciesId.HISUI_SAMUROTT]: [MoveId.RAZOR_SHELL, MoveId.CEASELESS_EDGE],
-  [SpeciesId.DECIDUEYE]: MoveId.SPIRIT_SHACKLE,
+  [SpeciesId.BATTLE_BOND_GRENINJA]: [MoveId.WATER_SHURIKEN],
   [SpeciesId.HISUI_DECIDUEYE]: MoveId.TRIPLE_ARROWS,
   [SpeciesId.CINDERACE]: MoveId.PYRO_BALL,
   [SpeciesId.INTELEON]: MoveId.SNIPE_SHOT,

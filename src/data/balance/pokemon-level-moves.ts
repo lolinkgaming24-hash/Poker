@@ -11655,6 +11655,30 @@ export const pokemonSpeciesLevelMoves = {
     [ 56, MoveId.DOUBLE_TEAM ],
     [ 68, MoveId.HYDRO_PUMP ],
   ],
+  [SpeciesId.BATTLE_BOND_GRENINJA]: [
+    [ 1, MoveId.POUND ],
+    [ 1, MoveId.GROWL ],
+    [ 1, MoveId.WATER_GUN ],
+    [ 1, MoveId.QUICK_ATTACK ],
+    [ 1, MoveId.ROUND ], // Previous Stage Move
+    [ 1, MoveId.FLING ], // Previous Stage Move
+    [ 1, MoveId.SMACK_DOWN ], // Previous Stage Move
+    [ 1, MoveId.BOUNCE ], // Previous Stage Move
+    [ 1, MoveId.HAZE ],
+    [ 1, MoveId.MAT_BLOCK ],
+    [ 1, MoveId.ROLE_PLAY ],
+    [ 1, MoveId.NIGHT_SLASH ],
+    [ 10, MoveId.LICK ],
+    [ 14, MoveId.WATER_PULSE ],
+    [ 19, MoveId.SMOKESCREEN ],
+    [ 23, MoveId.SHADOW_SNEAK ],
+    [ 28, MoveId.SPIKES ],
+    [ 33, MoveId.AERIAL_ACE ],
+    [ 42, MoveId.SUBSTITUTE ],
+    [ 49, MoveId.EXTRASENSORY ],
+    [ 56, MoveId.DOUBLE_TEAM ],
+    [ 68, MoveId.HYDRO_PUMP ],
+  ],
   [SpeciesId.BUNNELBY]: [
     [ 1, MoveId.LEER ],
     [ 1, MoveId.MUD_SLAP ],
@@ -19482,33 +19506,6 @@ export const pokemonFormLevelMoves = {
       [ 55, MoveId.DARK_PULSE ],
       [ 75, MoveId.PSYCHIC ],
       [ 85, MoveId.HYPERSPACE_FURY ],
-    ],
-  },
-  [SpeciesId.GRENINJA]: {
-    1: [
-      [ EVOLVE_MOVE, MoveId.WATER_SHURIKEN ],
-      [ 1, MoveId.POUND ],
-      [ 1, MoveId.GROWL ],
-      [ 1, MoveId.WATER_GUN ],
-      [ 1, MoveId.QUICK_ATTACK ],
-      [ 1, MoveId.ROUND ], // Previous Stage Move
-      [ 1, MoveId.FLING ], // Previous Stage Move
-      [ 1, MoveId.SMACK_DOWN ], // Previous Stage Move
-      [ 1, MoveId.BOUNCE ], // Previous Stage Move
-      [ 1, MoveId.HAZE ],
-      [ 1, MoveId.MAT_BLOCK ],
-      [ 1, MoveId.ROLE_PLAY ],
-      [ 1, MoveId.NIGHT_SLASH ],
-      [ 10, MoveId.LICK ],
-      [ 14, MoveId.WATER_PULSE ],
-      [ 19, MoveId.SMOKESCREEN ],
-      [ 23, MoveId.SHADOW_SNEAK ],
-      [ 28, MoveId.SPIKES ],
-      [ 33, MoveId.AERIAL_ACE ],
-      [ 42, MoveId.SUBSTITUTE ],
-      [ 49, MoveId.EXTRASENSORY ],
-      [ 56, MoveId.DOUBLE_TEAM ],
-      [ 68, MoveId.HYDRO_PUMP ],
     ],
   },
   [SpeciesId.LYCANROC]: {

@@ -342,6 +342,7 @@ export const speciesEggTiers = {
   [SpeciesId.CHESPIN]: EggTier.COMMON,
   [SpeciesId.FENNEKIN]: EggTier.COMMON,
   [SpeciesId.FROAKIE]: EggTier.COMMON,
+  [SpeciesId.BATTLE_BOND_GRENINJA]: EggTier.EPIC,
   [SpeciesId.BUNNELBY]: EggTier.COMMON,
   [SpeciesId.FLETCHLING]: EggTier.COMMON,
   [SpeciesId.SCATTERBUG]: EggTier.COMMON,
