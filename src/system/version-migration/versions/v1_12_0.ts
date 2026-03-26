@@ -11,13 +11,9 @@ import { getPokemonSpecies } from "#utils/pokemon-utils";
 const migrateGreninjaBattleBondForm: SystemSaveMigrator = {
   version: "1.12.0",
   migrate: (data: SystemSaveData): void => {
-    if (data.starterData && data.dexData && (!data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] || !data.dexData[SpeciesId.BATTLE_BOND_GRENINJA])) {
+    if (data.starterData && data.dexData && (data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] == null || data.dexData[SpeciesId.BATTLE_BOND_GRENINJA] == null)) {
       data.dexData[SpeciesId.BATTLE_BOND_GRENINJA] = data.dexData[SpeciesId.GRENINJA];
-
-      const caughtAttr = data.dexData[SpeciesId.GRENINJA]?.caughtAttr;
-      if (caughtAttr) {
-        data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] = data.starterData[SpeciesId.GRENINJA];
-      }
+      data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] = data.starterData[SpeciesId.FROAKIE];
     }
   },
 };

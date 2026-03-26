@@ -490,7 +490,7 @@ export abstract class PokemonSpeciesForm {
       formIndex = override.formIndex;
     }
 
-    if (speciesId > 2000) {
+    if (speciesId >= 2000) {
       switch (speciesId) {
         case SpeciesId.GALAR_SLOWPOKE:
           break;
@@ -941,6 +941,7 @@ export class PokemonSpecies extends PokemonSpeciesForm implements Localizable {
       region === Region.NORMAL
       || (this.speciesId === SpeciesId.GALAR_DARMANITAN && formIndex > 0)
       || this.speciesId === SpeciesId.PALDEA_TAUROS
+      || this.speciesId === SpeciesId.BATTLE_BOND_GRENINJA
     ) {
       // More special cases can be added here
       const i18key = `pokemonForm:${speciesName}${formText}`;
@@ -960,9 +961,6 @@ export class PokemonSpecies extends PokemonSpeciesForm implements Localizable {
     } else if (this.speciesId === SpeciesId.BLOODMOON_URSALUNA) {
       // Not a real form, so the key is made up
       return i18next.t("pokemonForm:ursalunaBloodmoon");
-    } else if (this.speciesId === SpeciesId.BATTLE_BOND_GRENINJA) {
-      // Not a real form, so the key is made up
-      return i18next.t("pokemonForm:greninjaBattleBond");
     } else {
       // Only regional forms should be left at this point
       return i18next.t(`pokemonForm:regionalForm.${toCamelCase(Region[region])}`);

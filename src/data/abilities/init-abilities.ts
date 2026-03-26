@@ -1445,12 +1445,12 @@ export function initAbilities() {
         () => 1,
       )
       .conditionalAttr(
-        p => p.species.speciesId === SpeciesId.GRENINJA && !p.isFusion(),
+        p => p.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA && !p.isFusion(),
         PostFaintFormChangeAbAttr,
         () => 1,
       )
       .conditionalAttr(
-        p => !p.hasSpecies(SpeciesId.GRENINJA) && !p.summonData.abilitiesApplied.has(AbilityId.BATTLE_BOND),
+        p => !p.hasSpecies(SpeciesId.BATTLE_BOND_GRENINJA) && !p.summonData.abilitiesApplied.has(AbilityId.BATTLE_BOND),
         PostVictoryStatStageChangeAbAttr,
         [Stat.ATK, Stat.SPATK, Stat.SPD],
         1,
