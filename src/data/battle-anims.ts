@@ -833,6 +833,7 @@ export abstract class BattleAnim {
     return ret;
   }
 
+  // TODO: Make this async
   // biome-ignore lint/complexity/noBannedTypes: callback is used liberally
   play(onSubstitute?: boolean, callback?: () => void) {
     const isOppAnim = this.isOppAnim();
