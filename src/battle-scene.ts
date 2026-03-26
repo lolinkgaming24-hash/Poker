@@ -2652,6 +2652,8 @@ export class BattleScene extends SceneBase {
         return 17.586;
       case "battle_trainer": //BW Trainer Battle
         return 13.686;
+      case "battle_jacinthe": // Jacinthe Battle
+        return 30.188;
       case "battle_wild": //BW Wild Battle
         return 12.703;
       case "battle_wild_strong": //BW Strong Wild Battle
@@ -2718,8 +2720,12 @@ export class BattleScene extends SceneBase {
         return 82.28;
       case "title_afd": // Andr06 - PokéRogue Title Remix (AFD)
         return 47.66;
+      case "title_afd_2": // Andr06 - PokéRogue Title Remix 2 (AFD)
+        return 61.819;
       case "battle_rival_3_afd": // Andr06 - Final N Battle Remix (AFD)
         return 49.147;
+      case "battle_trainer_afd": // Andr06 - PokéRogue Trainer Remix (AFD)
+        return 13.686;
     }
 
     return 0;
