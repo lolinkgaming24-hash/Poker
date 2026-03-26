@@ -1,4 +1,3 @@
-import type { EntryHazardTag } from "#data/arena-tag";
 import { AbilityId } from "#enums/ability-id";
 import { ArenaTagSide } from "#enums/arena-tag-side";
 import { ArenaTagType } from "#enums/arena-tag-type";
@@ -23,7 +22,6 @@ describe("Move - Court Change", () => {
   beforeEach(() => {
     game = new GameManager(phaserGame);
     game.override
-      .moveset([MoveId.COURT_CHANGE, MoveId.SPIKES])
       .ability(AbilityId.BALL_FETCH)
       .criticalHits(false)
       .enemyAbility(AbilityId.STURDY)
@@ -93,7 +91,7 @@ describe("Move - Court Change", () => {
     await game.toEndOfTurn();
 
     // Magikarp and Cinderace should both keep the same number of layers on their respective sides
-    expect((game.scene.arena.getTagOnSide(ArenaTagType.SPIKES, ArenaTagSide.PLAYER) as EntryHazardTag)?.layers).toBe(3);
-    expect((game.scene.arena.getTagOnSide(ArenaTagType.SPIKES, ArenaTagSide.ENEMY) as EntryHazardTag)?.layers).toBe(3);
+    expect(game).toHaveArenaTag({ tagType: ArenaTagType.SPIKES, layers: 3, side: ArenaTagSide.PLAYER });
+    expect(game).toHaveArenaTag({ tagType: ArenaTagType.SPIKES, layers: 3, side: ArenaTagSide.ENEMY });
   });
 });
