@@ -4,7 +4,7 @@ import { globalScene } from "#app/global-scene";
 import { starterColors } from "#app/global-vars/starter-colors";
 import Overrides from "#app/overrides";
 import { handleTutorial, Tutorial } from "#app/tutorial";
-import { speciesEggMoves } from "#balance/egg-moves";
+import { speciesEggMoves } from "#balance/moves/egg-moves";
 import { pokemonPrevolutions } from "#balance/pokemon-evolutions";
 import { pokemonFormLevelMoves, pokemonSpeciesLevelMoves } from "#balance/pokemon-level-moves";
 import {
@@ -797,7 +797,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
 
     // TODO: Apply the same logic done in the pokedex to only have 81 containers whose sprites are cycled
     for (const species of allSpecies) {
-      if (!speciesStarterCosts.hasOwnProperty(species.speciesId) || !species.isObtainable()) {
+      if (!Object.hasOwn(speciesStarterCosts, species.speciesId)) {
         continue;
       }
 
@@ -3564,8 +3564,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
         this.showStats();
       } else {
         this.statsContainer.setVisible(false);
-        //@ts-expect-error
-        this.statsContainer.updateIvs(null); // TODO: resolve ts-ignore. what. how? huh?
+        this.statsContainer.updateIvs(null);
       }
     }
 
@@ -4621,8 +4620,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
       this.statsMode = false;
       this.statsContainer.setVisible(false);
       this.pokemonSprite.setVisible(!!this.speciesStarterDexEntry?.caughtAttr);
-      //@ts-expect-error
-      this.statsContainer.updateIvs(null); // TODO: resolve ts-ignore. !?!?
+      this.statsContainer.updateIvs(null);
       this.teraIcon.setVisible(this.allowTera);
       const props = globalScene.gameData.getSpeciesDexAttrProps(
         this.lastSpecies,
