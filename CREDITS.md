@@ -43,7 +43,133 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 - Pokémon Black/White
 
 
-# 🧾 Sprites and Resources
+# 🎨 Art
+
+## Head of Art
+- Firel
+
+## Senior Artist
+- damocleas
+- “Hanniel” hanniel.15
+- “Splash Damage” splashceles
+
+## Artist
+- bwl626
+- Crow W (aka Crowo)
+- “Caramel” saltedcarriemel
+- Dops
+- "Green Ninja757" (aka DaleB)
+- Fontbane
+- “Momo” sphinx_sage
+- Necrow (aka Necrowmancy)
+- officerporkchops
+- Omniv
+- redactedinlight
+- “Togepi” togepimax
+- unicorn_power
+
+## Rare/Epic Shiny Variants Credits
+- “Andr06” andr06
+- “Appo” appo
+- “Ashhawk” k_redacted
+- “Auralite” _auralite
+- “Awesome_Soul” awesome_soul
+- “Bagon” bagonganda
+- “Bibble” nuts_.
+- “BloomOfWoods” bloomofwoods
+- BlindVoid
+- “Buge” buge
+- “bun” bunove
+- “bukie” bukie
+- bwl626
+- cameranian
+- “Caramel” saltedcarriemel
+- “Chocolate Niblets” choconibs
+- “CKC” ckc_
+- “ClawsHDi” clawshdi
+- “Clown Princess” clown_princess
+- “Cmac2173” cmac2173
+- “Corsola” corsola_bandit
+- “Criminon” criminon
+- Crow W (aka Crowo)
+- “Cryptican Gogoat Enthusiast” crypticanexe
+- damocleas
+- “Diashi” diazhi
+- “deviant.daffodil, bug enthusiast” deviant.daffodil
+- “DigitalVaporeon” digitalvaporeon
+- dingosig
+- “Eku” ekusas00
+- “Elefante”
+- “Esca” colossalsquid
+- “Folf” folf.
+- “Follower” ruleroftheseas11
+- “Fontbane” fontbane
+- “Gallow” gallowhound
+- “Giojoe” giojoe10
+- “Gonfold” gonfold
+- greenninja757
+- “Grassy_Storm” grassy_storm
+- “GreenMegaMan” greenmegaman
+- “GROWL” myflixer.to
+- “guy claiming to work on a guide” 7thatlas
+- Gyaradope
+- “h. 🍄” letterh.
+- “hamez” .hamez
+- “Hanniel” hanniel.15
+- “ImaginaryNeon” imaginaryneon
+- “Jay” itsamejay
+- “Jelke” jelke
+- kalikimothy
+- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
+- “Koda” Koda_want_to_sleep
+- “Lana” smogonian
+- Leavannite
+- “LJ” lj_birdman
+- “Long Girl” docamakesart
+- “Lucky” luckyluckylucky
+- “MissingNo.” clickonflareblitz
+- “Momo” sphinx_sage
+- monkehestman
+- Necrow (aka Necrowmancy)
+- “Nexxus” nexxus_
+- “Nik :3” realniktrustme
+- “Nikolatsu”
+- “nora” ora.n
+- “NOVA” fabunova
+- officerporkchops
+- “Omniv” omniv
+- “Otterwatch” otterwatch_
+- “Pandoraz” pandoraz
+- “Papa Pepsm An” papapepsman
+- “Penguin” peng06
+- “Prodigy” lorekeeperprodigy
+- “Purpenigma” purpenigma
+- “Rage” ragerevival
+- “♂ROMEO⚧” gerolau
+- “Sagrell D'Arcadia” coffeerequired
+- “serif” serifaizawa
+- “SillyTopplingGoose” sillytopplinggoose
+- “Splash Damage” splashceles
+- Starkrieg
+- “Sweg1b01” sweg1b01
+- “SyntheGrim” synthegrim
+- “TaMenace” tamariontherestless
+- “TheTRUEgge” thetruegge
+- “Thorn” crownofthorns
+- “Togepi” togepimax
+- “Toopy” .toopy
+- “Tristan” tristan.w
+- “Umbreon” umbreon\_.\_
+- unicorn_power
+- “Vari” \_vari\_
+- “Waasephi”
+- wormhood
+- “Yep, it's Caio” yepitscaio
+- “Ymri” ymri
+- “zaccie” zaccie
+- “zan” smtif
+
+## 🧾 Sprites and Resources
 
 ## Backgrounds
 - Squip (Paid Commissions)
@@ -236,133 +362,6 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - wormhood
 - gerolau
 - otterwatch
-
-
-# 🎨 Art
-
-## Head of Art
-- Firel
-
-## Senior Artist
-- damocleas
-- “Hanniel” hanniel.15
-- “Splash Damage” splashceles
-
-## Artist
-- bwl626
-- Crow W (aka Crowo)
-- “Caramel” saltedcarriemel
-- Dops
-- "Green Ninja757" (aka DaleB)
-- Fontbane
-- “Momo” sphinx_sage
-- Necrow (aka Necrowmancy)
-- officerporkchops
-- Omniv
-- redactedinlight
-- “Togepi” togepimax
-- unicorn_power
-
-## Rare/Epic Shiny Variants Credits
-- “Andr06” andr06
-- “Appo” appo
-- “Ashhawk” k_redacted
-- “Auralite” _auralite
-- “Awesome_Soul” awesome_soul
-- “Bagon” bagonganda
-- “Bibble” nuts_.
-- “BloomOfWoods” bloomofwoods
-- BlindVoid
-- “Buge” buge
-- “bun” bunove
-- “bukie” bukie
-- bwl626
-- cameranian
-- “Caramel” saltedcarriemel
-- “Chocolate Niblets” choconibs
-- “CKC” ckc_
-- “ClawsHDi” clawshdi
-- “Clown Princess” clown_princess
-- “Cmac2173” cmac2173
-- “Corsola” corsola_bandit
-- “Criminon” criminon
-- Crow W (aka Crowo)
-- “Cryptican Gogoat Enthusiast” crypticanexe
-- damocleas
-- “Diashi” diazhi
-- “deviant.daffodil, bug enthusiast” deviant.daffodil
-- “DigitalVaporeon” digitalvaporeon
-- dingosig
-- “Eku” ekusas00
-- “Elefante”
-- “Esca” colossalsquid
-- “Folf” folf.
-- “Follower” ruleroftheseas11
-- “Fontbane” fontbane
-- “Gallow” gallowhound
-- “Giojoe” giojoe10
-- “Gonfold” gonfold
-- greenninja757
-- “Grassy_Storm” grassy_storm
-- “GreenMegaMan” greenmegaman
-- “GROWL” myflixer.to
-- “guy claiming to work on a guide” 7thatlas
-- Gyaradope
-- “h. 🍄” letterh.
-- “hamez” .hamez
-- “Hanniel” hanniel.15
-- “ImaginaryNeon” imaginaryneon
-- “Jay” itsamejay
-- “Jelke” jelke
-- kalikimothy
-- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
-- “Koda” Koda_want_to_sleep
-- “Lana” smogonian
-- Leavannite
-- “LJ” lj_birdman
-- “Long Girl” docamakesart
-- “Lucky” luckyluckylucky
-- “MissingNo.” clickonflareblitz
-- “Momo” sphinx_sage
-- monkehestman
-- Necrow (aka Necrowmancy)
-- “Nexxus” nexxus_
-- “Nik :3” realniktrustme
-- “Nikolatsu”
-- “nora” ora.n
-- “NOVA” fabunova
-- officerporkchops
-- “Omniv” omniv
-- “Otterwatch” otterwatch_
-- “Pandoraz” pandoraz
-- “Papa Pepsm An” papapepsman
-- “Penguin” peng06
-- “Prodigy” lorekeeperprodigy
-- “Purpenigma” purpenigma
-- “Rage” ragerevival
-- “♂ROMEO⚧” gerolau
-- “Sagrell D'Arcadia” coffeerequired
-- “serif” serifaizawa
-- “SillyTopplingGoose” sillytopplinggoose
-- “Splash Damage” splashceles
-- Starkrieg
-- “Sweg1b01” sweg1b01
-- “SyntheGrim” synthegrim
-- “TaMenace” tamariontherestless
-- “TheTRUEgge” thetruegge
-- “Thorn” crownofthorns
-- “Togepi” togepimax
-- “Toopy” .toopy
-- “Tristan” tristan.w
-- “Umbreon” umbreon\_.\_
-- unicorn_power
-- “Vari” \_vari\_
-- “Waasephi”
-- wormhood
-- “Yep, it's Caio” yepitscaio
-- “Ymri” ymri
-- “zaccie” zaccie
-- “zan” smtif
 
 
 # ⚖️ Balance
