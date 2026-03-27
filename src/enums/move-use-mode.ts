@@ -1,3 +1,4 @@
+import type { PostDancingMoveAbAttr } from "#abilities/ab-attrs";
 import type { ObjectValues } from "#types/type-helpers";
 
 /**
@@ -18,10 +19,11 @@ export const MoveUseMode = {
   NORMAL: 1,
 
   /**
-   * This move was called by an effect that ignores PP, such as a consecutively executed move (e.g. Outrage).
+   * This move was called by an effect that ignores PP, such as a consecutively executed move (e.g. Outrage)
+   * or the 2nd turn of a charging move.
    *
-   * PP-ignoring moves (as their name implies) **do not consume PP** when used
-   * and **will not fail** if none is left prior to execution.
+   * PP-ignoring moves (as their name implies) **do not consume PP** when used (including via Pressure)
+   * and **will not fail** if none is left prior to execution. \
    * All other effects remain identical to {@linkcode MoveUseMode.NORMAL}.
    *
    * PP can still be reduced by other effects (such as Spite or Eerie Spell).
@@ -56,7 +58,7 @@ export const MoveUseMode = {
 
    * Reflected moves ignore all the same cancellation checks as {@linkcode MoveUseMode.INDIRECT}
    * and retain the same copy prevention as {@linkcode MoveUseMode.FOLLOW_UP}, but additionally
-   * **cannot be reflected by other reflecting effects**.
+   * **cannot be copied by other reflecting effects or Dancer**.
    */
   REFLECTED: 5,
 
@@ -66,9 +68,9 @@ export const MoveUseMode = {
    *
    * In addition to inheriting the cancellation ignores and copy prevention from {@linkcode MoveUseMode.REFLECTED},
    * transparent moves are ignored by **all forms of move usage checks** due to **not pushing to move history**.
-   * @todo Consider other means of implementing FS/DD than this - we currently only use it
-   * to prevent pushing to move history and avoid re-delaying the attack portion
    */
+  // TODO: Consider other means of implementing FS/DD than this - we currently only use it
+  // to prevent pushing to move history and avoid re-delaying the attack portion
   DELAYED_ATTACK: 6,
 } as const;
 
@@ -160,4 +162,26 @@ export function isIgnorePP(useMode: MoveUseMode): boolean {
  */
 export function isReflected(useMode: MoveUseMode): boolean {
   return useMode === MoveUseMode.REFLECTED;
+}
+
+/**
+ * Check if a given `MoveUseMode` is capable of being copied by {@linkcode PostDancingMoveAbAttr | Dancer}.
+ * @param useMode - The {@linkcode MoveUseMode} to check
+ * @returns Whether `useMode` is copiable by Dancer.
+ * @remarks
+ * This function is equivalent to the following truth table:
+ *
+ * | Use Type                                | Returns |
+ * |-----------------------------------------|---------|
+ * | {@linkcode MoveUseMode.NORMAL}          | `true`  |
+ * | {@linkcode MoveUseMode.IGNORE_PP}       | `true`  |
+ * | {@linkcode MoveUseMode.INDIRECT}        | `false` |
+ * | {@linkcode MoveUseMode.FOLLOW_UP}       | `true`  |
+ * | {@linkcode MoveUseMode.REFLECTED}       | `false` |
+ * | {@linkcode MoveUseMode.DELAYED_ATTACK}  | `false` |
+ */
+export function isDancerCopiable(useMode: MoveUseMode): boolean {
+  return (
+    useMode !== MoveUseMode.INDIRECT && useMode !== MoveUseMode.REFLECTED && useMode !== MoveUseMode.DELAYED_ATTACK
+  );
 }
