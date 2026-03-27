@@ -69,15 +69,6 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 - Leparagon
 - wormhood
 
-## Mystery Event Sprites
-- chrysomelinae
-- koda_want_to_sleep
-- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
-- ImperialSympathizer
-- wormhood
-- gerolau
-- otterwatch
-
 ## Trainer Portraits
 - pkmn_realidea (Paid Commissions)
 
@@ -237,6 +228,16 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - uppa
 - “Vari” \_vari\_
 
+## Mystery Encounter Sprites
+- chrysomelinae
+- koda_want_to_sleep
+- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
+- ImperialSympathizer
+- wormhood
+- gerolau
+- otterwatch
+
+
 # 🎨 Art
 
 ## Head of Art
@@ -257,7 +258,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Necrow (aka Necrowmancy)
 - redactedinlight
 
-### Rare/Epic Shiny Variants Credits
+## Rare/Epic Shiny Variants Credits
 - “Andr06” andr06
 - “Appo” appo
 - “Ashhawk” k_redacted
