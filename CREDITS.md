@@ -110,6 +110,9 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - selstar
 - kyledove
 
+## Move Animations
+- Pokémon Reborn
+
 ### Static Sprites and Base Shiny Replacements Credits
 - AMVictory
 - Antiant
@@ -345,9 +348,6 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “Ymri” ymri
 - “zaccie” zaccie
 - “zan” smtif
-
-## Move Animations
-- Pokémon Reborn
 
 
 # ⚖️ Balance
