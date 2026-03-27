@@ -62,11 +62,11 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 
 ## Trainer Sprites
 - GAMEFREAK (Pokémon Black/White 2, Pokémon Diamond/Pearl)
-- kyledove
 - Brumirage
-- pkmn_realidea (Paid Commissions)
 - IceJkai
+- kyledove
 - Leparagon
+- pkmn_realidea (Paid Commissions)
 - wormhood
 
 ## Trainer Portraits
@@ -77,29 +77,29 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 
 - GAMEFREAK (Pokémon Black/White 2)
 - Smogon Sprite Project (Various Artists)
-- Skyflyer
-- Nolo33
+- AshnixsLaw
+- Azrita
+- bizcoeindoloro
+- Caruban
 - Ebaru
 - EricLostie
-- kiriaura
-- Caruban
-- Sopita_Yorita
-- Azrita
-- AshnixsLaw
-- Hellfire0raptor
-- RetroNC
+- Fleimer_
 - Franark122k
+- Hellfire0raptor
+- ItsYugen
+- kiriaura
+- kyledove
+- lucasomi
+- mangalos810
+- Nolo33
 - OldSoulja
 - PKMarioG
-- ItsYugen
-- lucasomi
 - Pkm Sinfonia
 - Poki Papillon
-- Fleimer_
-- bizcoeindoloro
-- mangalos810
+- RetroNC
 - selstar
-- kyledove
+- Skyflyer
+- Sopita_Yorita
 
 ## Move Animations
 - Pokémon Reborn
@@ -253,10 +253,15 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Crow W (aka Crowo)
 - “Caramel” saltedcarriemel
 - Dops
-- Fontbane
 - "Green Ninja757" (aka DaleB)
+- Fontbane
+- “Momo” sphinx_sage
 - Necrow (aka Necrowmancy)
+- officerporkchops
+- Omniv
 - redactedinlight
+- “Togepi” togepimax
+- unicorn_power
 
 ## Rare/Epic Shiny Variants Credits
 - “Andr06” andr06
@@ -267,9 +272,11 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “Bagon” bagonganda
 - “Bibble” nuts_.
 - “BloomOfWoods” bloomofwoods
+- BlindVoid
 - “Buge” buge
 - “bun” bunove
 - “bukie” bukie
+- bwl626
 - cameranian
 - “Caramel” saltedcarriemel
 - “Chocolate Niblets” choconibs
@@ -279,7 +286,9 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “Cmac2173” cmac2173
 - “Corsola” corsola_bandit
 - “Criminon” criminon
+- Crow W (aka Crowo)
 - “Cryptican Gogoat Enthusiast” crypticanexe
+- damocleas
 - “Diashi” diazhi
 - “deviant.daffodil, bug enthusiast” deviant.daffodil
 - “DigitalVaporeon” digitalvaporeon
@@ -298,6 +307,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “GreenMegaMan” greenmegaman
 - “GROWL” myflixer.to
 - “guy claiming to work on a guide” 7thatlas
+- Gyaradope
 - “h. 🍄” letterh.
 - “hamez” .hamez
 - “Hanniel” hanniel.15
@@ -308,12 +318,14 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
 - “Koda” Koda_want_to_sleep
 - “Lana” smogonian
+- Leavannite
 - “LJ” lj_birdman
 - “Long Girl” docamakesart
 - “Lucky” luckyluckylucky
 - “MissingNo.” clickonflareblitz
 - “Momo” sphinx_sage
 - monkehestman
+- Necrow (aka Necrowmancy)
 - “Nexxus” nexxus_
 - “Nik :3” realniktrustme
 - “Nikolatsu”
@@ -333,6 +345,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “serif” serifaizawa
 - “SillyTopplingGoose” sillytopplinggoose
 - “Splash Damage” splashceles
+- Starkrieg
 - “Sweg1b01” sweg1b01
 - “SyntheGrim” synthegrim
 - “TaMenace” tamariontherestless
@@ -342,6 +355,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “Toopy” .toopy
 - “Tristan” tristan.w
 - “Umbreon” umbreon\_.\_
+- unicorn_power
 - “Vari” \_vari\_
 - “Waasephi”
 - wormhood
@@ -366,14 +380,13 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Zaccie
 
 ## Past Members
+- Cynthia_calliope
 - Sethcurry
 - Swizzo
-- Cynthia_calliope
 
 ## Past Contributors
-- chrysomelinae (Mystery Encounters)
 - AsdarDevelops (Mystery Encounters)
-
+- chrysomelinae (Mystery Encounters)
 
 # 💻 Development
 
@@ -501,10 +514,10 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 
 # 🌎 Translation
 
-## Translation Head
+## Head of Translation
 - Lugiadrien
 
-## Former Translation Head
+## Former Head of Translation
 - Sangara
 
 ## In-Game Translators
@@ -578,21 +591,21 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Naga42
 
 ### Past contributors
+- Aleco (ca)
 - Asdar (es-ES)
-- Rafa (es-ES)
-- Qyxgames (es-ES)
+- CamiBear (da)
 - Dan Stevenson (es-ES)
-- GINK-SS (ko)
-- Enoch (ko)
-- KimJeongSun (ko)
-- Returntoice (ko)
-- prostagma (pt-BR)
 - dddsenic (zh-Hans)
 - Ei (zh-Hant)
-- Seagull (zh-Hant)
-- Aleco (ca)
+- Enoch (ko)
+- GINK-SS (ko)
+- KimJeongSun (ko)
+- prostagma (pt-BR)
 - Qyxgames (ca)
-- CamiBear (da)
+- Qyxgames (es-ES)
+- Rafa (es-ES)
+- Returntoice (ko)
+- Seagull (zh-Hant)
 
 ## Wiki Translators
 
@@ -627,18 +640,18 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - jw-0-
 
 ### Past contributors
-- Dietaube (de)
-- Gnorpelltroll (de)
-- xRegix (de)
-- Broly Ikari (fr)
-- Leo Edgar_Zimmer (fr)
-- Telor (fr)
-- dorri (ko)
-- Little Moder_eldenring (ko)
 - Andy (zh-Hans)
 - Black Feather (zh-Hans)
+- Broly Ikari (fr)
+- Dietaube (de)
+- dorri (ko)
+- Gnorpelltroll (de)
 - itschili (zh-Hans)
+- Leo Edgar_Zimmer (fr)
+- Little Moder_eldenring (ko)
 - RimKnight (zh-Hans)
+- Telor (fr)
+- xRegix (de)
 - Yubari (zh-Hans)
 
 ## 🇺🇸 English Proofreaders
@@ -658,41 +671,43 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 
 # 📰 Wiki
 
-## Wiki Head
+## Head of Wiki
 - H.A.R.V.
 
-## Wiki Lead
-- Sangara
-- Zac
-- Smew
-- Brain Frog
-- Hannah
+## Senior Wiki Editor
+- Moro
 
-## Editor
-- Prodigy
+## Current and Former Wiki Contributors
+- Quill
 - Akuma
-- Dan Gioia
-- Shimizoki
-- Stave
-- NalysArbur
+- Blitzy (aka Kazapple)
+- BlueVaron
+- Brain Frog
 - Ceimir
-- Solanum Tuberosum
-- Pom
-
-## Artist
-- dub
-- SmashMania
-- Wren
-- Lugiadrien
-
-## Contributor
 - Daleks <3
-- Inferno Vulpix
+- Dan Gioia
 - Embri
+- Hannah
+- Inferno Vulpix
+- Jimmybald1
+- NalysArbur
 - Nekod
 - P0kemonY
+- Pom
+- Prodigy
+- Sangara
 - Scooom
-- BlueVaron
+- Shimizoki
+- Smew
+- Solanum Tuberosum
+- Stave
+- Zac
+
+## Wiki Artist
+- dub
+- Lugiadrien
+- SmashMania
+- Wren
 
 
 # ☎️ Discord
