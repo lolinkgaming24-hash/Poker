@@ -4,56 +4,19 @@ SPDX-FileCopyrightText: 2024-2025 Pagefault Games
 SPDX-License-Identifier: CC-BY-NC-SA-4.0
 -->
 
-# 🎵 Music
-
-## BGM
-- Pokémon Mystery Dungeon: Explorers of Sky
-  - Arata Iiyoshi
-  - Hideki Sakamoto
-  - Keisuke Ito
-  - Ken-ichi Saito
-  - Yoshihiro Maeda
-- Pokémon Black/White
-  - Go Ichinose
-  - Hitomi Sato
-  - Shota Kageyama
-- Pokémon Mystery Dungeon: Rescue Team DX
-  - Keisuke Ito
-  - Arata Iiyoshi
-  - Atsuhiro Ishizuna
-- Pokémon HeartGold/SoulSilver
-- Pokémon Black/White 2
-- Pokémon X/Y
-- Pokémon Omega Ruby/Alpha Sapphire
-- Pokémon Sun/Moon
-- Pokémon Ultra Sun/Ultra Moon
-- Pokémon Sword/Shield
-- Pokémon Legends: Arceus
-- Pokémon Scarlet/Violet
-- Firel (Custom Graveyard, Ice Cave, Laboratory, Metropolis, Plains, Power Plant, Seabed, Space, Volcano, and Desert biome music)
-- Lmz (Custom Ancient Ruins, Jungle, and Lake biome music)
-- Andr06 (Custom Forest, Slum, Sea, and Fairy Cave biome music)
-- Leavannite (Custom Wasteland biome music)
-- “Big” bird_obsession (Custom Snowy Forest biome music)
-- _tresnoir
-- unveiler
-
-## Sound Effects
-- Pokémon Emerald
-- Pokémon Black/White
-
-
-# 🎨 Art
+# 🎨 Art and Music
 
 ## Head of Art
 - Firel
 
-## Senior Artist
+## Team Members
+
+### Senior Artist
 - damocleas
 - “Hanniel” hanniel.15
 - “Splash Damage” splashceles
 
-## Artist
+### Artist
 - bwl626
 - Crow W (aka Crowo)
 - “Caramel” saltedcarriemel
@@ -67,6 +30,206 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 - redactedinlight
 - “Togepi” togepimax
 - unicorn_power
+
+### Composers
+- Andr06
+- “Big” bird_obsession
+- Leavannite
+- Lmz
+- unveiler
+- Vanstesan
+
+## Backgrounds
+- Squip (Paid Commissions)
+- Contributions by Someonealive-QN
+- Contributions by redactedinlight
+
+## UI
+- GAMEFREAK
+- LJ Birdman
+
+## Pagefault Games Intro
+- Spectremint
+
+## Game Logo
+- Gonstar (Paid Commission)
+
+## Trainer Sprites
+- GAMEFREAK (Pokémon Black/White 2, Pokémon Diamond/Pearl)
+- Brumirage
+- IceJkai
+- kyledove
+- Leparagon
+- pkmn_realidea (Paid Commissions)
+- wormhood
+
+## Trainer Portraits
+- pkmn_realidea (Paid Commissions)
+
+## Pokémon Sprites and Animation
+In addition to the lists below, please check [the PokéRogue wiki](https://wiki.pokerogue.net/credits:credits) for a more detailed list of Pokémon Sprite credits.
+
+- GAMEFREAK (Pokémon Black/White 2)
+- Smogon Sprite Project (Various Artists)
+- AshnixsLaw
+- Azrita
+- bizcoeindoloro
+- Caruban
+- Ebaru
+- EricLostie
+- Fleimer_
+- Franark122k
+- Hellfire0raptor
+- ItsYugen
+- kiriaura
+- kyledove
+- lucasomi
+- mangalos810
+- Nolo33
+- OldSoulja
+- PKMarioG
+- Pkm Sinfonia
+- Poki Papillon
+- RetroNC
+- selstar
+- Skyflyer
+- Sopita_Yorita
+
+## Static Sprites and Base Shiny Replacements Credits
+- AMVictory
+- Antiant
+- Arhops
+- arinoelle
+- Arkeis
+- aXl
+- BananaToast
+- Basic Vanillite
+- BlackWhiteRobin
+- Blaquaza
+- Branflakes325
+- Brylark
+- Buna
+- Bynine
+- Corson
+- Cynda
+- “Diashi” diazhi
+- Dleep
+- doomchaos
+- Espeon Scientist
+- Farriella
+- fishbowlsoul90
+- “Follower” rulerofthesea11
+- Galifia
+- GeoisEvil
+- G.E.Z.
+- Glustora
+- Harrie
+- HealnDeal
+- Hematite
+- HM100
+- Ice-cold Claws
+- Involuntary Twitch
+- “Jay” itsamejay
+- KattenK
+- KingOfThe-X-Roads
+- KyleDove
+- Kyleo
+- Kyuzeth
+- Larryturbo
+- Layell
+- Legitimate Username
+- leParagon
+- “LJ” lj_birdman
+- Luigi Player
+- Madmadness65
+- Mega-Pokebattlerz
+- Mintly
+- mjco
+- “Momo” sphinx_sage
+- MrDollSteak
+- MyMarshlands
+- N-Kin
+- Noscium
+- “Nova” fabunova
+- “Omniv” omniv
+- paintseagull
+- princessofmusic
+- PumpkinPastel
+- Quanyails
+- RadicalCharizard
+- RedRooster
+- “♂ROMEO⚧” gerolau
+- ruleroftheseas11
+- SelenaArmorclaw
+- “serif” serifaizawa
+- Siiilver
+- Sleet
+- Snivy101
+- Speed-X
+- Sphex
+- Spook
+- Squip
+- TeraVolt
+- TheAetherPlayer
+- TheCynicalPoet
+- Tooni
+- TrainerSplash
+- Travis
+- Turtleye
+- Tyrell D. Barnes
+- “Vari” \_vari\_
+- Wobblebuns
+- WolfPP
+- WPS
+- Wyverii
+- “zan” smtif
+- Zerudez
+- Z-nogyroP
+
+## Animated Sprites Credits
+- Antiant
+- arinoelle
+- Blaquaza
+- Claire Starsword
+- Coyotango
+- DanEx
+- “Diashi” diazhi
+- GalacticArtistMuffin
+- G.E.Z.
+- hexagonereal
+- HM100
+- Katten
+- LeParagon
+- localghost
+- MallowOut
+- mattiwarden
+- “Momo” sphinx_sage
+- N-Kin
+- NoelleMBrooks
+- Nyx
+- “Omniv” omniv
+- princessofmusic
+- PumpkinPastel
+- RadicalCharizard
+- seleccion
+- SelenaArmorclaw
+- TheAetherPlayer
+- Tinkatooni
+- Typhlito
+- uppa
+- “Vari” \_vari\_
+
+## Move Animations
+- Pokémon Reborn
+
+## Mystery Encounter Sprites
+- chrysomelinae
+- koda_want_to_sleep
+- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
+- ImperialSympathizer
+- wormhood
+- gerolau
+- otterwatch
 
 ## Rare/Epic Shiny Variants Credits
 - “Andr06” andr06
@@ -169,207 +332,52 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 - “zaccie” zaccie
 - “zan” smtif
 
-## 🧾 Sprites and Resources
+## BGM
+- Pokémon Mystery Dungeon: Explorers of Sky
+  - Arata Iiyoshi
+  - Hideki Sakamoto
+  - Keisuke Ito
+  - Ken-ichi Saito
+  - Yoshihiro Maeda
+- Pokémon Black/White
+  - Go Ichinose
+  - Hitomi Sato
+  - Shota Kageyama
+- Pokémon Mystery Dungeon: Rescue Team DX
+  - Keisuke Ito
+  - Arata Iiyoshi
+  - Atsuhiro Ishizuna
+- Pokémon HeartGold/SoulSilver
+- Pokémon Black/White 2
+- Pokémon X/Y
+- Pokémon Omega Ruby/Alpha Sapphire
+- Pokémon Sun/Moon
+- Pokémon Ultra Sun/Ultra Moon
+- Pokémon Sword/Shield
+- Pokémon Legends: Arceus
+- Pokémon Scarlet/Violet
+- Firel (Custom Graveyard, Ice Cave, Laboratory, Metropolis, Plains, Power Plant, Seabed, Space, Volcano, and Desert biome music)
+- Lmz (Custom Ancient Ruins, Jungle, and Lake biome music)
+- Andr06 (Custom Forest, Slum, Sea, and Fairy Cave biome music)
+- Leavannite (Custom Wasteland biome music)
+- “Big” bird_obsession (Custom Snowy Forest biome music)
+- _tresnoir
+- unveiler
 
-## Backgrounds
-- Squip (Paid Commissions)
-- Contributions by Someonealive-QN
-- Contributions by redactedinlight
-
-## UI
-- GAMEFREAK
-- LJ Birdman
-
-## Pagefault Games Intro
-- Spectremint
-
-## Game Logo
-- Gonstar (Paid Commission)
-
-## Trainer Sprites
-- GAMEFREAK (Pokémon Black/White 2, Pokémon Diamond/Pearl)
-- Brumirage
-- IceJkai
-- kyledove
-- Leparagon
-- pkmn_realidea (Paid Commissions)
-- wormhood
-
-## Trainer Portraits
-- pkmn_realidea (Paid Commissions)
-
-## Pokémon Sprites and Animation
-In addition to the lists below, please check [the PokéRogue wiki](https://wiki.pokerogue.net/credits:credits) for a more detailed list of Pokémon Sprite credits.
-
-- GAMEFREAK (Pokémon Black/White 2)
-- Smogon Sprite Project (Various Artists)
-- AshnixsLaw
-- Azrita
-- bizcoeindoloro
-- Caruban
-- Ebaru
-- EricLostie
-- Fleimer_
-- Franark122k
-- Hellfire0raptor
-- ItsYugen
-- kiriaura
-- kyledove
-- lucasomi
-- mangalos810
-- Nolo33
-- OldSoulja
-- PKMarioG
-- Pkm Sinfonia
-- Poki Papillon
-- RetroNC
-- selstar
-- Skyflyer
-- Sopita_Yorita
-
-## Move Animations
-- Pokémon Reborn
-
-### Static Sprites and Base Shiny Replacements Credits
-- AMVictory
-- Antiant
-- Arhops
-- arinoelle
-- Arkeis
-- aXl
-- BananaToast
-- Basic Vanillite
-- BlackWhiteRobin
-- Blaquaza
-- Branflakes325
-- Brylark
-- Buna
-- Bynine
-- Corson
-- Cynda
-- “Diashi” diazhi
-- Dleep
-- doomchaos
-- Espeon Scientist
-- Farriella
-- fishbowlsoul90
-- “Follower” rulerofthesea11
-- Galifia
-- GeoisEvil
-- G.E.Z.
-- Glustora
-- Harrie
-- HealnDeal
-- Hematite
-- HM100
-- Ice-cold Claws
-- Involuntary Twitch
-- “Jay” itsamejay
-- KattenK
-- KingOfThe-X-Roads
-- KyleDove
-- Kyleo
-- Kyuzeth
-- Larryturbo
-- Layell
-- Legitimate Username
-- leParagon
-- “LJ” lj_birdman
-- Luigi Player
-- Madmadness65
-- Mega-Pokebattlerz
-- Mintly
-- mjco
-- “Momo” sphinx_sage
-- MrDollSteak
-- MyMarshlands
-- N-Kin
-- Noscium
-- “Nova” fabunova
-- “Omniv” omniv
-- paintseagull
-- princessofmusic
-- PumpkinPastel
-- Quanyails
-- RadicalCharizard
-- RedRooster
-- “♂ROMEO⚧” gerolau
-- ruleroftheseas11
-- SelenaArmorclaw
-- “serif” serifaizawa
-- Siiilver
-- Sleet
-- Snivy101
-- Speed-X
-- Sphex
-- Spook
-- Squip
-- TeraVolt
-- TheAetherPlayer
-- TheCynicalPoet
-- Tooni
-- TrainerSplash
-- Travis
-- Turtleye
-- Tyrell D. Barnes
-- “Vari” \_vari\_
-- Wobblebuns
-- WolfPP
-- WPS
-- Wyverii
-- “zan” smtif
-- Zerudez
-- Z-nogyroP
-
-### Animated Sprites Credits
-- Antiant
-- arinoelle
-- Blaquaza
-- Claire Starsword
-- Coyotango
-- DanEx
-- “Diashi” diazhi
-- GalacticArtistMuffin
-- G.E.Z.
-- hexagonereal
-- HM100
-- Katten
-- LeParagon
-- localghost
-- MallowOut
-- mattiwarden
-- “Momo” sphinx_sage
-- N-Kin
-- NoelleMBrooks
-- Nyx
-- “Omniv” omniv
-- princessofmusic
-- PumpkinPastel
-- RadicalCharizard
-- seleccion
-- SelenaArmorclaw
-- TheAetherPlayer
-- Tinkatooni
-- Typhlito
-- uppa
-- “Vari” \_vari\_
-
-## Mystery Encounter Sprites
-- chrysomelinae
-- koda_want_to_sleep
-- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
-- ImperialSympathizer
-- wormhood
-- gerolau
-- otterwatch
+## Sound Effects
+- Pokémon Emerald
+- Pokémon Black/White
 
 
 # ⚖️ Balance
 
+
 ## Head of Balance
 - damocleas
 
-## Balance Team
+## Team Members
+
+### Balance Team
 - Blitzy (aka Kazapple)
 - Plasto
 - Moro
@@ -378,12 +386,12 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Starkrieg
 - Zaccie
 
-## Past Members
+### Past Members
 - Cynthia_calliope
 - Sethcurry
 - Swizzo
 
-## Past Contributors
+### Past Contributors
 - AsdarDevelops (Mystery Encounters)
 - chrysomelinae (Mystery Encounters)
 
@@ -395,11 +403,13 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 ## Head of Development
 - SirzBenjie
 
-## Senior Dev
+## Team Members
+
+### Senior Dev
 - Madmadness65
 - NightKev
 
-## Dev
+### Dev
 - bertie690
 - Curbio
 - emdeann (aka Dean)
@@ -408,7 +418,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Wlowscha (aka Curbio)
 - Xavion
 
-## Junior Dev
+### Junior Dev
 - Fontbane
 
 ## Former Development Team members
@@ -427,19 +437,11 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Opaquer
 - OrangeRed
 - Sam (aka Flashfyre) (initial developer, started PokéRogue)
+- Scooom (Past Server Maintainer)
 - sirzento
 - Swain (aka torranx)
 - Temp (aka Tempo-anon)
 - Walker
-
-## Past Server Maintainers
-- Scooom
-
-## Bug/Issue Managers
-- Daleks
-- Lily
-- PigeonBar
-- Snailman
 
 ## Other Code Contributors
 - acelynnzhang
@@ -509,6 +511,12 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - zaccie
 - zacharied
 - Zé Ricardo
+
+## Bug/Issue Managers
+- Daleks
+- Lily
+- PigeonBar
+- Snailman
 
 
 # 🌎 Translation
