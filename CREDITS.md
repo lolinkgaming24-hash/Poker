@@ -356,7 +356,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - damocleas
 
 ## Balance Team
-- Blitzy / Kazapple
+- Blitzy (aka Kazapple)
 - Plasto
 - Moro
 - Esca
@@ -383,7 +383,6 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - SirzBenjie
 
 ## Senior Dev
-- SirzBenjie
 - Madmadness65
 - NightKev
 
@@ -437,7 +436,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Arxalc
 - AsdarDevelops
 - baekanthony
-- Blitzy / Kazapple
+- Blitzy (aka Kazapple)
 - Corrade
 - damocleas
 - domagoj03
@@ -709,7 +708,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Rizbh
 
 ## Junior Moderators
-- Blitzy / Kazapple
+- Blitzy (aka Kazapple)
 - bwl626
 - Kappals
 
