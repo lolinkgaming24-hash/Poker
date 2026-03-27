@@ -216,26 +216,26 @@ describe("Abilities - Commander", () => {
     });
 
     it("should allow Dondozo to deal damage with U-turn but prevent it from switching out", async () => {
-      game.override.moveset([MoveId.U_TURN, MoveId.SPLASH]);
       await game.classicMode.startBattle(SpeciesId.DONDOZO, SpeciesId.TATSUGIRI, SpeciesId.PIDGEY);
 
       const [dondozo] = game.scene.getPlayerField();
-      game.move.select(MoveId.U_TURN);
+      game.move.use(MoveId.U_TURN);
       await game.toNextTurn();
 
       expect(dondozo.isOnField()).toBe(true);
+      expect(dondozo).toHaveUsedMove({ move: MoveId.U_TURN, result: MoveResult.SUCCESS });
       expect(game.scene.getPlayerField()[0].species.speciesId).toBe(SpeciesId.DONDOZO);
     });
 
     it("should fail the switch when Dondozo uses Baton Pass", async () => {
-      game.override.moveset([MoveId.BATON_PASS, MoveId.SPLASH]);
       await game.classicMode.startBattle(SpeciesId.DONDOZO, SpeciesId.TATSUGIRI, SpeciesId.PIDGEY);
 
       const [dondozo] = game.scene.getPlayerField();
-      game.move.select(MoveId.BATON_PASS);
+      game.move.use(MoveId.BATON_PASS);
       await game.toNextTurn();
 
       expect(dondozo.isOnField()).toBe(true);
+      expect(dondozo).toHaveUsedMove({ move: MoveId.BATON_PASS, result: MoveResult.FAIL });
       expect(game.scene.getPlayerField()[0].species.speciesId).toBe(SpeciesId.DONDOZO);
     });
   });
