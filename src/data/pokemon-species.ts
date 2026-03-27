@@ -277,7 +277,9 @@ export abstract class PokemonSpeciesForm {
   }
 
   isTrainerForbidden(): boolean {
-    return [SpeciesId.ETERNAL_FLOETTE, SpeciesId.BLOODMOON_URSALUNA, SpeciesId.BATTLE_BOND_GRENINJA].includes(this.speciesId);
+    return [SpeciesId.ETERNAL_FLOETTE, SpeciesId.BLOODMOON_URSALUNA, SpeciesId.BATTLE_BOND_GRENINJA].includes(
+      this.speciesId,
+    );
   }
 
   isRareRegional(): boolean {

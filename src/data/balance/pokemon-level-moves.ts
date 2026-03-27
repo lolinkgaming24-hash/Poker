@@ -11656,6 +11656,7 @@ export const pokemonSpeciesLevelMoves = {
     [ 68, MoveId.HYDRO_PUMP ],
   ],
   [SpeciesId.BATTLE_BOND_GRENINJA]: [
+    [ 1, MoveId.WATER_SHURIKEN ],
     [ 1, MoveId.POUND ],
     [ 1, MoveId.GROWL ],
     [ 1, MoveId.WATER_GUN ],
