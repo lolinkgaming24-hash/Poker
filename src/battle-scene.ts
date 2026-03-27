@@ -2716,23 +2716,23 @@ export class BattleScene extends SceneBase {
         return 11.42;
       case "battle_star_boss": //SV Cassiopeia Battle
         return 25.764;
-      case "mystery_encounter_gen_5_gts": // BW GTS
+      case "mystery_encounter_gen_5_gts": //BW GTS
         return 8.52;
-      case "mystery_encounter_gen_6_gts": // XY GTS
+      case "mystery_encounter_gen_6_gts": //XY GTS
         return 9.24;
-      case "mystery_encounter_fun_and_games": // EoS Guildmaster Wigglytuff
+      case "mystery_encounter_fun_and_games": //EoS Guildmaster Wigglytuff
         return 4.78;
-      case "mystery_encounter_weird_dream": // EoS Temporal Spire
+      case "mystery_encounter_weird_dream": //EoS Temporal Spire
         return 41.42;
-      case "mystery_encounter_delibirdy": // Firel Delibirdy
+      case "mystery_encounter_delibirdy": //Firel Delibirdy
         return 82.28;
-      case "title_afd": // Andr06 - PokéRogue Title Remix (AFD)
+      case "title_afd": //Andr06 - PokéRogue Title Remix (AFD)
         return 47.66;
-      case "title_afd_2": // Andr06 - PokéRogue Title Remix 2 (AFD)
+      case "title_afd_2": //Andr06 - PokéRogue Title Remix 2 (AFD)
         return 61.819;
-      case "battle_rival_3_afd": // Andr06 - Final N Battle Remix (AFD)
+      case "battle_rival_3_afd": //Andr06 - Final N Battle Remix (AFD)
         return 49.147;
-      case "battle_trainer_afd": // Andr06 - PokéRogue Trainer Remix (AFD)
+      case "battle_trainer_afd": //Andr06 - PokéRogue Trainer Remix (AFD)
         return 13.686;
     }
 
