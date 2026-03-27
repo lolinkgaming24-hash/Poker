@@ -434,7 +434,6 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - EmberCM
 - EmoUsedHM01
 - EvasiveAce
-- Fontbane
 - francktrouillez
 - FredeX
 - geeilhan
