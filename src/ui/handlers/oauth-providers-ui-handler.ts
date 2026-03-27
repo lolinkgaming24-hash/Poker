@@ -46,8 +46,8 @@ export abstract class OAuthProvidersUiHandler extends LoginRegisterInfoContainer
       .setOrigin(0.5, 0);
     this.externalPartyBg = addWindow(0, 0, 0, 0);
 
-    this.discordImage = this.buildInteractableImage("discord_oath", "discord-icon");
-    this.googleImage = this.buildInteractableImage("google_oath", "google-icon");
+    this.discordImage = this.buildInteractableImage("discord_oauth", "discord-icon");
+    this.googleImage = this.buildInteractableImage("google_oauth", "google-icon");
 
     this.externalPartyContainer
       .add([this.externalPartyBg, this.externalPartyTitle, this.discordImage, this.googleImage])

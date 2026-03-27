@@ -149,8 +149,8 @@ export class LoadingScene extends SceneBase {
 
       .loadImage("language_icon", "ui")
       .loadImage("saving_icon", "ui")
-      .loadImage("discord_oath", "ui")
-      .loadImage("google_oath", "ui")
+      .loadImage("discord_oauth", "ui")
+      .loadImage("google_oauth", "ui")
       .loadImage("settings_icon", "ui")
       .loadImage("link_icon", "ui")
       .loadImage("unlink_icon", "ui")
