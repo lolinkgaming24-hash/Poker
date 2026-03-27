@@ -11,7 +11,7 @@ export const timedEvents: readonly TimedEvent[] = [
   {
     name: "April Fools 2026",
     eventType: EventType.NO_TIMER_DISPLAY,
-    startDate: new Date(Date.UTC(2026, 2, 1)),
+    startDate: new Date(Date.UTC(2026, 3, 1)),
     endDate: new Date(Date.UTC(2026, 3, 3)),
     bannerKey: "aprf2026",
     scale: 0.19,
