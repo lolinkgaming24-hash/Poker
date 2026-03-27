@@ -321,7 +321,7 @@ const seasonalSplashMessages: Season[] = [
   {
     name: "Winter Holiday",
     start: "12-01",
-    end: "01-01",
+    end: "12-31",
     messages: [
       "winterHoliday.happyHolidays",
       "winterHoliday.unaffilicatedWithDelibirdServices",
