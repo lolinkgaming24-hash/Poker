@@ -43,7 +43,7 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 - Pokémon Black/White
 
 
-# 🎨 Art
+# 🧾 Sprites and Resources
 
 ## Backgrounds
 - Squip (Paid Commissions)
@@ -72,7 +72,7 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 ## Mystery Event Sprites
 - chrysomelinae
 - koda_want_to_sleep
-- “🐺Kieran/YJ 🐍” rival_kieran aka thedreadedden
+- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
 - ImperialSympathizer
 - wormhood
 - gerolau
@@ -108,6 +108,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - bizcoeindoloro
 - mangalos810
 - selstar
+- kyledove
 
 ### Static Sprites and Base Shiny Replacements Credits
 - AMVictory
@@ -233,6 +234,26 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - uppa
 - “Vari” \_vari\_
 
+# 🎨 Art
+
+## Head of Art
+- Firel
+
+## Senior Artist
+- damocleas
+- “Hanniel” hanniel.15
+- “Splash Damage” splashceles
+
+## Artist
+- bwl626
+- Crow W (aka Crowo)
+- “Caramel” saltedcarriemel
+- Dops
+- Fontbane
+- "Green Ninja757" (aka DaleB)
+- Necrow (aka Necrowmancy)
+- redactedinlight
+
 ### Rare/Epic Shiny Variants Credits
 - “Andr06” andr06
 - “Appo” appo
@@ -280,7 +301,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - “Jay” itsamejay
 - “Jelke” jelke
 - kalikimothy
-- “🐺Kieran/YJ 🐍” rival_kieran aka thedreadedden
+- “🐺Kieran/YJ 🐍” rival_kieran (aka thedreadedden)
 - “Koda” Koda_want_to_sleep
 - “Lana” smogonian
 - “LJ” lj_birdman
@@ -331,20 +352,22 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 
 # ⚖️ Balance
 
-## Balance Team
+## Head of Balance
 - damocleas
+
+## Balance Team
 - Blitzy / Kazapple
 - Plasto
 - Moro
 - Esca
 - Fontbane
-- Cynthia_calliope
 - Starkrieg
 - Zaccie
 
 ## Past Members
 - Sethcurry
 - Swizzo
+- Cynthia_calliope
 
 ## Past Contributors
 - chrysomelinae (Mystery Encounters)
@@ -353,11 +376,30 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 
 # 💻 Development
 
-## Server Developers and Maintainers
-- pancakes aka patapancakes
-- Scooom
+## Server Developer and Maintainer
+- pancakes (aka patapancakes)
 
-## Current and former Development Team members
+## Head of Development
+- SirzBenjie
+
+## Senior Dev
+- SirzBenjie
+- Madmadness65
+- NightKev
+
+## Dev
+- bertie690
+- Curbio
+- emdeann (aka Dean)
+- Fabi (aka fabske)
+- SN34KZ
+- Wlowscha (aka Curbio)
+- Xavion
+
+## Junior Dev
+- Fontbane
+
+## Former Development Team members
 - bennybroseph
 - Brain Frog
 - CodeTappert
@@ -368,21 +410,18 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - ImperialSympathizer
 - innerthunder
 - KimJeongSun
-- Madmadness65
 - Moka
 - Navori
-- NightKev
 - Opaquer
 - OrangeRed
-- Sam aka Flashfyre (initial developer, started PokéRogue)
-- SirzBenjie
+- Sam (aka Flashfyre) (initial developer, started PokéRogue)
 - sirzento
-- SN34KZ
-- Swain aka torranx
-- Temp aka Tempo-anon
+- Swain (aka torranx)
+- Temp (aka Tempo-anon)
 - Walker
-- Wlowscha (aka Curbio)
-- Xavion
+
+## Past Server Maintainers
+- Scooom
 
 ## Bug/Issue Managers
 - Daleks
@@ -391,12 +430,17 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Snailman
 
 ## Other Code Contributors
+- acelynnzhang
 - Admiral-Billy
 - allen925
 - arColm
 - Arxalc
 - AsdarDevelops
+- baekanthony
+- Blitzy / Kazapple
 - Corrade
+- damocleas
+- domagoj03
 - DustinLin
 - ElizaAlex
 - EmberCM
@@ -409,22 +453,29 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - happinyz
 - hayuna
 - InfernoVulpix
+- isaac105
+- izaankml
 - j-diefenbach
 - jaimefd
 - JakubHanko
+- Jimmybald1
 - JonStudders
 - karl-police
+- LaraFranconi
 - lucfd
 - Lugiadrien
+- macwellbz
 - madibye
 - mattrossdev
 - mcmontag
 - meepen
 - Mewtwo2387
 - muscode
+- Nikhilesh002
 - Neverblade
 - NxKarim
 - okimin
+- Ovdoes-dd
 - PigeonBar
 - PrabbyDD
 - prateau
@@ -434,6 +485,8 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - RedstonewolfX
 - ReneGV
 - rnicar245
+- scarlyle0
+- Scooom
 - schmidtc1
 - shayebeadling
 - snoozbuster
@@ -471,6 +524,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 ### 🇮🇹 Italian (it)
 - Nicus
 - rrrroverto
+- Curbio
 
 ### 🇯🇵 Japanese (ja)
 - 6mozuke9
@@ -494,9 +548,12 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 
 ### Catalan (ca)
 - DEMO
+- origamer1000
+- serpercito
 
 ### 🇩🇰 Danish (da)
 - WackZero
+- SebCraft
 
 ### 🇸🇪 Swedish (sv)
 - Chapybara
@@ -504,12 +561,18 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 ### 🇷🇺 Russian (ru)
 - Shinigami Holo
 
-### 🇺🇦 Ukrainian
+### 🇺🇦 Ukrainian (uk)
 - Rahr
 
 ### 🇹🇷 Turkish (tr)
 - hotpink77
 - pantherinae
+
+### 🇹🇭 Thai (th)
+- tEmar1
+
+### Basque (eu)
+- Moro
 
 ### 🇵🇭 Tagalog (tl)
 - Naga42
@@ -639,15 +702,16 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Pom
 
 ## Moderators
+- Cynthia_calliope
 - ChaosGrimmon
 - Kat
-
-## Junior Moderators
-- Cynthia_calliope
 - Mitsue
 - Rizbh
-- Tempest
-- Zaccie
+
+## Junior Moderators
+- Blitzy / Kazapple
+- bwl626
+- Kappals
 
 ## Past Moderators
 - Cent
@@ -661,7 +725,9 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Necromancer
 - Sethcurry
 - Solanum Tuberosum
+- Tempest
 - Ves
+- Zaccie
 
 # ✨ Special Thanks
 
@@ -675,5 +741,5 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 ## External Tools
 - Sandstorm (Creator of "PokéRogue SearchDex")
 - Admiral-Billy (Offline App - Desktop)
-- Red aka StonedModder (iOS App)
+- Red (aka StonedModder) (iOS App)
 - Ydarissep (Creator of the now defunct "Yda's Dex")
