@@ -150,19 +150,27 @@ export abstract class ArenaTag implements BaseArenaTag {
   constructor(turnCount: number, sourceMove?: MoveId, sourceId?: number, side: ArenaTagSide = ArenaTagSide.BOTH) {
     this.turnCount = turnCount;
     this.maxDuration = turnCount;
-    this.sourceMove = sourceMove;
+    // TODO: Rework tags passing `MoveId.NONE` to instead pass `undefined` for consistency
+    // TODO: Enforce that all arena tags explicitly declare any used properties to ensure only required properties are serialized
+    if (sourceMove) {
+      this.sourceMove = sourceMove;
+    }
+    if (sourceId !== undefined) {
+      this.sourceId = sourceId;
+    }
     this.sourceId = sourceId;
     this.side = side;
   }
 
   /**
    * Apply this tag's effects during a turn.
-   * @param _args - Arguments used by subclasses.
+   * @param args - Arguments used by subclasses.
    */
   // TODO: Remove all boolean return values from subclasses
   // TODO: Move all classes with `apply` triggers into a unique sub-class to prevent
   // applying effects of tags that lack effect application
-  public apply(..._args: unknown[]): void {}
+  // biome-ignore lint/correctness/noUnusedFunctionParameters: pseudo-abstract method
+  public apply(...args: unknown[]): void {}
 
   /**
    * Trigger effects when this tag is added to the Arena.
@@ -202,12 +210,14 @@ export abstract class ArenaTag implements BaseArenaTag {
 
   /**
    * Apply effects when this Tag overlaps by creating a new instance while one is already present.
-   * @param _source - The `Pokemon` having added the tag
+   * @param source - The `Pokemon` having added the tag
    */
-  public onOverlap(_source?: Pokemon): void {}
+  // biome-ignore lint/correctness/noUnusedFunctionParameters: pseudo-abstract method
+  public onOverlap(source?: Pokemon): void {}
 
   /**
-   * Reduce this {@linkcode ArenaTag}'s duration and apply any end-of-turn effects
+   * Reduce this {@linkcode ArenaTag}'s duration and apply any end-of-turn effects.
+   * @remarks
    * Will ignore durations of all tags with durations `<=0`.
    * @returns `true` if this tag should be kept; `false` if it should be removed.
    */
@@ -227,11 +237,16 @@ export abstract class ArenaTag implements BaseArenaTag {
    * @param source - The arena tag being loaded
    */
   loadTag<const T extends this>(source: BaseArenaTag & Pick<T, "tagType">): void {
-    this.turnCount = source.turnCount;
-    this.maxDuration = source.maxDuration;
-    this.sourceMove = source.sourceMove;
-    this.sourceId = source.sourceId;
-    this.side = source.side;
+    const { sourceMove, turnCount, sourceId, maxDuration, side } = source;
+    this.turnCount = turnCount;
+    this.maxDuration = maxDuration;
+    if (sourceMove) {
+      this.sourceMove = sourceMove;
+    }
+    if (sourceId !== undefined) {
+      this.sourceId = sourceId;
+    }
+    this.side = side;
   }
 
   /**
@@ -945,7 +960,7 @@ class StealthRockTag extends DamagingTrapTag {
   }
 
   protected override getDamageHpRatio(pokemon: Pokemon): number {
-    const effectiveness = pokemon.getAttackTypeEffectiveness(PokemonType.ROCK, undefined, true);
+    const effectiveness = pokemon.getAttackTypeEffectiveness(PokemonType.ROCK, { ignoreStrongWinds: true });
     return 0.125 * effectiveness;
   }
 
@@ -1620,10 +1635,10 @@ export class PendingHealTag extends SerializableArenaTag {
     }
   }
 
-  /** This arena tag is removed at the end of the turn if no pending healing effects are on the field */
   override lapse(): boolean {
-    for (const key in this.pendingHeals) {
-      if (this.pendingHeals[key].length > 0) {
+    for (const pendingHeal of Object.values(this.pendingHeals)) {
+      // `?` works around a bug where somehow the pending heal object can be `null` (save data corruption?)
+      if (pendingHeal?.length > 0) {
         return true;
       }
     }
@@ -1685,7 +1700,7 @@ export class PendingHealTag extends SerializableArenaTag {
 
     targetEffects.splice(targetEffects.indexOf(healEffect), 1);
 
-    return healEffect != null;
+    return true;
   }
 
   /**

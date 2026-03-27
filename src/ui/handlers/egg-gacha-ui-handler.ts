@@ -41,7 +41,7 @@ export class EggGachaUiHandler extends MessageUiHandler {
   private defaultText: string;
 
   /** The tween chain playing the egg drop animation sequence */
-  private eggDropTweenChain?: Phaser.Tweens.TweenChain;
+  private eggDropTweenChain?: Phaser.Tweens.TweenChain | undefined;
 
   private scale = 0.1666666667;
 
@@ -81,7 +81,7 @@ export class EggGachaUiHandler extends MessageUiHandler {
     let pokemonIconX = -20;
     let pokemonIconY = 6;
 
-    if (["de", "es-ES", "es-419", "fr", "ko", "pt-BR", "ja", "ru", "tr"].includes(currentLanguage)) {
+    if (["de", "es-ES", "es-419", "fr", "ko", "pt-BR", "ja", "ru", "uk", "tr", "eu"].includes(currentLanguage)) {
       gachaTextStyle = TextStyle.SMALLER_WINDOW_ALT;
       gachaX = 2;
       gachaY = 2;
@@ -89,7 +89,7 @@ export class EggGachaUiHandler extends MessageUiHandler {
 
     let legendaryLabelX = gachaX;
     let legendaryLabelY = gachaY;
-    if (["de", "es-ES", "es-419", "tr"].includes(currentLanguage)) {
+    if (["de", "es-ES", "es-419", "tr", "eu"].includes(currentLanguage)) {
       pokemonIconX = -25;
       pokemonIconY = 10;
       legendaryLabelX = -6;
@@ -102,7 +102,7 @@ export class EggGachaUiHandler extends MessageUiHandler {
     switch (gachaType as GachaType) {
       case GachaType.LEGENDARY:
         {
-          if (["de", "es-ES"].includes(currentLanguage)) {
+          if (["de", "es-ES", "eu"].includes(currentLanguage)) {
             gachaUpLabel.setAlign("center");
           }
           let xOffset = 0;
@@ -119,14 +119,14 @@ export class EggGachaUiHandler extends MessageUiHandler {
         }
         break;
       case GachaType.MOVE:
-        if (["de", "es-ES", "fr", "pt-BR", "ru", "tr"].includes(currentLanguage)) {
+        if (["de", "es-ES", "fr", "pt-BR", "ru", "uk", "tr", "eu"].includes(currentLanguage)) {
           gachaUpLabel.setAlign("center").setY(0);
         }
 
         gachaUpLabel.setText(i18next.t("egg:moveUpGacha")).setX(0).setOrigin(0.5, 0);
         break;
       case GachaType.SHINY:
-        if (["de", "fr", "ko", "ru", "tr"].includes(currentLanguage)) {
+        if (["de", "fr", "ko", "ru", "uk", "tr"].includes(currentLanguage)) {
           gachaUpLabel.setAlign("center").setY(0);
         }
 
@@ -203,6 +203,7 @@ export class EggGachaUiHandler extends MessageUiHandler {
     let eggGachaOptionSelectWidth = 0;
     switch (i18next.resolvedLanguage) {
       case "ru":
+      case "uk":
         eggGachaOptionSelectWidth = 100;
         break;
       default:
@@ -340,7 +341,7 @@ export class EggGachaUiHandler extends MessageUiHandler {
 
     this.eggGachaContainer.setActive(true).setVisible(true);
 
-    handleTutorial(Tutorial.Egg_Gacha);
+    handleTutorial(Tutorial.EGG_GACHA);
 
     this.legendaryExpiration.setText(this.getLegendaryGachaTimeLeft());
     this.legendaryGachaTimer();

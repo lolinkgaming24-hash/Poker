@@ -3,6 +3,8 @@ import { globalScene } from "#app/global-scene";
 import { getPokemonNameWithAffix } from "#app/messages";
 import { speciesStarterCosts } from "#balance/starters";
 import { TrappedTag } from "#data/battler-tags";
+import { getDailyEventSeedBoss } from "#data/daily-seed/daily-run";
+import { isDailyFinalBoss } from "#data/daily-seed/daily-seed-utils";
 import { AbilityId } from "#enums/ability-id";
 import { ArenaTagSide } from "#enums/arena-tag-side";
 import { ArenaTagType } from "#enums/arena-tag-type";
@@ -17,9 +19,9 @@ import { MysteryEncounterMode } from "#enums/mystery-encounter-mode";
 import { PokeballType } from "#enums/pokeball";
 import { UiMode } from "#enums/ui-mode";
 import type { PlayerPokemon } from "#field/pokemon";
-import type { MoveTargetSet } from "#moves/move";
 import { getMoveTargets } from "#moves/move-utils";
 import { FieldPhase } from "#phases/field-phase";
+import type { MoveTargetSet } from "#types/move-target-set";
 import type { TurnMove } from "#types/turn-move";
 import i18next from "i18next";
 
@@ -48,11 +50,11 @@ export class CommandPhase extends FieldPhase {
     const commandUiHandler = globalScene.ui.handlers[UiMode.COMMAND];
     const { arena, commandCursorMemory, currentBattle } = globalScene;
     const { battleType, turn } = currentBattle;
-    const { biomeType } = arena;
+    const { biomeId } = arena;
 
     // If one of these conditions is true, we always reset the cursor to Command.FIGHT
     const cursorResetEvent =
-      battleType === BattleType.MYSTERY_ENCOUNTER || battleType === BattleType.TRAINER || biomeType === BiomeId.END;
+      battleType === BattleType.MYSTERY_ENCOUNTER || battleType === BattleType.TRAINER || biomeId === BiomeId.END;
 
     if (!commandUiHandler) {
       return;
@@ -123,7 +125,7 @@ export class CommandPhase extends FieldPhase {
       if (
         queuedMove.move !== MoveId.NONE
         && !isVirtual(queuedMove.useMode)
-        && !movesetQueuedMove?.isUsable(playerPokemon, isIgnorePP(queuedMove.useMode), true)
+        && !(movesetQueuedMove?.isUsable(playerPokemon, isIgnorePP(queuedMove.useMode), true)?.[0] ?? false)
       ) {
         entriesToDelete++;
       } else {
@@ -356,7 +358,7 @@ export class CommandPhase extends FieldPhase {
   private checkCanUseBall(): boolean {
     const { arena, currentBattle, gameData, gameMode } = globalScene;
     const { battleType } = currentBattle;
-    const { biomeType } = arena;
+    const { biomeId } = arena;
     const { isClassic, isEndless, isDaily } = gameMode;
     const { dexData } = gameData;
 
@@ -368,8 +370,9 @@ export class CommandPhase extends FieldPhase {
       .some(p => p.isActive() && !dexData[p.species.speciesId].caughtAttr);
     const missingMultipleStarters =
       gameData.getStarterCount(d => !!d.caughtAttr) < Object.keys(speciesStarterCosts).length - 1;
+    const isCatchableDailyBoss = isDailyFinalBoss() && (getDailyEventSeedBoss()?.catchable ?? false);
 
-    if (biomeType === BiomeId.END && battleType === BattleType.WILD) {
+    if (biomeId === BiomeId.END && battleType === BattleType.WILD) {
       if (
         (isClassic && !isClassicFinalBoss && someUncaughtSpeciesOnField)
         || (isFullFreshStart && !isClassicFinalBoss)
@@ -381,7 +384,7 @@ export class CommandPhase extends FieldPhase {
         (isClassic && isClassicFinalBoss && missingMultipleStarters)
         || (isFullFreshStart && isClassicFinalBoss)
         || (isEndless && isEndlessMinorBoss)
-        || isDaily
+        || (isDaily && !isCatchableDailyBoss)
       ) {
         // Uncatchable final boss in classic, endless and daily
         this.queueShowText("battle:noPokeballForceFinalBoss");
@@ -422,6 +425,7 @@ export class CommandPhase extends FieldPhase {
 
     const isChallengeActive = globalScene.gameMode.hasAnyChallenges();
     const isFinalBoss = globalScene.gameMode.isBattleClassicFinalBoss(globalScene.currentBattle.waveIndex);
+    const isCatchableDailyBoss = isDailyFinalBoss() && (getDailyEventSeedBoss()?.catchable ?? false);
 
     const numBallTypes = 5;
     if (cursor < numBallTypes) {
@@ -441,7 +445,7 @@ export class CommandPhase extends FieldPhase {
           return false;
         }
         // When facing any other boss, Master Ball can always be used, and we use the standard message.
-        if (cursor < PokeballType.MASTER_BALL) {
+        if (isCatchableDailyBoss || cursor < PokeballType.MASTER_BALL) {
           this.queueShowText("battle:noPokeballStrong");
           return false;
         }
@@ -556,7 +560,7 @@ export class CommandPhase extends FieldPhase {
   private handleRunCommand(): boolean {
     const { currentBattle, arena } = globalScene;
     const mysteryEncounterFleeAllowed = currentBattle.mysteryEncounter?.fleeAllowed ?? true;
-    if (arena.biomeType === BiomeId.END || !mysteryEncounterFleeAllowed) {
+    if (arena.biomeId === BiomeId.END || !mysteryEncounterFleeAllowed) {
       this.queueShowText("battle:noEscapeForce");
       return false;
     }

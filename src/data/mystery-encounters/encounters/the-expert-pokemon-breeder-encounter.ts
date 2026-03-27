@@ -162,8 +162,9 @@ export const TheExpertPokemonBreederEncounter: MysteryEncounter = MysteryEncount
           : SpeciesId.CLEFABLE;
     encounter.spriteConfigs = [
       {
-        spriteKey: cleffaSpecies.toString(),
-        fileRoot: "pokemon",
+        species: cleffaSpecies,
+        spriteKey: "",
+        fileRoot: "",
         hasShadow: true,
         repeat: true,
         x: 14,
@@ -508,7 +509,7 @@ function getPartyConfig(): EnemyPartyConfig {
     ],
   };
 
-  if (globalScene.arena.biomeType === BiomeId.SPACE) {
+  if (globalScene.arena.biomeId === BiomeId.SPACE) {
     // All 3 members always Cleffa line, but different configs
     baseConfig.pokemonConfigs!.push(
       {

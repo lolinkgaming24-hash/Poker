@@ -1,8 +1,9 @@
 import { determineEnemySpecies } from "#app/ai/ai-species-gen";
 import type { AnySound } from "#app/battle-scene";
 import type { GameMode } from "#app/game-mode";
+import { timedEventManager } from "#app/global-event-manager";
 import { globalScene } from "#app/global-scene";
-import { speciesEggMoves } from "#balance/egg-moves";
+import { speciesEggMoves } from "#balance/moves/egg-moves";
 import { starterPassiveAbilities } from "#balance/passives";
 import { pokemonEvolutions, pokemonPrevolutions } from "#balance/pokemon-evolutions";
 import {
@@ -11,7 +12,6 @@ import {
   pokemonSpeciesLevelMoves,
 } from "#balance/pokemon-level-moves";
 import { speciesStarterCosts } from "#balance/starters";
-import { uncatchableSpecies } from "#data/data-lists";
 import type { GrowthRate } from "#data/exp";
 import { Gender } from "#data/gender";
 import { AbilityId } from "#enums/ability-id";
@@ -22,6 +22,7 @@ import type { PokemonType } from "#enums/pokemon-type";
 import { SpeciesFormKey } from "#enums/species-form-key";
 import { SpeciesId } from "#enums/species-id";
 import type { Stat } from "#enums/stat";
+import type { Pokemon } from "#field/pokemon";
 import { loadPokemonVariantAssets } from "#sprites/pokemon-sprite";
 import { hasExpSprite } from "#sprites/sprite-utils";
 import type { Variant, VariantSet } from "#sprites/variant";
@@ -31,7 +32,7 @@ import type { LevelMoves } from "#types/pokemon-level-moves";
 import type { StarterMoveset } from "#types/save-data";
 import type { EvolutionLevel, EvolutionLevelWithThreshold } from "#types/species-gen-types";
 import { randSeedFloat, randSeedGauss } from "#utils/common";
-import { getPokemonSpecies } from "#utils/pokemon-utils";
+import { getPokemonSpecies, getPokemonSpeciesForm } from "#utils/pokemon-utils";
 import { toCamelCase, toPascalCase } from "#utils/strings";
 import { argbFromRgba, QuantizerCelebi, rgbaFromArgb } from "@material/material-color-utilities";
 import i18next from "i18next";
@@ -91,6 +92,7 @@ export abstract class PokemonSpeciesForm {
   readonly baseTotal: number;
   readonly baseStats: number[];
   readonly catchRate: number;
+  /** The base amount of friendship this species has when caught, as an integer from 0-255. */
   readonly baseFriendship: number;
   readonly baseExp: number;
   readonly genderDiffs: boolean;
@@ -198,10 +200,8 @@ export abstract class PokemonSpeciesForm {
    * @param formIndex The form index to use, defaults to form for this species instance
    * @returns The id of the ability
    */
-  getPassiveAbility(formIndex?: number): AbilityId {
-    if (formIndex == null) {
-      formIndex = this.formIndex;
-    }
+  getPassiveAbility(formIndex = this.formIndex): AbilityId {
+    // TODO: This logic is quite convoluted; besides, forms should not need to have their own `getPassiveAbility` functions
     let starterSpeciesId = this.speciesId;
     while (
       !(starterSpeciesId in starterPassiveAbilities)
@@ -235,12 +235,43 @@ export abstract class PokemonSpeciesForm {
     return Math.floor(this.speciesId / 2000) as Region;
   }
 
-  isObtainable(): boolean {
-    return this.generation <= 9 || pokemonPrevolutions.hasOwnProperty(this.speciesId);
-  }
-
-  isCatchable(): boolean {
-    return this.isObtainable() && uncatchableSpecies.indexOf(this.speciesId) === -1;
+  // TODO: this is primarily used for preventing certain pokemon from generating on trainers, rename?
+  public isCatchable(): boolean {
+    const blockedSpecies = [
+      SpeciesId.MEW,
+      SpeciesId.CELEBI,
+      SpeciesId.JIRACHI,
+      SpeciesId.DEOXYS,
+      SpeciesId.PHIONE,
+      SpeciesId.MANAPHY,
+      SpeciesId.ARCEUS,
+      SpeciesId.VICTINI,
+      SpeciesId.MELTAN,
+      SpeciesId.MELMETAL,
+      SpeciesId.ETERNATUS,
+      SpeciesId.GREAT_TUSK,
+      SpeciesId.SCREAM_TAIL,
+      SpeciesId.BRUTE_BONNET,
+      SpeciesId.FLUTTER_MANE,
+      SpeciesId.SLITHER_WING,
+      SpeciesId.SANDY_SHOCKS,
+      SpeciesId.IRON_TREADS,
+      SpeciesId.IRON_BUNDLE,
+      SpeciesId.IRON_HANDS,
+      SpeciesId.IRON_JUGULIS,
+      SpeciesId.IRON_MOTH,
+      SpeciesId.IRON_THORNS,
+      SpeciesId.ROARING_MOON,
+      SpeciesId.IRON_VALIANT,
+      SpeciesId.WALKING_WAKE,
+      SpeciesId.IRON_LEAVES,
+      SpeciesId.GOUGING_FIRE,
+      SpeciesId.RAGING_BOLT,
+      SpeciesId.IRON_BOULDER,
+      SpeciesId.IRON_CROWN,
+      SpeciesId.PECHARUNT,
+    ];
+    return !blockedSpecies.includes(this.speciesId);
   }
 
   isRegional(): boolean {
@@ -308,7 +339,23 @@ export abstract class PokemonSpeciesForm {
       && female
       && ![SpeciesFormKey.MEGA, SpeciesFormKey.GIGANTAMAX].includes(formSpriteKey as SpeciesFormKey);
 
-    return `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
+    let spriteKey = `${showGenderDiffs ? "female__" : ""}${this.speciesId}${formSpriteKey ? `-${formSpriteKey}` : ""}`;
+
+    const replacement = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
+    if (replacement) {
+      const replacementFormSpriteKey = getPokemonSpecies(replacement.speciesId).forms[
+        replacement.formIndex
+      ]?.getFormSpriteKey(replacement.formIndex);
+
+      const replacementShowGenderDiffs =
+        getPokemonSpecies(replacement.speciesId).genderDiffs
+        && female
+        && ![SpeciesFormKey.MEGA, SpeciesFormKey.GIGANTAMAX].includes(replacementFormSpriteKey as SpeciesFormKey);
+
+      spriteKey = `${replacementShowGenderDiffs ? "female__" : ""}${replacement.speciesId}${replacementFormSpriteKey ? `-${replacementFormSpriteKey}` : ""}`;
+    }
+
+    return spriteKey;
   }
 
   /** Compute the sprite ID of the pokemon form. */
@@ -333,7 +380,7 @@ export abstract class PokemonSpeciesForm {
    * @param formIndex optional form index for pokemon with different forms
    * @returns species id if no additional forms, index with formkey if a pokemon with a form
    */
-  getVariantDataIndex(formIndex?: number) {
+  getVariantDataIndex(formIndex?: number): string | number {
     let formkey: string | null = null;
     let variantDataIndex: number | string = this.speciesId;
     const species = getPokemonSpecies(this.speciesId);
@@ -343,6 +390,17 @@ export abstract class PokemonSpeciesForm {
         variantDataIndex = `${this.speciesId}-${formkey}`;
       }
     }
+
+    const replacement = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
+    if (replacement) {
+      formkey = species.forms[replacement.formIndex]?.getFormSpriteKey(replacement.formIndex);
+      if (formkey) {
+        variantDataIndex = `${replacement.speciesId}-${formkey}`;
+      } else {
+        variantDataIndex = replacement.speciesId;
+      }
+    }
+
     return variantDataIndex;
   }
 
@@ -350,7 +408,12 @@ export abstract class PokemonSpeciesForm {
     const variantDataIndex = this.getVariantDataIndex(formIndex);
     const isVariant =
       shiny && variantData[variantDataIndex] && variant !== undefined && variantData[variantDataIndex][variant];
-    return `pokemon_icons_${this.generation}${isVariant ? "v" : ""}`;
+
+    const replacementSpecies = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
+    const generation = replacementSpecies
+      ? getPokemonSpeciesForm(replacementSpecies.speciesId, replacementSpecies.formIndex).generation
+      : this.generation;
+    return `pokemon_icons_${generation}${isVariant ? "v" : ""}`;
   }
 
   getIconId(female: boolean, formIndex?: number, shiny?: boolean, variant?: number): string {
@@ -359,8 +422,13 @@ export abstract class PokemonSpeciesForm {
     }
 
     const variantDataIndex = this.getVariantDataIndex(formIndex);
+    const replacement = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
 
     let ret = this.speciesId.toString();
+
+    if (replacement) {
+      ret = replacement.speciesId.toString();
+    }
 
     const isVariant =
       shiny && variantData[variantDataIndex] && variant !== undefined && variantData[variantDataIndex][variant];
@@ -387,6 +455,11 @@ export abstract class PokemonSpeciesForm {
     }
 
     let formSpriteKey = this.getFormSpriteKey(formIndex);
+    if (replacement) {
+      formSpriteKey = getPokemonSpeciesForm(replacement.speciesId, replacement.formIndex).getFormSpriteKey(
+        replacement.formIndex,
+      );
+    }
     if (formSpriteKey) {
       switch (this.speciesId) {
         case SpeciesId.DUDUNSPARCE:
@@ -412,8 +485,15 @@ export abstract class PokemonSpeciesForm {
 
   getCryKey(formIndex?: number): string {
     let speciesId = this.speciesId;
-    if (this.speciesId > 2000) {
-      switch (this.speciesId) {
+
+    const override = timedEventManager.getEventPokemonSpriteReplacement(this.speciesId, formIndex);
+    if (override) {
+      speciesId = override.speciesId;
+      formIndex = override.formIndex;
+    }
+
+    if (speciesId > 2000) {
+      switch (speciesId) {
         case SpeciesId.GALAR_SLOWPOKE:
           break;
         case SpeciesId.ETERNAL_FLOETTE:
@@ -439,19 +519,22 @@ export abstract class PokemonSpeciesForm {
         case SpeciesFormKey.MEGA:
         case SpeciesFormKey.MEGA_X:
         case SpeciesFormKey.MEGA_Y:
+        case SpeciesFormKey.PRIMAL:
         case SpeciesFormKey.GIGANTAMAX:
         case SpeciesFormKey.GIGANTAMAX_SINGLE:
         case SpeciesFormKey.GIGANTAMAX_RAPID:
+        case SpeciesFormKey.ETERNAMAX:
         case "white":
         case "black":
         case "therian":
         case "sky":
         case "gorging":
         case "gulping":
+        case "lowkey":
         case "no-ice":
         case "hangry":
         case "crowned":
-        case "eternamax":
+        case "rapid-strike":
         case "four":
         case "droopy":
         case "stretchy":
@@ -473,6 +556,19 @@ export abstract class PokemonSpeciesForm {
         case "dusk-mane":
         case "ultra":
           ret += `-${formKey}`;
+          break;
+      }
+      switch (this.speciesId) {
+        case SpeciesId.INDEEDEE:
+        case SpeciesId.OINKOLOGNE:
+          if (formKey === "female") {
+            ret += `-${formKey}`;
+          }
+          break;
+        case SpeciesId.CALYREX:
+          if (formKey === "ice" || formKey === "shadow") {
+            ret += `-${formKey}`;
+          }
           break;
       }
     }
@@ -762,7 +858,7 @@ export class PokemonSpecies extends PokemonSpeciesForm implements Localizable {
   getName(formIndex?: number): string {
     if (formIndex !== undefined && this.forms.length > 0) {
       const form = this.forms[formIndex];
-      let key: string | null;
+      let key: string | undefined;
       switch (form.formKey) {
         case SpeciesFormKey.MEGA:
         case SpeciesFormKey.PRIMAL:
@@ -774,15 +870,11 @@ export class PokemonSpecies extends PokemonSpeciesForm implements Localizable {
         default:
           if (form.formKey.indexOf(SpeciesFormKey.GIGANTAMAX) > -1) {
             key = "gigantamax";
-          } else {
-            key = null;
           }
       }
 
       if (key) {
-        return i18next.t(`battlePokemonForm:${toCamelCase(key)}`, {
-          pokemonName: this.name,
-        });
+        return i18next.t(`battlePokemonForm:${toCamelCase(key)}`, { pokemonName: this.name });
       }
     }
     return this.name;
