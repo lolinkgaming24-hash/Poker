@@ -1437,17 +1437,17 @@ export function initAbilities() {
       .conditionalAttr(
         p => p.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA && !p.isFusion(),
         PostVictoryFormChangeAbAttr,
-        () => 2,
+        () => 1,
       )
       .conditionalAttr(
         p => p.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA && !p.isFusion(),
         PostBattleInitFormChangeAbAttr,
-        () => 1,
+        () => 0,
       )
       .conditionalAttr(
         p => p.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA && !p.isFusion(),
         PostFaintFormChangeAbAttr,
-        () => 1,
+        () => 0,
       )
       .conditionalAttr(
         p => !p.hasSpecies(SpeciesId.BATTLE_BOND_GRENINJA) && !p.summonData.abilitiesApplied.has(AbilityId.BATTLE_BOND),

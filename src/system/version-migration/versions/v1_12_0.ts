@@ -13,6 +13,7 @@ const migrateGreninjaBattleBondForm: SystemSaveMigrator = {
     ) {
       data.dexData[SpeciesId.BATTLE_BOND_GRENINJA] = data.dexData[SpeciesId.GRENINJA];
       data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] = data.starterData[SpeciesId.FROAKIE];
+      data.starterData[SpeciesId.BATTLE_BOND_GRENINJA].abilityAttr = 1;
     }
   },
 };
