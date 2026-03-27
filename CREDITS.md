@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2024-2025 Pagefault Games
 SPDX-License-Identifier: CC-BY-NC-SA-4.0
 -->
 
-# 🎨 Art and Music
+# 🎨 Art and 🎵 Music
 
 ## Head of Art
 - Firel
@@ -63,7 +63,7 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 - pkmn_realidea (Paid Commissions)
 - wormhood
 
-## Trainer Portraits
+### Trainer Portraits
 - pkmn_realidea (Paid Commissions)
 
 ## Pokémon Sprites and Animation
@@ -369,32 +369,6 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Pokémon Black/White
 
 
-# ⚖️ Balance
-
-
-## Head of Balance
-- damocleas
-
-## Team Members
-
-### Balance Team
-- Blitzy (aka Kazapple)
-- Plasto
-- Moro
-- Esca
-- Fontbane
-- Starkrieg
-- Zaccie
-
-### Past Members
-- Cynthia_calliope
-- Sethcurry
-- Swizzo
-
-### Past Contributors
-- AsdarDevelops (Mystery Encounters)
-- chrysomelinae (Mystery Encounters)
-
 # 💻 Development
 
 ## Server Developer and Maintainer
@@ -421,7 +395,7 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 ### Junior Dev
 - Fontbane
 
-## Former Development Team members
+## Former Development Team Members
 - bennybroseph
 - Brain Frog
 - CodeTappert
@@ -517,6 +491,32 @@ In addition to the lists below, please check [the PokéRogue wiki](https://wiki.
 - Lily
 - PigeonBar
 - Snailman
+
+# ⚖️ Balance
+
+
+## Head of Balance
+- damocleas
+
+## Team Members
+
+### Balance Team
+- Blitzy (aka Kazapple)
+- Plasto
+- Moro
+- Esca
+- Fontbane
+- Starkrieg
+- Zaccie
+
+### Past Members
+- Cynthia_calliope
+- Sethcurry
+- Swizzo
+
+## Past Contributors
+- AsdarDevelops (Mystery Encounters)
+- chrysomelinae (Mystery Encounters)
 
 
 # 🌎 Translation
