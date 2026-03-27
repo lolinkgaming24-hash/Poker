@@ -1349,7 +1349,7 @@ export abstract class Move implements Localizable {
       return false;
     }
 
-    if (this.hasAttr("HealOnAllyAttr") && target != null && target.getAlly() === user) {
+    if (this.hasAttr("HealOnAllyAttr") && target?.getAlly() === user) {
       return false;
     }
 
@@ -5609,29 +5609,6 @@ export class TeraBlastPowerAttr extends VariablePowerAttr {
   }
 }
 
-/**
- * Change the move category to status when used on the ally
- */
-export class StatusCategoryOnAllyAttr extends VariableMoveCategoryAttr {
-  /**
-   * @param user {@linkcode Pokemon} using the move
-   * @param target {@linkcode Pokemon} target of the move
-   * @param move {@linkcode Move} with this attribute
-   * @param args [0] {@linkcode NumberHolder} The category of the move
-   * @returns true if the function succeeds
-   */
-  apply(user: Pokemon, target: Pokemon, _move: Move, args: any[]): boolean {
-    const category = args[0] as NumberHolder;
-
-    if (user.getAlly() === target) {
-      category.value = MoveCategory.STATUS;
-      return true;
-    }
-
-    return false;
-  }
-}
-
 export class ShellSideArmCategoryAttr extends VariableMoveCategoryAttr {
   apply(user: Pokemon, target: Pokemon, move: Move, args: any[]): boolean {
     const category = args[0] as NumberHolder;
@@ -9203,7 +9180,6 @@ const MoveAttrs = Object.freeze({
   PhotonGeyserCategoryAttr,
   TeraMoveCategoryAttr,
   TeraBlastPowerAttr,
-  StatusCategoryOnAllyAttr,
   ShellSideArmCategoryAttr,
   VariableMoveTypeAttr,
   FormChangeItemTypeAttr,
