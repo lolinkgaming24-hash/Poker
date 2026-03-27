@@ -311,7 +311,11 @@ export function startDailyEventChallenges(): void {
     }
     // check that the value is a valid number for the challenge type
     const challenge = allChallenges.find(c => c.id === dailyChallenge.id);
-    if (!isBetween(dailyChallenge.value, 1, challenge?.maxValue ?? 0)) {
+    if (!challenge) {
+      console.warn("Invalid challenge ID used for custom daily run seed:", dailyChallenge.id);
+      continue;
+    }
+    if (!isBetween(dailyChallenge.value, 1, challenge.maxValue)) {
       console.warn("Invalid challenge value used for custom daily run seed:", dailyChallenge.value);
       continue;
     }
