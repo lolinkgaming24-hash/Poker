@@ -43,13 +43,11 @@ export class AbilityBar extends Phaser.GameObjects.Container {
         this.abilityBars.push(bar);
       }
 
-      this.legacyUiPokemonText = addTextObject(textPadding + 2, 3, "", TextStyle.MESSAGE, {
-        fontSize: "72px",
-      }).setOrigin(0);
+      this.legacyUiPokemonText = addTextObject(textPadding + 2, 3, "", TextStyle.MESSAGE, { fontSize: "72px" }) //
+        .setOrigin(0);
 
-      this.legacyUiAbilityText = addTextObject(textPadding + 2, 16, "", TextStyle.MESSAGE, {
-        fontSize: "72px",
-      }).setOrigin(0);
+      this.legacyUiAbilityText = addTextObject(textPadding + 2, 16, "", TextStyle.MESSAGE, { fontSize: "72px" }) //
+        .setOrigin(0);
 
       this.legacyUiAbilityText.setColor("#484848");
       this.legacyUiAbilityText.setShadowColor("#d0d0c8");
@@ -72,11 +70,12 @@ export class AbilityBar extends Phaser.GameObjects.Container {
         .setOrigin(0)
         .setWordWrapWidth(600, true);
 
-      this.add(this.abilityBarText).bringToTop(this.abilityBarText);
+      this.add(this.abilityBarText) //
+        .bringToTop(this.abilityBarText);
     }
 
-    this.setVisible(false);
-    this.setX(-defaultBarWidth); // start hidden (right edge of bar at x=0)
+    this.setVisible(false) //
+      .setX(-defaultBarWidth); // start hidden (right edge of bar at x=0)
 
     return this;
   }
