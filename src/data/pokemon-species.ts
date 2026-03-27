@@ -64,9 +64,7 @@ export const normalForm: SpeciesId[] = [
   SpeciesId.PALKIA,
   SpeciesId.KYUREM,
   SpeciesId.GENESECT,
-  SpeciesId.FROAKIE,
-  SpeciesId.FROGADIER,
-  SpeciesId.GRENINJA,
+  SpeciesId.BATTLE_BOND_GRENINJA,
   SpeciesId.ROCKRUFF,
   SpeciesId.NECROZMA,
   SpeciesId.MAGEARNA,
@@ -279,7 +277,7 @@ export abstract class PokemonSpeciesForm {
   }
 
   isTrainerForbidden(): boolean {
-    return [SpeciesId.ETERNAL_FLOETTE, SpeciesId.BLOODMOON_URSALUNA].includes(this.speciesId);
+    return [SpeciesId.ETERNAL_FLOETTE, SpeciesId.BLOODMOON_URSALUNA, SpeciesId.BATTLE_BOND_GRENINJA].includes(this.speciesId);
   }
 
   isRareRegional(): boolean {
@@ -492,7 +490,7 @@ export abstract class PokemonSpeciesForm {
       formIndex = override.formIndex;
     }
 
-    if (speciesId > 2000) {
+    if (speciesId >= 2000) {
       switch (speciesId) {
         case SpeciesId.GALAR_SLOWPOKE:
           break;
@@ -943,6 +941,7 @@ export class PokemonSpecies extends PokemonSpeciesForm implements Localizable {
       region === Region.NORMAL
       || (this.speciesId === SpeciesId.GALAR_DARMANITAN && formIndex > 0)
       || this.speciesId === SpeciesId.PALDEA_TAUROS
+      || this.speciesId === SpeciesId.BATTLE_BOND_GRENINJA
     ) {
       // More special cases can be added here
       const i18key = `pokemonForm:${speciesName}${formText}`;

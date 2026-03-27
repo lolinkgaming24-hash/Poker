@@ -15,16 +15,16 @@ import { randSeedItem } from "#utils/common";
  * one will be selected at random.
  * @returns The associated {@linkcode PokemonSpecies} object
  */
-export function getPokemonSpecies(species: SpeciesId | SpeciesId[]): PokemonSpecies {
-  if (Array.isArray(species)) {
+export function getPokemonSpecies(speciesId: SpeciesId | SpeciesId[]): PokemonSpecies {
+  if (Array.isArray(speciesId)) {
     // TODO: this RNG roll should not be handled by this function
-    species = species[Math.floor(Math.random() * species.length)];
+    speciesId = speciesId[Math.floor(Math.random() * speciesId.length)];
   }
-  if (species >= 2000) {
+  if (speciesId >= 2000) {
     // the `!` is safe, `allSpecies` is static and contains all `SpeciesId`s
-    return allSpecies.find(s => s.speciesId === species)!;
+    return allSpecies.find(s => s.speciesId === speciesId)!;
   }
-  return allSpecies[species - 1];
+  return allSpecies[speciesId - 1];
 }
 
 /**

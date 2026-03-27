@@ -2085,6 +2085,8 @@ export enum SpeciesId {
   ALOLA_EXEGGUTOR = 2103,
   /**{@link https://bulbapedia.bulbagarden.net/wiki/Marowak_(Pokémon) | Source} */
   ALOLA_MAROWAK = 2105,
+  /**{@link https://bulbapedia.bulbagarden.net/wiki/Greninja_(Pokémon) | Source} */
+  BATTLE_BOND_GRENINJA = 2658,
   /**{@link https://bulbapedia.bulbagarden.net/wiki/Floette_(Pokémon) | Source} */
   ETERNAL_FLOETTE = 2670,
   /**{@link https://bulbapedia.bulbagarden.net/wiki/Meowth_(Pokémon) | Source} */

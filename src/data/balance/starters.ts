@@ -386,6 +386,7 @@ export const speciesStarterCosts = {
   [SpeciesId.CHESPIN]: 3,
   [SpeciesId.FENNEKIN]: 3,
   [SpeciesId.FROAKIE]: 4,
+  [SpeciesId.BATTLE_BOND_GRENINJA]: 5,
   [SpeciesId.BUNNELBY]: 3,
   [SpeciesId.FLETCHLING]: 3,
   [SpeciesId.SCATTERBUG]: 2,

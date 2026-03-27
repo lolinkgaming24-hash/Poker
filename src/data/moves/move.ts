@@ -3076,10 +3076,10 @@ export class ChangeMultiHitTypeAttr extends MoveAttr {
 
 export class WaterShurikenMultiHitTypeAttr extends ChangeMultiHitTypeAttr {
   apply(user: Pokemon, _target: Pokemon, _move: Move, args: any[]): boolean {
+    // Check if Ash-Greninja is the user
     if (
-      user.species.speciesId === SpeciesId.GRENINJA
-      && user.hasAbility(AbilityId.BATTLE_BOND)
-      && user.formIndex === 2
+      user.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA
+      && user.formIndex === 1
     ) {
       (args[0] as NumberHolder).value = MultiHitType.THREE;
       return true;
@@ -5094,10 +5094,10 @@ export class PresentPowerAttr extends VariablePowerAttr {
 
 export class WaterShurikenPowerAttr extends VariablePowerAttr {
   apply(user: Pokemon, _target: Pokemon, _move: Move, args: any[]): boolean {
+    // Check if Ash-Greninja is the user
     if (
-      user.species.speciesId === SpeciesId.GRENINJA
-      && user.hasAbility(AbilityId.BATTLE_BOND)
-      && user.formIndex === 2
+      user.species.speciesId === SpeciesId.BATTLE_BOND_GRENINJA
+      && user.formIndex === 1
     ) {
       (args[0] as NumberHolder).value = 20;
       return true;
