@@ -8,6 +8,7 @@ const migrateGreninjaBattleBondForm: SystemSaveMigrator = {
   version: "1.12.0",
   migrate: (data: SystemSaveData): void => {
     if (data.starterData && data.dexData) {
+      // Check whether player has Battle Bond form unlocked on Froakie?
       data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] = {
         moveset: data.starterData[SpeciesId.FROAKIE].moveset,
         eggMoves: 0,
