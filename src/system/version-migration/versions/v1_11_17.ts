@@ -5,7 +5,7 @@ import type { SystemSaveData } from "#types/save-data";
 import type { SystemSaveMigrator } from "#types/save-migrators";
 
 const migrateGreninjaBattleBondForm: SystemSaveMigrator = {
-  version: "1.12.0",
+  version: "1.11.17",
   migrate: (data: SystemSaveData): void => {
     if (data.starterData && data.dexData) {
       // Check whether player has Battle Bond form unlocked on Froakie?
