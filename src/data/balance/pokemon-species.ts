@@ -1775,7 +1775,7 @@ export function initSpecies() {
     new PokemonSpecies(SpeciesId.ETERNAL_FLOETTE, 6, true, false, false, "Single Bloom Pokémon", PokemonType.FAIRY, null, 0.2, 0.9, AbilityId.FLOWER_VEIL, AbilityId.NONE, AbilityId.SYMBIOSIS, 551, 74, 65, 67, 125, 128, 92, 120, 70, 243, GrowthRate.MEDIUM_FAST, 0, false), //Marked as Sub-Legend, for casing purposes
     new PokemonSpecies(SpeciesId.BLOODMOON_URSALUNA, 9, true, false, false, "Peat Pokémon", PokemonType.GROUND, PokemonType.NORMAL, 2.7, 333, AbilityId.MINDS_EYE, AbilityId.NONE, AbilityId.NONE, 555, 113, 70, 120, 135, 65, 52, 75, 50, 278, GrowthRate.MEDIUM_FAST, 50, false),
     new PokemonSpecies(SpeciesId.BATTLE_BOND_GRENINJA, 6, false, false, false, "Ninja Pokémon", PokemonType.WATER, PokemonType.DARK, 1.5, 40, AbilityId.BATTLE_BOND, AbilityId.NONE, AbilityId.NONE, 530, 72, 95, 67, 103, 71, 122, 45, 70, 265, GrowthRate.MEDIUM_SLOW, 87.5, false, true,
-      new PokemonForm("Normal", "", PokemonType.WATER, PokemonType.DARK, 1.5, 40, AbilityId.BATTLE_BOND, AbilityId.NONE, AbilityId.NONE, 530, 72, 95, 67, 103, 71, 122, 45, 70, 265),
+      new PokemonForm("Battle Bond", "", PokemonType.WATER, PokemonType.DARK, 1.5, 40, AbilityId.BATTLE_BOND, AbilityId.NONE, AbilityId.NONE, 530, 72, 95, 67, 103, 71, 122, 45, 70, 265),
       new PokemonForm("Ash", "ash", PokemonType.WATER, PokemonType.DARK, 1.5, 40, AbilityId.BATTLE_BOND, AbilityId.NONE, AbilityId.NONE, 640, 72, 145, 67, 153, 71, 132, 45, 70, 265)
     ),
   );
