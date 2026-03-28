@@ -8862,34 +8862,49 @@ export class StatusIfBoostedAttr extends MoveEffectAttr {
   }
 }
 
-export class VariableTargetAttr extends MoveAttr {
-  private readonly targetChangeFunc: (user: Pokemon, target: Pokemon, move: Move) => number;
+type VariableMoveTargetFunc = (user: Pokemon, target: Pokemon, move: Move) => MoveTarget;
 
-  constructor(targetChange: (user: Pokemon, target: Pokemon, move: Move) => number) {
+/**
+ * Attribute to dynamically modify a move's targets during its execution.
+ *
+ * Used for Expanding Force.
+ * @see {@linkcode OverrideTargetAttr} - Attribute to modify move targets during target selection
+ */
+export class VariableTargetAttr extends MoveAttr {
+  private readonly targetChangeFunc: VariableMoveTargetFunc;
+
+  constructor(targetChangeFunc: VariableMoveTargetFunc) {
     super();
 
-    this.targetChangeFunc = targetChange;
+    this.targetChangeFunc = targetChangeFunc;
   }
 
-  apply(user: Pokemon, target: Pokemon, move: Move, args: any[]): boolean {
-    const targetVal = args[0] as NumberHolder;
-    targetVal.value = this.targetChangeFunc(user, target, move);
+  apply(user: Pokemon, target: Pokemon, move: Move, args: [NumberHolder, ...any[]]): boolean {
+    const targetHolder = args[0];
+    targetHolder.value = this.targetChangeFunc(user, target, move);
     return true;
   }
 }
 
+/**
+ * Attribute to override the targets of a move during target selection and other related processes.
+ * Used by Tera Starstorm.
+ *
+ * @see {@linkcode VariableTargetAttr} - Attribute to dynamically modify a move targets mid-turn
+ */
+// TODO: Cleanup a lot of the move target code
 export class OverrideTargetAttr extends MoveAttr {
-  private readonly targetChangeFunc: (user: Pokemon, target: Pokemon, move: Move) => number;
+  private readonly targetChangeFunc: VariableMoveTargetFunc;
 
-  constructor(targetChange: (user: Pokemon, target: Pokemon, move: Move) => number) {
+  constructor(targetChangeFunc: VariableMoveTargetFunc) {
     super();
 
-    this.targetChangeFunc = targetChange;
+    this.targetChangeFunc = targetChangeFunc;
   }
 
-  apply(user: Pokemon, target: Pokemon, move: Move, args: any[]): boolean {
-    const targetVal = args[0] as NumberHolder;
-    targetVal.value = this.targetChangeFunc(user, target, move);
+  apply(user: Pokemon, target: Pokemon, move: Move, args: [NumberHolder, ...any[]]): boolean {
+    const targetHolder = args[0];
+    targetHolder.value = this.targetChangeFunc(user, target, move);
     return true;
   }
 }
