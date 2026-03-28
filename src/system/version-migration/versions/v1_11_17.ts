@@ -7,7 +7,6 @@ const migrateGreninjaBattleBondForm: SystemSaveMigrator = {
   version: "1.11.17",
   migrate: (data: SystemSaveData): void => {
     if (data.starterData && data.dexData) {
-      // Check whether player has Battle Bond form unlocked on Froakie using DexAttr.DEFAULT_FORM?
       data.starterData[SpeciesId.BATTLE_BOND_GRENINJA] = {
         moveset: data.starterData[SpeciesId.FROAKIE].moveset,
         eggMoves: 0,
@@ -19,6 +18,7 @@ const migrateGreninjaBattleBondForm: SystemSaveMigrator = {
         classicWinCount: 0,
       };
 
+      // Check whether player has Battle Bond form unlocked on Froakie using DexAttr.DEFAULT_FORM?
       data.dexData[SpeciesId.BATTLE_BOND_GRENINJA] = {
         seenAttr: data.dexData[SpeciesId.FROAKIE].seenAttr,
         caughtAttr: data.dexData[SpeciesId.FROAKIE].caughtAttr,
