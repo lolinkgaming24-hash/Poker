@@ -1015,6 +1015,7 @@ export class GameData {
     ); // TODO: is this bang correct?
 
     globalScene.arena.playerTerasUsed = fromSession.arena.playerTerasUsed;
+    globalScene.arena.playerFaintedLastTurn = fromSession.arena.playerFaintedLastTurn;
 
     globalScene.arena.tags = fromSession.arena.tags;
     if (globalScene.arena.tags) {
