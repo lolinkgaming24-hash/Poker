@@ -1156,7 +1156,7 @@ export function generateMoveset(pokemon: Pokemon, forceRivalSignatures = false):
   if (
     forcedSignature === undefined
     || forcedSignature.category === MoveCategory.STATUS
-    || pokemon.getTypes().includes(getMoveType(forcedSignature, pokemon, willTera))
+    || !pokemon.isOfType(getMoveType(forcedSignature, pokemon, willTera))
   ) {
     forceStabMove(baseWeights, tmPool, eggMovePool, pokemon, tmCount, eggMoveCount, willTera);
   }
