@@ -3692,7 +3692,7 @@ export class ForewarnAbAttr extends PostSummonAbAttr {
     }
 
     let maxPowerSeen = 0;
-    const movesAtMaxPower: Move[] = [];
+    const movesAtMaxPower: PokemonMove[] = [];
 
     // Record all moves in all opponents' movesets seen at our max power threshold, clearing it if a new "highest power" is found
     // TODO: Change to `pokemon.getOpponents().flatMap(p => p.getMoveset())` if or when we upgrade to ES2025
@@ -3706,13 +3706,13 @@ export class ForewarnAbAttr extends PostSummonAbAttr {
 
         // Another move at current max found; add to tiebreaker array
         if (movePower === maxPowerSeen) {
-          movesAtMaxPower.push(move);
+          movesAtMaxPower.push(oppMove);
           continue;
         }
 
         // New max reached; clear prior results and update tracker
         maxPowerSeen = movePower;
-        movesAtMaxPower.splice(0, movesAtMaxPower.length, move);
+        movesAtMaxPower.splice(0, movesAtMaxPower.length, oppMove);
       }
     }
 
@@ -3724,11 +3724,13 @@ export class ForewarnAbAttr extends PostSummonAbAttr {
     globalScene.phaseManager.queueMessage(
       i18next.t("abilityTriggers:forewarn", {
         pokemonNameWithAffix: getPokemonNameWithAffix(pokemon),
-        moveName: chosenMove.name,
+        moveName: chosenMove.getMove().name,
       }),
     );
-    const enemyId = pokemon.getOpponents().find(opp => opp.getMoveset().some(m => m.getMove() === chosenMove))?.id;
-    globalScene.eventTarget.dispatchEvent(new MoveUsedEvent(enemyId!, chosenMove, 0));
+    const enemyId = pokemon
+      .getOpponents()
+      .find(opp => opp.getMoveset().some(m => m.getMove() === chosenMove.getMove()))?.id;
+    globalScene.eventTarget.dispatchEvent(new MoveUsedEvent(enemyId!, chosenMove.getMove(), chosenMove.ppUsed));
   }
 }
 
