@@ -1,33 +1,46 @@
 import type { BattleScene } from "#app/battle-scene";
-import { globalScene } from "#app/global-scene";
 import { FixedInt } from "#utils/common";
-import type FadeIn from "phaser3-rex-plugins/plugins/audio/fade/FadeIn";
-import type FadeOut from "phaser3-rex-plugins/plugins/audio/fade/FadeOut";
 import SoundFade from "phaser3-rex-plugins/plugins/soundfade";
 
-type TweenManager = typeof Phaser.Tweens.TweenManager.prototype;
+/** Array containing all duration-related properties to be mutated. */
+const PROPERTIES = ["delay", "completeDelay", "loopDelay", "duration", "repeatDelay", "hold", "startDelay"] as const;
 
-/** The set of properties to mutate */
-const PROPERTIES = ["delay", "completeDelay", "loopDelay", "duration", "repeatDelay", "hold", "startDelay"];
-
-type FadeInType = typeof FadeIn;
-type FadeOutType = typeof FadeOut;
-export function initGameSpeed(this: BattleScene) {
-  const transformValue = (value: number | FixedInt): number => {
-    if (value instanceof FixedInt) {
-      return (value as FixedInt).value;
+/**
+ * Override various Phaser methods to alter their time-related properties based on the current game speed.
+ * Any duration values passed that are {@linkcode FixedInt}s will be treated as fixed values and preserved.
+ * @privateRemarks
+ * While this may sound ominous, there is effectively no other way to do what we want to do within the constraints set by Phaser,
+ * as altering game speed would affect all time-related aspects of the game (including ones we want to keep fixed).
+ */
+export function initGameSpeed(this: BattleScene): void {
+  /** Mutate a duration value based on the current speed. */
+  const transformValue = (duration: number | FixedInt): number => {
+    if (duration instanceof FixedInt) {
+      return duration.value;
     }
-    return Math.ceil(value / this.gameSpeed);
+    return Math.ceil(duration / this.gameSpeed);
   };
 
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Complexity is necessary here
-  const mutateProperties = (obj: any, allowArray = false) => {
-    // We do not mutate Tweens or TweenChain objects themselves.
+  /**
+   * Recursively mutate an object's duration-related properties.
+   * @param obj - The object to mutate
+   * @param allowArray - (Default `false`) Whether to allow mutating arrays of tween configs at the top level.
+   */
+  const mutateProperties: {
+    <O extends object>(obj: O, ...allowArray: O extends readonly any[] ? [true] : []): void;
+    (obj: object, allowArray?: boolean): void;
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This goes down from 20 to 13 if moved outside of `initGameSpeed` (and is only here to access a single function)
+  } = (obj: object, allowArray = false): void => {
+    // We do not mutate Tweens or TweenChain objects directly
     if (obj instanceof Phaser.Tweens.Tween || obj instanceof Phaser.Tweens.TweenChain) {
       return;
     }
-    // If allowArray is true then check if first obj is an array and if so, mutate the tweens inside
-    if (allowArray && Array.isArray(obj)) {
+
+    // mutate top-level arrays of tween configs if applicable (ensuring we don't recursively mutate them)
+    if (Array.isArray(obj)) {
+      if (!allowArray) {
+        return;
+      }
       for (const tween of obj) {
         mutateProperties(tween);
       }
@@ -35,78 +48,71 @@ export function initGameSpeed(this: BattleScene) {
     }
 
     for (const prop of PROPERTIES) {
-      const objProp = obj[prop];
-      if (typeof objProp === "number" || objProp instanceof FixedInt) {
-        obj[prop] = transformValue(objProp);
+      if (typeof obj[prop] === "number" || obj[prop] instanceof FixedInt) {
+        obj[prop] = transformValue(obj[prop]);
       }
     }
+
     // If the object has a 'tweens' property that is an array, then it is a tween chain
     // and we need to mutate its properties as well
-    if (obj.tweens && Array.isArray(obj.tweens)) {
-      for (const tween of obj.tweens) {
-        mutateProperties(tween);
-      }
+    if ("tweens" in obj && Array.isArray(obj.tweens)) {
+      mutateProperties(obj.tweens, true);
     }
   };
 
-  const originalAddEvent: typeof Phaser.Time.Clock.prototype.addEvent = this.time.addEvent;
-  this.time.addEvent = function (config: Phaser.Time.TimerEvent | Phaser.Types.Time.TimerEventConfig) {
+  // #region Method overrides
+  const originalAddEvent = this.time.addEvent;
+  this.time.addEvent = function (this: Phaser.Time.Clock, config) {
     if (!(config instanceof Phaser.Time.TimerEvent) && config.delay) {
       config.delay = transformValue(config.delay);
     }
     return originalAddEvent.apply(this, [config]);
-  };
-  const originalTweensAdd: TweenManager["add"] = this.tweens.add;
+  } satisfies typeof originalAddEvent;
 
-  this.tweens.add = function (
-    this: BattleScene,
-    config:
-      | Phaser.Types.Tweens.TweenBuilderConfig
-      | Phaser.Types.Tweens.TweenChainBuilderConfig
-      | Phaser.Tweens.Tween
-      | Phaser.Tweens.TweenChain,
-  ) {
+  const originalTweensAdd = this.tweens.add;
+  this.tweens.add = function (this: Phaser.Tweens.TweenManager, config) {
     mutateProperties(config);
-    return originalTweensAdd.apply(this, [config]);
-  } as typeof originalTweensAdd;
+    return originalTweensAdd.call(this, config);
+  } satisfies typeof originalTweensAdd;
 
-  const originalTweensChain: TweenManager["chain"] = this.tweens.chain;
-  this.tweens.chain = function (
-    this: BattleScene,
-    config: Phaser.Types.Tweens.TweenChainBuilderConfig,
-  ): Phaser.Tweens.TweenChain {
+  const originalTweensChain = this.tweens.chain;
+  this.tweens.chain = function (this: Phaser.Tweens.TweenManager, config): Phaser.Tweens.TweenChain {
     mutateProperties(config);
-    return originalTweensChain.apply(this, [config]);
-  } as typeof originalTweensChain;
-  const originalAddCounter: TweenManager["addCounter"] = this.tweens.addCounter;
+    return originalTweensChain.call(this, config);
+  } satisfies typeof originalTweensChain;
 
-  this.tweens.addCounter = function (this: BattleScene, config: Phaser.Types.Tweens.NumberTweenBuilderConfig) {
+  const originalAddCounter = this.tweens.addCounter;
+  this.tweens.addCounter = function (this: Phaser.Tweens.TweenManager, config) {
     mutateProperties(config);
-    return originalAddCounter.apply(this, [config]);
-  } as typeof originalAddCounter;
+    return originalAddCounter.call(this, config);
+  } satisfies typeof originalAddCounter;
 
-  const originalCreate: TweenManager["create"] = this.tweens.create;
-  this.tweens.create = function (this: BattleScene, config: Phaser.Types.Tweens.TweenBuilderConfig) {
+  const originalCreate = this.tweens.create;
+  this.tweens.create = function (this: Phaser.Tweens.TweenManager, config) {
     mutateProperties(config, true);
-    return originalCreate.apply(this, [config]);
-  } as typeof originalCreate;
+    return originalCreate.call(this, config);
+  } satisfies typeof originalCreate;
 
-  const originalAddMultiple: TweenManager["addMultiple"] = this.tweens.addMultiple;
-  this.tweens.addMultiple = function (this: BattleScene, config: Phaser.Types.Tweens.TweenBuilderConfig[]) {
+  const originalAddMultiple = this.tweens.addMultiple;
+  this.tweens.addMultiple = function (this: Phaser.Tweens.TweenManager, config) {
     mutateProperties(config, true);
-    return originalAddMultiple.apply(this, [config]);
-  } as typeof originalAddMultiple;
+    return originalAddMultiple.call(this, config);
+  } satisfies typeof originalAddMultiple;
 
   const originalFadeOut = SoundFade.fadeOut;
-  SoundFade.fadeOut = ((_scene: Phaser.Scene, sound: Phaser.Sound.BaseSound, duration: number, destroy?: boolean) =>
-    originalFadeOut(globalScene, sound, transformValue(duration), destroy)) as FadeOutType;
+  // TODO: These overloads don't account for the 2 functions being overloaded to work without a scene as the first parameter,
+  // hence why we need type assertions instead of `satisfies` guards
+  SoundFade.fadeOut = ((scene: Phaser.Scene, sound: Phaser.Sound.BaseSound, duration: number, destroy?: boolean) =>
+    originalFadeOut(scene, sound, transformValue(duration), destroy)) as typeof originalFadeOut;
 
   const originalFadeIn = SoundFade.fadeIn;
   SoundFade.fadeIn = ((
-    _scene: Phaser.Scene,
+    scene: Phaser.Scene,
     sound: string | Phaser.Sound.BaseSound,
     duration: number,
     endVolume?: number,
     startVolume?: number,
-  ) => originalFadeIn(globalScene, sound, transformValue(duration), endVolume, startVolume)) as FadeInType;
+  ) => originalFadeIn(scene, sound, transformValue(duration), endVolume, startVolume)) as typeof originalFadeIn;
+
+  // #endregion Method overrides
 }

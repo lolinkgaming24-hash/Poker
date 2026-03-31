@@ -301,6 +301,11 @@ export async function localPing(): Promise<void> {
   }
 }
 
+// TODO: Move this to its own file
+
+/**
+ * Class used to wrap numbers that should be treated as fixed values and not mutated by changes to game speed.
+ */
 export class FixedInt {
   public readonly value: number;
 
@@ -308,11 +313,13 @@ export class FixedInt {
     this.value = value;
   }
 
+  // ensure this coerces to numbers if we accidentally pass it unexpectedly
   [Symbol.toPrimitive](_hint: string): number {
     return this.value;
   }
 }
 
+// TODO: Stop lying about this class being a number and instead override Phaser's duration-related types to accept `FixedInt`s as well
 export function fixedInt(value: number): number {
   return new FixedInt(value) as unknown as number;
 }
@@ -329,6 +336,7 @@ export function rgbToHsv(r: number, g: number, b: number) {
  * @param rgb1 First RGB color in array
  * @param rgb2 Second RGB color in array
  */
+// TODO: This is used exactly once...
 export function deltaRgb(rgb1: readonly number[], rgb2: readonly number[]): number {
   const [r1, g1, b1] = rgb1;
   const [r2, g2, b2] = rgb2;
