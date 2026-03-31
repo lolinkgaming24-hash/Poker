@@ -68,7 +68,7 @@ import { TrainerType } from "#enums/trainer-type";
 import { TrainerVariant } from "#enums/trainer-variant";
 import { UiTheme } from "#enums/ui-theme";
 import { NewArenaEvent } from "#events/battle-scene";
-import { Arena } from "#field/arena";
+import { Arena, getBiomeHasProps, getBiomeKey } from "#field/arena";
 import { ArenaBase } from "#field/arena-base";
 import { DamageNumberHandler } from "#field/damage-number-handler";
 import type { Pokemon } from "#field/pokemon";
@@ -1634,6 +1634,68 @@ export class BattleScene extends SceneBase {
     return this.arena;
   }
 
+  public async loadBiomeAssetsIfNeeded(biome: BiomeId): Promise<void> {
+    const btKey = getBiomeKey(biome);
+
+    // Already in texture cache — nothing to load
+    if (this.textures.exists(`${btKey}_bg`)) {
+      return Promise.resolve();
+    }
+
+    return new Promise(resolve => {
+      const isBaseAnimated = btKey === "end";
+      const baseAKey = `${btKey}_a`;
+      const baseBKey = `${btKey}_b`;
+
+      this.loadImage(`${btKey}_bg`, "arenas");
+
+      if (isBaseAnimated) {
+        this.loadAtlas(baseAKey, "arenas");
+        this.loadAtlas(baseBKey, "arenas");
+      } else {
+        this.loadImage(baseAKey, "arenas");
+        this.loadImage(baseBKey, "arenas");
+      }
+
+      if (getBiomeHasProps(biome)) {
+        for (let p = 1; p <= 3; p++) {
+          const isPropAnimated = p === 3 && ["power_plant", "end"].includes(btKey);
+          const propKey = `${btKey}_b_${p}`;
+          if (isPropAnimated) {
+            this.loadAtlas(propKey, "arenas");
+          } else {
+            this.loadImage(propKey, "arenas");
+          }
+        }
+      }
+
+      this.load.once(Phaser.Loader.Events.COMPLETE, resolve);
+      this.load.start();
+    });
+  }
+
+  public clearBiomeAssets(biome: BiomeId): void {
+    const btKey = getBiomeKey(biome);
+
+    // Don't clear TOWN — it's the starting biome
+    if (btKey === "town") {
+      return;
+    }
+
+    const keysToClear = [`${btKey}_bg`, `${btKey}_a`, `${btKey}_b`];
+
+    if (getBiomeHasProps(biome)) {
+      for (let p = 1; p <= 3; p++) {
+        keysToClear.push(`${btKey}_b_${p}`);
+      }
+    }
+
+    for (const key of keysToClear) {
+      if (this.textures.exists(key)) {
+        this.textures.remove(key);
+      }
+    }
+  }
   updateFieldScale(): Promise<void> {
     return new Promise(resolve => {
       const fieldScale =

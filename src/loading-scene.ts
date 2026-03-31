@@ -1,4 +1,5 @@
 import { timedEventManager } from "#app/global-event-manager";
+import { globalScene } from "#app/global-scene";
 import { initializeGame } from "#app/init/init";
 import { SceneBase } from "#app/scene-base";
 import { isMobile } from "#app/touch-controls";
@@ -25,7 +26,7 @@ export class LoadingScene extends SceneBase {
 
   preload() {
     localPing();
-
+    const startingBiome = globalScene?.arena?.biomeId ?? BiomeId.TOWN;
     // TODO: Categorize these into sub-methods that make sense
     // I'm 99.9% sure the order doesn't matter here,
     // so we should organize these based on type more strongly
@@ -155,7 +156,7 @@ export class LoadingScene extends SceneBase {
       .loadImage("link_icon", "ui")
       .loadImage("unlink_icon", "ui")
       .loadImage("default_bg", "arenas")
-      .loadBiomeImages()
+      .loadBiomeImages(startingBiome)
 
       // Load trainer images
       .loadAtlas("trainer_m_back", "trainer")
@@ -560,8 +561,14 @@ export class LoadingScene extends SceneBase {
     console.debug(`Destroyed ${LoadingScene.KEY} scene`);
   }
 
-  private loadBiomeImages(): this {
+  private loadBiomeImages(startingBiome: BiomeId = BiomeId.TOWN): this {
+    const biomesToLoad = new Set([BiomeId.TOWN, startingBiome]);
     Object.values(BiomeId).forEach(bt => {
+      // Skip all biomes except TOWN (and the starting biome, if it's different).
+      // Other biomes will be loaded on demand when the arena transitions.
+      if (!biomesToLoad.has(bt)) {
+        return;
+      }
       const btKey = enumValueToKey(BiomeId, bt).toLowerCase();
       const isBaseAnimated = btKey === "end";
       const baseAKey = `${btKey}_a`;
