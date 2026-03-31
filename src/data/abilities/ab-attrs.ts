@@ -5073,8 +5073,35 @@ export class FlinchStatStageChangeAbAttr extends FlinchEffectAbAttr {
   }
 }
 
+export interface IncreasePpAbAttrParams extends Omit<AugmentMoveInteractionAbAttrParams, "move"> {
+  /** Holder for the amount of PP that will be consumed; can be modified by ability application */
+  readonly pp: NumberHolder;
+}
+
+/**
+ * Attribute for abilities that increase the PP consumption of received attacks.
+ *
+ * Used by {@link https://bulbapedia.bulbagarden.net/wiki/Pressure_(Ability) | Pressure}
+ */
 export class IncreasePpAbAttr extends AbAttr {
-  private declare readonly _: never;
+  /**
+   * The amount of PP to increase.
+   * @defaultValue `1`
+   */
+  private readonly ppIncrease: number;
+
+  constructor(ppIncrease = 1) {
+    super();
+    this.ppIncrease = ppIncrease;
+  }
+
+  public override canApply({ pokemon, opponent }: IncreasePpAbAttrParams): boolean {
+    return pokemon.isOpponent(opponent);
+  }
+
+  public override apply({ pp }: IncreasePpAbAttrParams): void {
+    pp.value += this.ppIncrease;
+  }
 }
 
 /** @sealed */
