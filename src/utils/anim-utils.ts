@@ -21,3 +21,21 @@ export async function playTween(config: PlayTweenConfig, scene: SceneBase = glob
     }),
   );
 }
+
+interface PlayNumberTweenConfig
+  extends OmitWithoutIndex<Phaser.Types.Tweens.NumberTweenBuilderConfig, "onComplete" | "onCompleteParams"> {}
+
+/**
+ * Play a NumberTween and wait for it to complete.
+ * @param config - The config for a single Tween
+ * @param scene - (Default {@linkcode globalScene}) The {@linkcode SceneBase} on which the Tween plays
+ * @returns A Promise that resolves once the Tween has finished playing.
+ */
+export async function playNumberTween(config: PlayNumberTweenConfig, scene: SceneBase = globalScene): Promise<void> {
+  await new Promise(resolve =>
+    scene.tweens.addCounter({
+      ...config,
+      onComplete: resolve,
+    }),
+  );
+}

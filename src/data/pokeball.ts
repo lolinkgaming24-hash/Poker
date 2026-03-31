@@ -17,36 +17,33 @@ export function getPokeballAtlasKey(type: PokeballType): string {
       return "rb";
     case PokeballType.MASTER_BALL:
       return "mb";
-    case PokeballType.LUXURY_BALL:
-      return "lb";
+    // case PokeballType.LUXURY_BALL:
+    //   return "lb";
   }
 }
 
 export function getPokeballName(type: PokeballType): string {
-  let ret: string;
   switch (type) {
     case PokeballType.POKEBALL:
-      ret = i18next.t("pokeball:pokeBall");
-      break;
+      return i18next.t("pokeball:pokeBall");
     case PokeballType.GREAT_BALL:
-      ret = i18next.t("pokeball:greatBall");
-      break;
+      return i18next.t("pokeball:greatBall");
     case PokeballType.ULTRA_BALL:
-      ret = i18next.t("pokeball:ultraBall");
-      break;
+      return i18next.t("pokeball:ultraBall");
     case PokeballType.ROGUE_BALL:
-      ret = i18next.t("pokeball:rogueBall");
-      break;
+      return i18next.t("pokeball:rogueBall");
     case PokeballType.MASTER_BALL:
-      ret = i18next.t("pokeball:masterBall");
-      break;
-    case PokeballType.LUXURY_BALL:
-      ret = i18next.t("pokeball:luxuryBall");
-      break;
+      return i18next.t("pokeball:masterBall");
+    // case PokeballType.LUXURY_BALL:
+    //   return i18next.t("pokeball:luxuryBall");
   }
-  return ret;
 }
 
+/**
+ * Return the catch rate multiplier for the given Pokeball.
+ * @param type - The {@linkcode PokeballType} to check
+ * @returns The catch rate multiplier to be applied, or `-1` to bypass the catch sequence entirely and guarantee a success.
+ */
 export function getPokeballCatchMultiplier(type: PokeballType): number {
   switch (type) {
     case PokeballType.POKEBALL:
@@ -59,8 +56,8 @@ export function getPokeballCatchMultiplier(type: PokeballType): number {
       return 3;
     case PokeballType.MASTER_BALL:
       return -1;
-    case PokeballType.LUXURY_BALL:
-      return 1;
+    // case PokeballType.LUXURY_BALL:
+    //   return 1;
   }
 }
 
@@ -76,8 +73,8 @@ export function getPokeballTintColor(type: PokeballType): number {
       return 0xd52929;
     case PokeballType.MASTER_BALL:
       return 0xa441bd;
-    case PokeballType.LUXURY_BALL:
-      return 0xffde6a;
+    // case PokeballType.LUXURY_BALL:
+    //   return 0xffde6a;
   }
 }
 
@@ -109,7 +106,7 @@ export function getCriticalCaptureChance(modifiedCatchRate: number): number {
   return Math.floor((catchingCharmMultiplier.value * dexMultiplier * Math.min(255, modifiedCatchRate)) / 6);
 }
 
-// TODO: fix Function annotations
+// TODO: Make this async instead of callback-based
 export function doPokeballBounceAnim(
   pokeball: Phaser.GameObjects.Sprite,
   y1: number,
