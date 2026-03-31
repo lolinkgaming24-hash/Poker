@@ -1808,6 +1808,12 @@ export class InfestationTag extends DamagingTrapTag {
 
 export class ProtectedTag extends BattlerTag {
   public declare readonly tagType: ProtectionBattlerTagType;
+
+  /** Whether this protection effect blocks status moves in addition to damaging moves. */
+  public get blockStatus(): boolean {
+    return true;
+  }
+
   constructor(sourceMove: MoveId, tagType: ProtectionBattlerTagType = BattlerTagType.PROTECTED) {
     super(tagType, BattlerTagLapseType.TURN_END, 0, sourceMove);
   }
@@ -1911,20 +1917,42 @@ export class ContactDamageProtectedTag extends ContactProtectedTag {
 /** Base class for `BattlerTag`s that block damaging moves but not status moves */
 export abstract class DamageProtectedTag extends ContactProtectedTag {
   public declare readonly tagType: DamageProtectedTagType;
+
+  public override get blockStatus(): boolean {
+    return false;
+  }
 }
 
-export class ContactSetStatusProtectedTag extends DamageProtectedTag {
+/**
+ * `BattlerTag` class for protection effects that set a status condition on contact.
+ * Used by {@linkcode MoveId.BANEFUL_BUNKER} and {@linkcode MoveId.BURNING_BULWARK}.
+ */
+export class ContactSetStatusProtectedTag extends ContactProtectedTag {
   public declare readonly tagType: ContactSetStatusProtectedTagType;
   /** The status effect applied to attackers */
   #statusEffect: StatusEffect;
+  /** Whether this protection effect blocks status moves. */
+  readonly #blockStatus: boolean;
+
+  public override get blockStatus(): boolean {
+    return this.#blockStatus;
+  }
+
   /**
    * @param sourceMove - The move that caused the tag to be applied
    * @param tagType - The type of the tag
    * @param statusEffect - The status effect applied to attackers
+   * @param blockStatus - Whether this protection also blocks status-category moves
    */
-  constructor(sourceMove: MoveId, tagType: ContactSetStatusProtectedTagType, statusEffect: StatusEffect) {
+  constructor(
+    sourceMove: MoveId,
+    tagType: ContactSetStatusProtectedTagType,
+    statusEffect: StatusEffect,
+    blockStatus = true,
+  ) {
     super(sourceMove, tagType);
     this.#statusEffect = statusEffect;
+    this.#blockStatus = blockStatus;
   }
 
   /**
@@ -3805,7 +3833,7 @@ export function getBattlerTag(
     case BattlerTagType.BANEFUL_BUNKER:
       return new ContactSetStatusProtectedTag(sourceMove, tagType, StatusEffect.POISON);
     case BattlerTagType.BURNING_BULWARK:
-      return new ContactSetStatusProtectedTag(sourceMove, tagType, StatusEffect.BURN);
+      return new ContactSetStatusProtectedTag(sourceMove, tagType, StatusEffect.BURN, false);
     case BattlerTagType.ENDURING:
       return new EnduringTag(tagType, BattlerTagLapseType.TURN_END, sourceMove);
     case BattlerTagType.ENDURE_TOKEN:
