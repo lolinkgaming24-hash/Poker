@@ -4040,6 +4040,115 @@ export class StatStageChangeAttr extends MoveEffectAttr {
 }
 
 /**
+ * Attribute used for {@linkcode MoveId.PARTING_SHOT}.
+ * Implements the combined effect of lowering the target's stats and switching out the user.
+ *
+ * @remarks
+ * Because the stat drop phase is queued and not resolved immediately, this method silently
+ * simulates ability blocks and stat boundaries to accurately predict if the stat drop will succeed.
+ * This custom class ensures the switch only occurs if the stat drop is not blocked
+ * (e.g., by {@linkcode AbilityId.CLEAR_BODY | Clear Body} or minimum stat stages),
+ * and prevents the move from failing outright if the user has no eligible party members.
+ */
+export class PartingShotAttr extends StatStageChangeAttr {
+  private readonly switchAttr: ForceSwitchOutAttr;
+
+  constructor() {
+    super([Stat.ATK, Stat.SPATK], -1, false, { trigger: MoveEffectTrigger.PRE_APPLY });
+    this.switchAttr = new ForceSwitchOutAttr(true);
+  }
+
+  /**
+   * Attempts to apply the stat drop, and if successful, conditionally triggers the user to switch out.
+   *
+   * @param user - The {@linkcode Pokemon} using the move
+   * @param target - The {@linkcode Pokemon} targeted by the move
+   * @param move - The {@linkcode Move} being used
+   * @param args - Additional arguments for the move's execution
+   * @returns `true` if the stat drop phase was successfully queued
+   */
+  override apply(user: Pokemon, target: Pokemon, move: Move, args: any[]): boolean {
+    const statDropTriggered = super.apply(user, target, move, args);
+
+    if (!statDropTriggered) {
+      return false;
+    }
+
+    const isBlockedByMist = !!globalScene.arena.getTagOnSide(
+      ArenaTagType.MIST,
+      target.isPlayer() ? ArenaTagSide.PLAYER : ArenaTagSide.ENEMY,
+    );
+
+    if (isBlockedByMist) {
+      return true;
+    }
+
+    // TODO: Rework this to not duplicate checks during stat stage application
+    const hasContrary = target.hasAbility(AbilityId.CONTRARY);
+    const stageMod = hasContrary ? 1 : -1;
+
+    // Silently simulate immunities to predict if the stat drop will be blocked
+    const cancelledAtk = new BooleanHolder(false);
+    applyAbAttrs("ProtectStatAbAttr", {
+      pokemon: target,
+      stat: Stat.ATK,
+      stages: -1,
+      cancelled: cancelledAtk,
+      simulated: true,
+    });
+    const canChangeAtk =
+      !cancelledAtk.value
+      && target.getStatStage(Stat.ATK) + stageMod >= -6
+      && target.getStatStage(Stat.ATK) + stageMod <= 6;
+
+    const cancelledSpAtk = new BooleanHolder(false);
+    applyAbAttrs("ProtectStatAbAttr", {
+      pokemon: target,
+      stat: Stat.SPATK,
+      stages: -1,
+      cancelled: cancelledSpAtk,
+      simulated: true,
+    });
+    const canChangeSpAtk =
+      !cancelledSpAtk.value
+      && target.getStatStage(Stat.SPATK) + stageMod >= -6
+      && target.getStatStage(Stat.SPATK) + stageMod <= 6;
+
+    const willDrop = canChangeAtk || canChangeSpAtk;
+
+    if (!willDrop) {
+      return true;
+    }
+
+    if (this.switchAttr.getSwitchOutCondition()(user, target, move)) {
+      this.switchAttr.apply(user, target, move, args);
+    }
+
+    return true;
+  }
+
+  /**
+   * Computes the benefit score for the AI to use this move, combining both the stat drop
+   * and the potential tactical advantage of switching out.
+   *
+   * @param user - The {@linkcode Pokemon} using the move
+   * @param target - The {@linkcode Pokemon} targeted by the move
+   * @param move - The {@linkcode Move} being evaluated
+   * @returns The evaluated score for using this move
+   */
+  override getUserBenefitScore(user: Pokemon, target: Pokemon, move: Move): number {
+    let score = super.getUserBenefitScore(user, target, move);
+
+    if (this.switchAttr.getSwitchOutCondition()(user, target, move)) {
+      const switchScore = this.switchAttr.getUserBenefitScore(user, target, move);
+      if (switchScore > 0) {
+        score += switchScore;
+      }
+    }
+    return score;
+  }
+}
+/**
  * Attribute used to determine the Biome/Terrain-based secondary effect of Secret Power
  */
 export class SecretPowerAttr extends MoveEffectAttr {
@@ -9278,6 +9387,7 @@ const MoveAttrs = Object.freeze({
   ForceLastAttr,
   ResistLastMoveTypeAttr,
   ExposedMoveAttr,
+  PartingShotAttr,
 });
 
 /** Map of of move attribute names to their constructors */
@@ -11241,8 +11351,7 @@ export function initMoves() {
       .soundBased()
       .target(MoveTarget.ALL_NEAR_ENEMIES),
     new StatusMove(MoveId.PARTING_SHOT, PokemonType.DARK, 100, 20, -1, 0, 6)
-      .attr(StatStageChangeAttr, [Stat.ATK, Stat.SPATK], -1, false, { trigger: MoveEffectTrigger.PRE_APPLY })
-      .attr(ForceSwitchOutAttr, true)
+      .attr(PartingShotAttr)
       .soundBased()
       .reflectable(),
     new StatusMove(MoveId.TOPSY_TURVY, PokemonType.DARK, -1, 20, -1, 0, 6) //
