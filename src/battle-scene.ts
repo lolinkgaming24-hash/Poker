@@ -67,6 +67,7 @@ import type { TrainerSlot } from "#enums/trainer-slot";
 import { TrainerType } from "#enums/trainer-type";
 import { TrainerVariant } from "#enums/trainer-variant";
 import { UiTheme } from "#enums/ui-theme";
+import type { BattleSceneEventMap } from "#events/battle-scene";
 import { NewArenaEvent } from "#events/battle-scene";
 import { Arena } from "#field/arena";
 import { ArenaBase } from "#field/arena-base";
@@ -129,6 +130,7 @@ import type {
   NewBattleSavedProps,
 } from "#types/new-battle-props";
 import type { SessionSaveData } from "#types/save-data";
+import type { TypedEventTarget } from "#types/typed-event-target";
 import { AbilityBar } from "#ui/ability-bar";
 import { ArenaFlyout } from "#ui/arena-flyout";
 import { CandyBar } from "#ui/candy-bar";
@@ -354,16 +356,8 @@ export class BattleScene extends SceneBase {
   public inputMethod: string;
   private readonly infoToggles: InfoToggle[] = [];
 
-  /**
-   * Allows subscribers to listen for events
-   *
-   * Current Events:
-   * - {@linkcode BattleSceneEventType.MOVE_USED} {@linkcode MoveUsedEvent}
-   * - {@linkcode BattleSceneEventType.TURN_INIT} {@linkcode TurnInitEvent}
-   * - {@linkcode BattleSceneEventType.TURN_END} {@linkcode TurnEndEvent}
-   * - {@linkcode BattleSceneEventType.NEW_ARENA} {@linkcode NewArenaEvent}
-   */
-  public readonly eventTarget: EventTarget = new EventTarget();
+  /** Allows subscribers to listen for events. */
+  public readonly eventTarget = new EventTarget() as TypedEventTarget<keyof BattleSceneEventMap, BattleSceneEventMap>;
 
   /** A helper class containing several animation-related functions. */
   public readonly animations: Animation = new Animation();
