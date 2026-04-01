@@ -4,7 +4,8 @@ import type { GameMode } from "#app/game-mode";
 import { globalScene } from "#app/global-scene";
 import { defaultStarterSpeciesAndEvolutions } from "#balance/pokemon-evolutions";
 import { type StarterSpeciesId, speciesStarterCosts } from "#balance/starters";
-import type { PokemonSpecies } from "#data/pokemon-species";
+import { allMoves } from "#data/data-lists";
+import type { PokemonSpecies, PokemonSpeciesForm } from "#data/pokemon-species";
 import { AbilityAttr } from "#enums/ability-attr";
 import { BattleType } from "#enums/battle-type";
 import { Challenges } from "#enums/challenges";
@@ -27,9 +28,11 @@ import { PokemonMove } from "#moves/pokemon-move";
 import type { GameData } from "#system/game-data";
 import { RibbonData, type RibbonFlag } from "#system/ribbons/ribbon-data";
 import type { DexEntry } from "#types/dex-data";
+import type { LevelMoves } from "#types/pokemon-level-moves";
 import type { DexAttrProps, StarterDataEntry } from "#types/save-data";
 import { type BooleanHolder, isBetween, type NumberHolder, randSeedItem } from "#utils/common";
 import { deepCopy } from "#utils/data";
+import { getEnumValues } from "#utils/enums";
 import { getPokemonSpecies, getPokemonSpeciesForm } from "#utils/pokemon-utils";
 import { toCamelCase } from "#utils/strings";
 import i18next from "i18next";
@@ -439,6 +442,44 @@ export abstract class Challenge {
    * @returns Whether this function did anything
    */
   applyPreventRevive(isValid: BooleanHolder): boolean {
+    return false;
+  }
+
+  /**
+   * Modifies a Pokemon's moveset after it has been generated
+   * @param pokemon - The pokemon whose moveset is being modified
+   * @returns Whether this modification was applied
+   */
+  public applyMovesetModify(pokemon: Pokemon): boolean {
+    return false;
+  }
+
+  /**
+   * Modifies a species' level up moveset
+   * @param species - The species whose level up moveset is being modified
+   * @param levelMoves - The level up moveset being modified
+   * @returns Whether this modification was applied
+   */
+  public applyLevelUpMoveset(species: PokemonSpeciesForm, levelMoves: LevelMoves): boolean {
+    return false;
+  }
+
+  /**
+   * Modifies the TM compatbility list of a player Pokemon
+   * @param pokemon - The player Pokemon whose TM compatibility list is being modified
+   * @returns Whether this modification was applied
+   */
+  public applyPlayerTMCompatibility(pokemon: PlayerPokemon): boolean {
+    return false;
+  }
+
+  /**
+   * Modifies the TM compatibility list of an enemy Pokemon
+   * @param pokemon - The enemy Pokemon whose TM compatibility list is being modified
+   * @param tmList - The Pokemon's TM compatibility list
+   * @returns Whether this modification was applied
+   */
+  public applyEnemyTMCompatibility(pokemon: Pokemon, tmList: Map<MoveId, number>): boolean {
     return false;
   }
 
@@ -1232,12 +1273,137 @@ export class PassivesChallenge extends Challenge {
   }
 }
 
+export class MovesetRandomizerChallenge extends Challenge {
+  constructor() {
+    super(Challenges.MOVESET_RANDOMIZER, 1);
+  }
+
+  private static _validMoveIds: MoveId[];
+
+  private get validMoveIds(): MoveId[] {
+    // it's necessary to do it this way due to the static variable
+    // being initialized before the `allMoves` array is
+    if (!MovesetRandomizerChallenge._validMoveIds) {
+      MovesetRandomizerChallenge._validMoveIds = getEnumValues(MoveId).filter(
+        m => ![MoveId.NONE, MoveId.SPLASH, MoveId.HOLD_HANDS].includes(m) && !allMoves[m].name.endsWith(" (N)"),
+      );
+    }
+    return MovesetRandomizerChallenge._validMoveIds;
+  }
+
+  public override applyStarterModify(pokemon: Pokemon): boolean {
+    const getStabMove = (pokemonType: PokemonType): MoveId => {
+      switch (pokemonType) {
+        case PokemonType.NORMAL:
+          return MoveId.POUND;
+        case PokemonType.FIGHTING:
+          return MoveId.ROCK_SMASH;
+        case PokemonType.FLYING:
+          return MoveId.PECK;
+        case PokemonType.POISON:
+          return MoveId.ACID;
+        case PokemonType.GROUND:
+          return MoveId.MUD_SLAP;
+        case PokemonType.ROCK:
+          return MoveId.ROCK_THROW;
+        case PokemonType.BUG:
+          return MoveId.POUNCE;
+        case PokemonType.GHOST:
+          return MoveId.LICK;
+        case PokemonType.STEEL:
+          return MoveId.METAL_CLAW;
+        case PokemonType.FIRE:
+          return MoveId.EMBER;
+        case PokemonType.WATER:
+          return MoveId.WATER_GUN;
+        case PokemonType.GRASS:
+          return MoveId.LEAFAGE;
+        case PokemonType.ELECTRIC:
+          return MoveId.THUNDER_SHOCK;
+        case PokemonType.PSYCHIC:
+          return MoveId.CONFUSION;
+        case PokemonType.ICE:
+          return MoveId.POWDER_SNOW;
+        case PokemonType.DRAGON:
+          return MoveId.TWISTER;
+        case PokemonType.DARK:
+          return MoveId.PURSUIT;
+        case PokemonType.FAIRY:
+          return MoveId.FAIRY_WIND;
+        default:
+          return MoveId.TACKLE;
+      }
+    };
+
+    pokemon.moveset = [
+      new PokemonMove(getStabMove(pokemon.species.type1)),
+      new PokemonMove(pokemon.species.type2 != null ? getStabMove(pokemon.species.type2) : MoveId.TACKLE),
+    ];
+
+    return true;
+  }
+
+  public override applyLevelUpMoveset(species: PokemonSpeciesForm, levelMoves: LevelMoves): boolean {
+    const seedOffset = 100 * species.speciesId;
+
+    const levels = levelMoves.map(lm => lm[0]);
+    levelMoves.splice(0);
+
+    globalScene.executeWithSeedOffset(() => {
+      for (const level of levels) {
+        levelMoves.push([level, randSeedItem(this.validMoveIds)]);
+      }
+    }, seedOffset);
+
+    return true;
+  }
+
+  public override applyMovesetModify(pokemon: Pokemon): boolean {
+    if (
+      globalScene.currentBattle?.waveIndex === 200
+      && pokemon.isEnemy()
+      && pokemon.species.speciesId === SpeciesId.ETERNATUS
+    ) {
+      pokemon.moveset = new Array(4).fill(new PokemonMove(MoveId.METRONOME));
+    }
+
+    return true;
+  }
+
+  public override applyPlayerTMCompatibility(pokemon: PlayerPokemon): boolean {
+    pokemon.compatibleTms.splice(0);
+
+    return true;
+  }
+
+  public override applyEnemyTMCompatibility(_pokemon: Pokemon, tmList: Map<MoveId, number>): boolean {
+    tmList.clear();
+
+    return true;
+  }
+
+  public override applyWaveReward(reward: ModifierTypeOption | null, isValid: BooleanHolder): boolean {
+    isValid.value = reward?.type.group !== "tm";
+
+    return true;
+  }
+
+  public static override loadChallenge(source: Challenge | any): Challenge {
+    const newChallenge = new MovesetRandomizerChallenge();
+    newChallenge.value = source.value;
+    newChallenge.severity = source.severity;
+    return newChallenge;
+  }
+}
+
 /**
  * @param source - A challenge to copy, or an object of a challenge's properties. Missing values are treated as defaults.
  * @returns The challenge in question.
+ * @throws An error if a challenge object with an invalid ID is passed in
  */
 export function copyChallenge(source: Challenge | any): Challenge {
-  switch (source.id) {
+  const challengeId = source.id as Challenges;
+  switch (challengeId) {
     case Challenges.SINGLE_GENERATION:
       return SingleGenerationChallenge.loadChallenge(source);
     case Challenges.SINGLE_TYPE:
@@ -1260,8 +1426,12 @@ export function copyChallenge(source: Challenge | any): Challenge {
       return HardcoreChallenge.loadChallenge(source);
     case Challenges.PASSIVES:
       return PassivesChallenge.loadChallenge(source);
+    case Challenges.MOVESET_RANDOMIZER:
+      return MovesetRandomizerChallenge.loadChallenge(source);
+    default:
+      challengeId satisfies never;
+      throw new Error("Unknown challenge copied");
   }
-  throw new Error("Unknown challenge copied");
 }
 
 export const allChallenges: Challenge[] = [];
@@ -1277,5 +1447,6 @@ export function initChallenges() {
     new PassivesChallenge(),
     new InverseBattleChallenge(),
     new FlipStatChallenge(),
+    new MovesetRandomizerChallenge(),
   );
 }
